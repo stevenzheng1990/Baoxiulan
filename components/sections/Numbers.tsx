@@ -94,13 +94,13 @@ function StatCell({ cell, index }: { cell: StatCell; index: number }) {
       className="numbers-cell"
       style={{
         flex: 1,
-        padding: '3.5rem 2.5rem',
+        padding: '2.5rem 1.75rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        borderRight: isLast ? 'none' : '1px solid rgba(255,255,255,0.12)',
+        borderRight: isLast ? 'none' : '1px solid rgba(255,255,255,0.10)',
         position: 'relative',
       }}
     >
@@ -108,13 +108,13 @@ function StatCell({ cell, index }: { cell: StatCell; index: number }) {
       <div
         style={{
           fontFamily: 'var(--serif-en)',
-          fontSize: 'clamp(2.8rem, 5vw, 4.5rem)',
+          fontSize: 'clamp(2.2rem, 4vw, 3.2rem)',
           fontWeight: 300,
           fontStyle: 'italic',
           color: '#ffffff',
           lineHeight: 1,
-          marginBottom: '0.75rem',
-          letterSpacing: '-0.02em',
+          marginBottom: '0.6rem',
+          letterSpacing: '-0.025em',
         }}
       >
         {cell.display(count)}
@@ -122,11 +122,11 @@ function StatCell({ cell, index }: { cell: StatCell; index: number }) {
           <sup
             style={{
               fontFamily: 'var(--serif-cn)',
-              fontSize: '0.32em',
+              fontSize: '0.3em',
               fontStyle: 'normal',
               verticalAlign: 'super',
               marginLeft: '0.12em',
-              color: 'rgba(255,255,255,0.55)',
+              color: 'rgba(255,255,255,0.5)',
             }}
           >
             {cell.sup}
@@ -138,9 +138,9 @@ function StatCell({ cell, index }: { cell: StatCell; index: number }) {
       <p
         style={{
           fontFamily: 'var(--sans)',
-          fontSize: '0.78rem',
-          letterSpacing: '0.08em',
-          color: 'rgba(255,255,255,0.45)',
+          fontSize: '0.72rem',
+          letterSpacing: '0.1em',
+          color: 'rgba(255,255,255,0.5)',
           lineHeight: 1.5,
         }}
       >

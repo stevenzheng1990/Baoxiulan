@@ -42,28 +42,29 @@ export default function Process() {
 
   return (
     <section
+      className="section"
       style={{
-        background: 'var(--off-white)',
-        padding: 'clamp(5rem, 10vw, 9rem) clamp(1.25rem, 5vw, 4rem)',
-        overflow: 'hidden',
+        background: 'var(--white)',
+        borderTop: '1px solid var(--border)',
       }}
     >
-      <div style={{ maxWidth: '1320px', margin: '0 auto' }}>
+      <div className="container">
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '0.8fr 1.2fr',
-            gap: 'clamp(3rem, 6vw, 6rem)',
+            gridTemplateColumns: '0.85fr 1.15fr',
+            gap: 'clamp(2.25rem, 4.5vw, 4.5rem)',
             alignItems: 'start',
           }}
           className="process-grid"
         >
           {/* ── LEFT: Steps ── */}
           <div>
-            <div className="r" style={{ marginBottom: 'clamp(2.5rem, 5vw, 4rem)' }}>
-              <div className="section-tag">我们的方法 · Approach</div>
+            <div className="r-blur" style={{ marginBottom: 'clamp(1.75rem, 3.5vw, 2.5rem)' }}>
+              <span className="eyebrow">我们的方法 · Approach</span>
               <h2
-                className="section-heading"
+                className="h-display"
+                style={{ marginTop: '0.85rem' }}
                 dangerouslySetInnerHTML={{ __html: '循证评估，<em>个性化</em>方案' }}
               />
             </div>

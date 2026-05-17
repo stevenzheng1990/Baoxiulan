@@ -15,9 +15,7 @@ const CREDENTIALS = [
   'NBNA 法创始人',
   '哈佛医学院 Brazelton 认证（全国唯一）',
   '国家科技进步奖 / 北京市科技进步奖',
-  '国家卫健委《高危儿早期干预指南》首席专家',
-  '中国优生优育协会婴幼儿发育专委会主任委员',
-  '全国21家医院协作研究首席主持人',
+  '《高危儿早期干预指南》首席专家',
 ]
 
 const SPECIALTIES = [
@@ -27,55 +25,30 @@ const SPECIALTIES = [
   '新生儿行为神经测查',
   '小儿生长发育',
   '矮小症 / 垂体侏儒',
-  '小儿癫痫',
-  '新生儿 NBNA 评估',
 ]
 
 const STATS = [
-  { value: '40年', label: '儿科临床经验' },
-  { value: '91.4%', label: '脑瘫超早期诊断准确率' },
-  { value: '21家', label: '全国协作医院' },
+  { value: '40', sup: '年', label: '儿科临床经验' },
+  { value: '91.4', sup: '%', label: '脑瘫超早期诊断准确率' },
+  { value: '21', sup: '家', label: '全国协作医院' },
 ]
 
 export default function Founder({ expert }: FounderProps) {
   const data = expert ?? EXPERTS_SEED[0]
 
   return (
-    <section
-      style={{
-        background: 'var(--white)',
-        padding: 'clamp(5rem, 10vw, 9rem) clamp(1.25rem, 5vw, 4rem)',
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
-      {/* Inner container */}
-      <div
-        style={{
-          maxWidth: '1320px',
-          margin: '0 auto',
-        }}
-      >
-        {/* Two-col grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'clamp(280px, 0.85fr, 420px) 1.15fr',
-            gap: 'clamp(2.5rem, 5vw, 5rem)',
-            alignItems: 'start',
-          }}
-          className="founder-grid"
-        >
-          {/* ── LEFT COL ── */}
-          <div className="r-l">
-            {/* Portrait */}
+    <section className="section" style={{ background: 'var(--white)' }}>
+      <div className="container">
+        <div className="founder-grid">
+          {/* ── LEFT COL — Portrait + meta strip ── */}
+          <aside className="r-l founder-left">
             <div
-              className="r-clip-up sheen"
+              className="r-clip-up sheen founder-portrait"
               style={{
                 position: 'relative',
-                aspectRatio: '4/5',
-                border: '1px solid var(--border)',
+                aspectRatio: '4 / 5',
                 overflow: 'hidden',
+                background: 'var(--off-white)',
               }}
             >
               <Image
@@ -84,297 +57,242 @@ export default function Founder({ expert }: FounderProps) {
                 fill
                 className="kenburns"
                 style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                sizes="(max-width: 768px) 90vw, 420px"
+                sizes="(max-width: 900px) 90vw, 380px"
                 priority
               />
-              {/* Blue badge overlay */}
               <div
                 style={{
                   position: 'absolute',
-                  bottom: '1.25rem',
-                  left: '1.25rem',
-                  background: 'var(--blue)',
-                  color: 'var(--white)',
-                  fontSize: '0.65rem',
+                  inset: 'auto 0 0 0',
+                  padding: '0.85rem 1rem',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                  background:
+                    'linear-gradient(to top, rgba(0,0,0,0.45), transparent)',
+                  color: '#fff',
+                  fontFamily: 'var(--sans)',
+                  fontSize: '0.62rem',
                   letterSpacing: '0.22em',
                   textTransform: 'uppercase',
-                  padding: '0.45rem 0.9rem',
-                  fontFamily: 'var(--sans)',
                 }}
               >
-                FOUNDER · 创始人
+                <span>Founder · 创始人</span>
+                <span style={{ opacity: 0.75 }}>Since 1983</span>
               </div>
             </div>
-
-            {/* Metadata table */}
-            <div
-              style={{
-                marginTop: '1.5rem',
-                borderTop: '1px solid var(--border)',
-                borderBottom: '1px solid var(--border)',
-              }}
-            >
-              {[
-                { label: '在职', value: 'Since 1983' },
-                { label: '资历', value: '儿科临床 40+ 年' },
-                { label: '所在', value: '北京 · 协和' },
-              ].map((row, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '0.85rem 0',
-                    borderBottom: i < 2 ? '1px solid var(--border)' : 'none',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: '0.7rem',
-                      letterSpacing: '0.15em',
-                      textTransform: 'uppercase',
-                      color: 'var(--muted)',
-                      fontFamily: 'var(--sans)',
-                    }}
-                  >
-                    {row.label}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: '0.85rem',
-                      color: 'var(--ink)',
-                      fontFamily: 'var(--sans)',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {row.value}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          </aside>
 
           {/* ── RIGHT COL ── */}
-          <div className="r r-blur">
-            {/* Name block */}
-            <div style={{ marginBottom: '1.5rem' }}>
+          <div className="founder-right">
+            {/* Eyebrow */}
+            <div className="r" style={{ marginBottom: '0.9rem' }}>
+              <span className="eyebrow">创始人 · Founder</span>
+            </div>
+
+            {/* Name */}
+            <header className="r-blur" style={{ marginBottom: '1rem' }}>
               <h2
                 style={{
                   fontFamily: 'var(--serif-cn)',
-                  fontSize: 'clamp(3rem, 6vw, 4.5rem)',
                   fontWeight: 400,
-                  lineHeight: 1,
+                  fontSize: 'clamp(2.4rem, 5vw, 3.6rem)',
+                  lineHeight: 1.02,
+                  letterSpacing: '-0.025em',
                   color: 'var(--ink)',
-                  letterSpacing: '-0.02em',
                 }}
               >
                 {data.name}
+                <span
+                  style={{
+                    fontFamily: 'var(--serif-en)',
+                    fontStyle: 'italic',
+                    fontWeight: 300,
+                    fontSize: '0.45em',
+                    color: 'var(--blue)',
+                    marginLeft: '0.7rem',
+                    letterSpacing: '0.02em',
+                    verticalAlign: '0.45em',
+                  }}
+                >
+                  {data.nameEn}
+                </span>
               </h2>
-              <span
+              <p
                 style={{
-                  fontFamily: 'var(--serif-en)',
-                  fontStyle: 'italic',
-                  fontSize: 'clamp(1.2rem, 2vw, 1.6rem)',
-                  color: 'var(--blue)',
-                  fontWeight: 300,
-                  display: 'block',
-                  marginTop: '0.25rem',
-                  letterSpacing: '0.02em',
+                  marginTop: '0.55rem',
+                  fontSize: '0.78rem',
+                  letterSpacing: '0.06em',
+                  color: 'var(--muted)',
                 }}
               >
-                {data.nameEn}
-              </span>
-            </div>
+                教授 · 主任医师 · 国务院特殊津贴专家
+              </p>
+            </header>
 
-            {/* Title bar */}
-            <div
-              style={{
-                paddingBottom: '1.25rem',
-                borderBottom: '1px solid var(--border)',
-                marginBottom: '2rem',
-                fontSize: '0.875rem',
-                color: 'var(--muted)',
-                letterSpacing: '0.05em',
-                fontFamily: 'var(--sans)',
-              }}
-            >
-              教授 · 主任医师 · 国务院特殊津贴专家
-            </div>
+            <hr className="rule" style={{ margin: '1.5rem 0' }} />
 
             {/* Pull quote */}
-            <div
+            <blockquote
+              className="r"
               style={{
-                position: 'relative',
-                marginBottom: '2.25rem',
-                paddingLeft: '0.5rem',
+                fontFamily: 'var(--serif-cn)',
+                fontSize: 'clamp(1.05rem, 1.7vw, 1.3rem)',
+                fontWeight: 400,
+                lineHeight: 1.55,
+                color: 'var(--ink)',
+                marginBottom: '1.5rem',
+                paddingLeft: '0.9rem',
+                borderLeft: '2px solid var(--blue)',
               }}
             >
-              <span
-                style={{
-                  fontFamily: 'var(--serif-en)',
-                  fontSize: 'clamp(4rem, 8vw, 7rem)',
-                  color: 'var(--blue-pale)',
-                  lineHeight: 1,
-                  position: 'absolute',
-                  top: '-1.5rem',
-                  left: '-0.5rem',
-                  userSelect: 'none',
-                  pointerEvents: 'none',
-                }}
-                aria-hidden="true"
-              >
-                &#8220;
-              </span>
-              <blockquote
-                style={{
-                  fontFamily: 'var(--serif-cn)',
-                  fontSize: 'clamp(1.15rem, 2.2vw, 1.5rem)',
-                  fontWeight: 300,
-                  lineHeight: 1.6,
-                  color: 'var(--blue)',
-                  paddingTop: '1rem',
-                  whiteSpace: 'pre-line',
-                }}
-              >
-                {'出生后最初的一千天，\n决定一生的可能。'}
-              </blockquote>
-            </div>
+              出生后最初的一千天，决定一生的可能。
+            </blockquote>
 
-            {/* Bio paragraphs */}
+            {/* Bio */}
             <div
+              className="r"
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '1rem',
-                marginBottom: '2.5rem',
-                fontSize: '0.9rem',
-                lineHeight: 1.8,
-                color: 'var(--muted)',
-                fontFamily: 'var(--sans)',
+                gap: '0.9rem',
+                fontSize: '0.875rem',
+                lineHeight: 1.72,
+                color: 'var(--ink-soft)',
+                marginBottom: '2rem',
               }}
             >
               <p>
-                1983 年赴美国哈佛医学院进修，是中国唯一获得 Brazelton
-                新生儿行为评估认证的医生。回国后创立新生儿20项神经行为评估法（NBNA），
-                该方法已在国内临床应用近40年，成为全国妇幼系统的标准工具。
+                1983 年赴美国哈佛医学院进修，是中国唯一获得 Brazelton 新生儿行为评估认证的医生。回国后创立 NBNA 新生儿20项神经行为评估法，沿用近 40 年，至今仍是全国妇幼系统的标准工具。
               </p>
               <p>
-                主持国家"八五"攻关课题《0–3岁早期教育和窒息儿、早产儿干预》，
-                参与制定国家《高危儿早期干预指南》，领衔全国21家医院协作研究，
-                将脑瘫超早期诊断准确率提升至91.4%，获得国家科技进步奖及北京市科技进步奖。
+                主持国家"八五"攻关课题《0–3 岁早期教育和窒息儿、早产儿干预》，领衔全国 21 家医院协作研究，将脑瘫超早期诊断准确率提升至 91.4%，五度获颁国家科技进步奖。
               </p>
             </div>
 
-            {/* Credentials */}
-            <div style={{ marginBottom: '2rem' }}>
-              <div
-                className="section-tag"
-                style={{ marginBottom: '1rem' }}
-              >
-                主要资质 · Credentials
-              </div>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '0.6rem 1.5rem',
-                }}
-              >
-                {CREDENTIALS.map((c, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: '0.55rem',
-                      fontSize: '0.82rem',
-                      color: 'var(--ink)',
-                      lineHeight: 1.5,
-                      fontFamily: 'var(--sans)',
-                    }}
-                  >
-                    <span
-                      style={{
-                        width: '6px',
-                        height: '6px',
-                        borderRadius: '50%',
-                        background: 'var(--blue)',
-                        flexShrink: 0,
-                        marginTop: '0.45em',
-                      }}
-                    />
-                    {c}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Specialties */}
-            <div style={{ marginBottom: '2.5rem' }}>
-              <div
-                className="section-tag"
-                style={{ marginBottom: '1rem' }}
-              >
-                擅长领域 · Specialties
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {SPECIALTIES.map((s, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      padding: '0.35rem 0.9rem',
-                      border: '1px solid var(--border)',
-                      borderRadius: '999px',
-                      fontSize: '0.78rem',
-                      color: 'var(--blue)',
-                      background: 'var(--blue-pale)',
-                      fontFamily: 'var(--sans)',
-                      letterSpacing: '0.02em',
-                    }}
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '0',
-                borderTop: '1px solid var(--border)',
-                paddingTop: '1.75rem',
-              }}
-            >
-              {STATS.map((stat, i) => (
+            {/* Two-column meta: credentials + specialties */}
+            <div className="founder-meta">
+              <div>
                 <div
-                  key={i}
+                  className="eyebrow"
+                  style={{ marginBottom: '0.85rem', color: 'var(--ink-soft)' }}
+                >
+                  主要资质
+                </div>
+                <ul
                   style={{
-                    padding: '0 1.5rem 0 0',
-                    borderRight: i < STATS.length - 1 ? '1px solid var(--border)' : 'none',
-                    marginRight: i < STATS.length - 1 ? '1.5rem' : 0,
+                    listStyle: 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.45rem',
                   }}
                 >
+                  {CREDENTIALS.map((c) => (
+                    <li
+                      key={c}
+                      style={{
+                        display: 'flex',
+                        gap: '0.6rem',
+                        fontSize: '0.82rem',
+                        color: 'var(--ink)',
+                        lineHeight: 1.45,
+                      }}
+                    >
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          inlineSize: 4,
+                          blockSize: 4,
+                          borderRadius: '50%',
+                          background: 'var(--blue)',
+                          flexShrink: 0,
+                          marginTop: '0.55em',
+                        }}
+                      />
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <div
+                  className="eyebrow"
+                  style={{ marginBottom: '0.85rem', color: 'var(--ink-soft)' }}
+                >
+                  擅长领域
+                </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '0.4rem',
+                  }}
+                >
+                  {SPECIALTIES.map((s) => (
+                    <span
+                      key={s}
+                      style={{
+                        padding: '0.32rem 0.75rem',
+                        border: '1px solid var(--border)',
+                        fontSize: '0.74rem',
+                        color: 'var(--ink-soft)',
+                        background: 'var(--paper)',
+                        letterSpacing: '0.02em',
+                      }}
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Stats strip */}
+            <div
+              className="founder-stats r"
+              style={{
+                marginTop: '2rem',
+                paddingTop: '1.5rem',
+                borderTop: '1px solid var(--border)',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '1.5rem',
+              }}
+            >
+              {STATS.map((stat) => (
+                <div key={stat.label}>
                   <div
                     style={{
                       fontFamily: 'var(--serif-en)',
-                      fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)',
                       fontWeight: 300,
-                      color: 'var(--blue)',
+                      fontStyle: 'italic',
+                      fontSize: 'clamp(1.6rem, 2.6vw, 2.2rem)',
                       lineHeight: 1,
-                      marginBottom: '0.4rem',
+                      color: 'var(--blue)',
+                      letterSpacing: '-0.02em',
                     }}
                   >
                     {stat.value}
+                    <sup
+                      style={{
+                        fontFamily: 'var(--serif-cn)',
+                        fontStyle: 'normal',
+                        fontSize: '0.4em',
+                        color: 'var(--muted)',
+                        marginLeft: '0.1em',
+                        verticalAlign: 'super',
+                      }}
+                    >
+                      {stat.sup}
+                    </sup>
                   </div>
                   <div
                     style={{
-                      fontSize: '0.75rem',
+                      marginTop: '0.45rem',
+                      fontSize: '0.7rem',
                       color: 'var(--muted)',
-                      fontFamily: 'var(--sans)',
+                      letterSpacing: '0.04em',
                       lineHeight: 1.4,
                     }}
                   >
@@ -385,42 +303,29 @@ export default function Founder({ expert }: FounderProps) {
             </div>
           </div>
         </div>
-
-        {/* Decorative full-width text */}
-        <div
-          aria-hidden="true"
-          className="r-blur"
-          style={{
-            marginTop: 'clamp(3rem, 6vw, 5rem)',
-            overflow: 'hidden',
-            lineHeight: 1,
-            userSelect: 'none',
-            pointerEvents: 'none',
-          }}
-        >
-          <span
-            style={{
-              fontFamily: 'var(--serif-en)',
-              fontStyle: 'italic',
-              fontWeight: 300,
-              fontSize: 'clamp(4rem, 12vw, 10rem)',
-              color: 'var(--blue-pale)',
-              whiteSpace: 'nowrap',
-              display: 'block',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            BAO XIU LAN
-          </span>
-        </div>
       </div>
 
-      {/* Responsive styles */}
       <style>{`
-        @media (max-width: 768px) {
-          .founder-grid {
-            grid-template-columns: 1fr !important;
-          }
+        .founder-grid {
+          display: grid;
+          grid-template-columns: minmax(280px, 0.78fr) 1.22fr;
+          gap: clamp(2.25rem, 4.5vw, 4.5rem);
+          align-items: start;
+        }
+        .founder-left { position: sticky; top: 6rem; }
+        .founder-meta {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 2rem;
+        }
+        @media (max-width: 900px) {
+          .founder-grid { grid-template-columns: 1fr; }
+          .founder-left { position: static; }
+          .founder-portrait { max-width: 420px; }
+        }
+        @media (max-width: 640px) {
+          .founder-meta { grid-template-columns: 1fr; gap: 1.5rem; }
+          .founder-stats { gap: 1rem !important; }
         }
       `}</style>
     </section>

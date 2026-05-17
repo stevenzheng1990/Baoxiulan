@@ -59,28 +59,28 @@ export default function Articles({ articles }: ArticlesProps) {
 
   return (
     <section
+      className="section"
       style={{
-        background: 'var(--white)',
-        padding: 'clamp(5rem, 10vw, 9rem) clamp(1.25rem, 5vw, 4rem)',
+        background: 'var(--off-white)',
         overflow: 'hidden',
       }}
     >
-      <div style={{ maxWidth: '1320px', margin: '0 auto' }}>
+      <div className="container">
         {/* Header row */}
         <div
-          className="r"
+          className="r-blur"
           style={{
             display: 'flex',
             alignItems: 'flex-end',
             justifyContent: 'space-between',
             gap: '2rem',
             flexWrap: 'wrap',
-            marginBottom: 'clamp(2.5rem, 5vw, 4rem)',
+            marginBottom: 'clamp(2rem, 4vw, 3rem)',
           }}
         >
           <div>
-            <div className="section-tag">专业文章 · Articles</div>
-            <h2 className="section-heading">专业知识，触手可及</h2>
+            <span className="eyebrow">专业文章 · Articles</span>
+            <h2 className="h-display" style={{ marginTop: '0.85rem' }}>专业知识，触手可及</h2>
           </div>
           <Link
             href="/articles"

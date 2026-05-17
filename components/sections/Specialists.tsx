@@ -4,14 +4,14 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { EXPERTS_SEED } from '@/content/site'
 
-// The 3 specialists are indices 1, 2, 3 (excluding founder at index 0)
 const DOCTORS = EXPERTS_SEED.slice(1)
 
 const SECTION_LABELS = ['介绍', '擅长领域', '主要任职'] as const
-
 type SectionKey = (typeof SECTION_LABELS)[number]
 
-function getDoctorSections(doc: (typeof DOCTORS)[number]): Record<SectionKey, string[]> {
+function getDoctorSections(
+  doc: (typeof DOCTORS)[number]
+): Record<SectionKey, string[]> {
   return {
     介绍: [doc.bio],
     擅长领域: doc.specialties,
@@ -25,53 +25,43 @@ export default function Specialists() {
 
   const doctor = DOCTORS[activeTab]
   const sections = getDoctorSections(doctor)
-
   const tabNumbers = ['02', '03', '04']
 
   return (
     <section
-      style={{
-        background: 'var(--off-white)',
-        padding: 'clamp(5rem, 10vw, 9rem) clamp(1.25rem, 5vw, 4rem)',
-        overflow: 'hidden',
-      }}
+      className="section"
+      style={{ background: 'var(--paper)', borderTop: '1px solid var(--border)' }}
     >
-      <div style={{ maxWidth: '1320px', margin: '0 auto' }}>
-        {/* Section header */}
-        <div
-          className="r r-blur"
-          style={{ marginBottom: 'clamp(2.5rem, 5vw, 4rem)', maxWidth: '640px' }}
+      <div className="container">
+        {/* Header */}
+        <header
+          className="r-blur specialists-header"
+          style={{ marginBottom: 'clamp(2rem, 4vw, 3rem)' }}
         >
-          <div className="section-tag">我们的专家 · Specialists</div>
+          <span className="eyebrow">首席专家 · Specialists</span>
           <h2
-            className="section-heading"
+            className="h-display"
+            style={{ marginTop: '0.85rem', maxWidth: '20ch' }}
             dangerouslySetInnerHTML={{
               __html: '三位首席专家，同一份<em>专注</em>',
             }}
           />
-          <p
-            style={{
-              marginTop: '1rem',
-              fontSize: '0.95rem',
-              lineHeight: 1.75,
-              color: 'var(--muted)',
-              fontFamily: 'var(--sans)',
-            }}
-          >
-            与鲍秀兰教授协作逾30年，深耕新生儿脑科学与高危儿早期干预的顶尖临床团队。
+          <p className="lede" style={{ marginTop: '1rem' }}>
+            与鲍秀兰教授协作逾 30 年，深耕新生儿脑科学与高危儿早期干预的顶尖临床团队。
           </p>
-        </div>
+        </header>
 
-        {/* Tab row */}
+        {/* Tabs */}
         <div
-          className="r"
+          role="tablist"
+          aria-label="首席专家"
+          className="r specialists-tabs"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '0',
-            marginBottom: '0',
-            border: '1px solid var(--border)',
-            borderBottom: 'none',
+            borderTop: '1px solid var(--border)',
+            borderBottom: '1px solid var(--border)',
+            background: 'var(--white)',
           }}
         >
           {DOCTORS.map((doc, i) => {
@@ -79,6 +69,8 @@ export default function Specialists() {
             return (
               <button
                 key={doc.slug}
+                role="tab"
+                aria-selected={isActive}
                 onClick={() => {
                   setActiveTab(i)
                   setOpenSection('介绍')
@@ -86,24 +78,39 @@ export default function Specialists() {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '1rem',
-                  padding: '1.1rem 1.5rem',
-                  background: isActive ? 'var(--blue)' : 'var(--white)',
-                  color: isActive ? 'var(--white)' : 'var(--ink)',
+                  gap: '0.85rem',
+                  padding: '1rem 1.25rem',
+                  background: 'transparent',
+                  color: isActive ? 'var(--blue)' : 'var(--ink-soft)',
                   border: 'none',
-                  borderRight: i < DOCTORS.length - 1 ? '1px solid var(--border)' : 'none',
+                  borderRight:
+                    i < DOCTORS.length - 1 ? '1px solid var(--border)' : 'none',
                   cursor: 'pointer',
                   textAlign: 'left',
-                  transition: 'background 0.25s, color 0.25s',
+                  position: 'relative',
+                  transition: 'color 0.25s ease',
                 }}
               >
+                {/* Active underline */}
+                <span
+                  aria-hidden="true"
+                  style={{
+                    position: 'absolute',
+                    inset: 'auto 0 -1px 0',
+                    height: 2,
+                    background: 'var(--blue)',
+                    transform: isActive ? 'scaleX(1)' : 'scaleX(0)',
+                    transformOrigin: 'left center',
+                    transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)',
+                  }}
+                />
                 <span
                   style={{
                     fontFamily: 'var(--serif-en)',
                     fontStyle: 'italic',
-                    fontSize: '1.4rem',
+                    fontSize: '1.1rem',
                     fontWeight: 300,
-                    opacity: isActive ? 0.6 : 0.35,
+                    opacity: isActive ? 0.7 : 0.4,
                     lineHeight: 1,
                     flexShrink: 0,
                   }}
@@ -115,9 +122,10 @@ export default function Specialists() {
                     style={{
                       display: 'block',
                       fontFamily: 'var(--serif-cn)',
-                      fontSize: '1rem',
-                      fontWeight: 400,
+                      fontSize: '0.98rem',
+                      fontWeight: 500,
                       lineHeight: 1.2,
+                      color: isActive ? 'var(--ink)' : 'var(--ink-soft)',
                     }}
                   >
                     {doc.name}
@@ -126,13 +134,12 @@ export default function Specialists() {
                     style={{
                       display: 'block',
                       fontSize: '0.7rem',
-                      opacity: isActive ? 0.7 : 0.55,
-                      marginTop: '0.15rem',
-                      fontFamily: 'var(--sans)',
+                      color: 'var(--muted)',
+                      marginTop: '0.2rem',
                       letterSpacing: '0.02em',
                     }}
                   >
-                    {doc.role.replace('北京宝秀兰医疗', '')}
+                    {doc.role.replace('北京宝秀兰医疗', '').trim()}
                   </span>
                 </span>
               </button>
@@ -143,26 +150,28 @@ export default function Specialists() {
         {/* Panel */}
         <div
           key={activeTab}
+          className="specialists-panel"
           style={{
             background: 'var(--white)',
-            border: '1px solid var(--border)',
+            borderBottom: '1px solid var(--border)',
+            borderInline: '1px solid var(--border)',
             display: 'grid',
-            gridTemplateColumns: 'clamp(220px, 0.65fr, 340px) 1.35fr',
-            animation: 'specialistFade 0.4s cubic-bezier(0.22,1,0.36,1) both',
+            gridTemplateColumns: 'minmax(240px, 320px) 1fr',
+            animation: 'specialistFade 0.45s cubic-bezier(0.22,1,0.36,1) both',
           }}
-          className="specialist-panel"
         >
-          {/* LEFT: Portrait */}
+          {/* Portrait */}
           <div style={{ position: 'relative' }}>
             <div
+              key={`portrait-${activeTab}`}
               className="sheen in"
               style={{
                 position: 'relative',
-                aspectRatio: '4/5',
+                aspectRatio: '4 / 5',
                 overflow: 'hidden',
-                animation: 'portraitClip 1.1s cubic-bezier(0.77,0,0.18,1) both',
+                animation: 'portraitClip 1.05s cubic-bezier(0.77,0,0.18,1) both',
+                background: 'var(--off-white)',
               }}
-              key={`portrait-${activeTab}`}
             >
               <Image
                 src={doctor.photoPath ?? '/doctors/zhoucongle.png'}
@@ -170,25 +179,21 @@ export default function Specialists() {
                 fill
                 className="kenburns"
                 style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                sizes="(max-width: 768px) 90vw, 340px"
+                sizes="(max-width: 900px) 90vw, 320px"
               />
-              {/* Number badge */}
               <div
                 style={{
                   position: 'absolute',
-                  top: '1rem',
-                  left: '1rem',
+                  top: '0.85rem',
+                  left: '0.85rem',
                   background: 'var(--blue)',
                   color: 'var(--white)',
                   fontFamily: 'var(--serif-en)',
                   fontStyle: 'italic',
-                  fontSize: '1rem',
                   fontWeight: 300,
-                  width: '2.2rem',
-                  height: '2.2rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  fontSize: '0.8rem',
+                  padding: '0.25rem 0.55rem',
+                  letterSpacing: '0.02em',
                 }}
               >
                 {tabNumbers[activeTab]}
@@ -196,78 +201,86 @@ export default function Specialists() {
             </div>
           </div>
 
-          {/* RIGHT: Info */}
-          <div style={{ padding: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
-            {/* Name */}
-            <div style={{ marginBottom: '1.25rem' }}>
-              <h3
-                style={{
-                  fontFamily: 'var(--serif-cn)',
-                  fontSize: 'clamp(1.8rem, 3vw, 2.4rem)',
-                  fontWeight: 400,
-                  color: 'var(--ink)',
-                  lineHeight: 1,
-                }}
-              >
-                {doctor.name}
-              </h3>
+          {/* Info */}
+          <div
+            style={{
+              padding: 'clamp(1.5rem, 2.5vw, 2.25rem)',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <h3
+              style={{
+                fontFamily: 'var(--serif-cn)',
+                fontSize: 'clamp(1.6rem, 2.6vw, 2.1rem)',
+                fontWeight: 400,
+                color: 'var(--ink)',
+                lineHeight: 1.05,
+                letterSpacing: '-0.02em',
+              }}
+            >
+              {doctor.name}
               <span
                 style={{
                   fontFamily: 'var(--serif-en)',
                   fontStyle: 'italic',
-                  fontSize: '0.95rem',
+                  fontSize: '0.48em',
                   color: 'var(--blue)',
+                  marginLeft: '0.6rem',
                   fontWeight: 300,
-                  display: 'block',
-                  marginTop: '0.25rem',
+                  letterSpacing: '0.02em',
+                  verticalAlign: '0.55em',
                 }}
               >
                 {doctor.nameEn}
               </span>
-            </div>
+            </h3>
 
-            {/* Title */}
             <p
               style={{
-                fontSize: '0.82rem',
+                marginTop: '0.6rem',
+                fontSize: '0.78rem',
                 color: 'var(--muted)',
-                marginBottom: '1rem',
-                fontFamily: 'var(--sans)',
-                lineHeight: 1.5,
+                letterSpacing: '0.04em',
+                lineHeight: 1.55,
               }}
             >
               {doctor.title}
             </p>
 
-            {/* Org — blue left border */}
             <div
               style={{
-                borderLeft: '3px solid var(--blue)',
+                marginTop: '1rem',
                 paddingLeft: '0.85rem',
+                borderLeft: '2px solid var(--blue)',
                 fontSize: '0.82rem',
-                color: 'var(--ink)',
-                fontFamily: 'var(--sans)',
-                marginBottom: '1.75rem',
-                lineHeight: 1.5,
+                color: 'var(--ink-soft)',
+                lineHeight: 1.55,
               }}
             >
               {doctor.org}
             </div>
 
-            {/* Expandable sections */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+            <div
+              style={{
+                marginTop: '1.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
               {SECTION_LABELS.map((label) => {
                 const isOpen = openSection === label
                 const items = sections[label]
                 return (
                   <div
                     key={label}
-                    style={{
-                      borderTop: '1px solid var(--border)',
-                    }}
+                    style={{ borderTop: '1px solid var(--border)' }}
                   >
                     <button
-                      onClick={() => setOpenSection(isOpen ? null : label)}
+                      onClick={() =>
+                        setOpenSection(isOpen ? null : label)
+                      }
+                      aria-expanded={isOpen}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -283,65 +296,89 @@ export default function Specialists() {
                       <span
                         style={{
                           fontSize: '0.68rem',
-                          letterSpacing: '0.18em',
+                          letterSpacing: '0.22em',
                           textTransform: 'uppercase',
                           color: isOpen ? 'var(--blue)' : 'var(--muted)',
-                          fontFamily: 'var(--sans)',
-                          fontWeight: 500,
-                          transition: 'color 0.2s',
+                          fontWeight: 600,
+                          transition: 'color 0.2s ease',
                         }}
                       >
                         {label}
                       </span>
                       <span
+                        aria-hidden="true"
                         style={{
-                          fontSize: '1rem',
-                          color: 'var(--blue)',
-                          lineHeight: 1,
-                          transform: isOpen ? 'rotate(45deg)' : 'none',
-                          transition: 'transform 0.2s',
-                          display: 'inline-block',
+                          width: 11,
+                          height: 11,
+                          position: 'relative',
                         }}
                       >
-                        +
+                        <span
+                          style={{
+                            position: 'absolute',
+                            inset: '50% 0 auto 0',
+                            height: 1,
+                            background: 'var(--blue)',
+                            transform: 'translateY(-50%)',
+                          }}
+                        />
+                        <span
+                          style={{
+                            position: 'absolute',
+                            inset: '0 50% auto auto',
+                            width: 1,
+                            height: '100%',
+                            background: 'var(--blue)',
+                            transform: isOpen
+                              ? 'scaleY(0) translateX(50%)'
+                              : 'scaleY(1) translateX(50%)',
+                            transformOrigin: 'center',
+                            transition: 'transform 0.3s ease',
+                          }}
+                        />
                       </span>
                     </button>
-                    {isOpen && (
-                      <div
-                        style={{
-                          paddingBottom: '1rem',
-                        }}
-                      >
-                        {items.map((item, j) => (
-                          <div
-                            key={j}
-                            style={{
-                              fontSize: '0.84rem',
-                              color: 'var(--ink)',
-                              lineHeight: 1.7,
-                              fontFamily: 'var(--sans)',
-                              paddingLeft: label !== '介绍' ? '1rem' : '0',
-                              position: 'relative',
-                            }}
-                          >
-                            {label !== '介绍' && (
-                              <span
-                                style={{
-                                  position: 'absolute',
-                                  left: 0,
-                                  top: '0.55em',
-                                  width: '4px',
-                                  height: '4px',
-                                  borderRadius: '50%',
-                                  background: 'var(--blue)',
-                                }}
-                              />
-                            )}
-                            {item}
-                          </div>
-                        ))}
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateRows: isOpen ? '1fr' : '0fr',
+                        transition: 'grid-template-rows 0.35s ease',
+                      }}
+                    >
+                      <div style={{ overflow: 'hidden' }}>
+                        <div style={{ paddingBottom: '0.95rem' }}>
+                          {items.map((item, j) => (
+                            <div
+                              key={j}
+                              style={{
+                                fontSize: '0.82rem',
+                                color: 'var(--ink-soft)',
+                                lineHeight: 1.65,
+                                paddingLeft: label !== '介绍' ? '0.9rem' : 0,
+                                position: 'relative',
+                                marginTop: j === 0 ? 0 : '0.35rem',
+                              }}
+                            >
+                              {label !== '介绍' && (
+                                <span
+                                  aria-hidden="true"
+                                  style={{
+                                    position: 'absolute',
+                                    left: 0,
+                                    top: '0.6em',
+                                    width: 4,
+                                    height: 4,
+                                    borderRadius: '50%',
+                                    background: 'var(--blue)',
+                                  }}
+                                />
+                              )}
+                              {item}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 )
               })}
@@ -352,25 +389,30 @@ export default function Specialists() {
 
       <style>{`
         @keyframes specialistFade {
-          from { opacity: 0; transform: translateY(12px); }
+          from { opacity: 0; transform: translateY(10px); }
           to   { opacity: 1; transform: none; }
         }
         @keyframes portraitClip {
           from { clip-path: inset(0 100% 0 0); }
           to   { clip-path: inset(0 0 0 0); }
         }
-        @media (prefers-reduced-motion: reduce) {
-          [style*="portraitClip"] { animation: none !important; }
-        }
         @media (max-width: 900px) {
-          .specialist-panel {
+          .specialists-panel { grid-template-columns: 1fr !important; }
+          .specialists-panel > div:first-child > div { aspect-ratio: 3 / 2 !important; }
+        }
+        @media (max-width: 640px) {
+          .specialists-tabs {
             grid-template-columns: 1fr !important;
           }
-        }
-        @media (max-width: 600px) {
-          .specialist-panel div:first-child {
-            aspect-ratio: 3/2 !important;
+          .specialists-tabs > button {
+            border-right: none !important;
+            border-bottom: 1px solid var(--border);
           }
+          .specialists-tabs > button:last-child { border-bottom: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .specialists-panel,
+          .specialists-panel [style*="portraitClip"] { animation: none !important; }
         }
       `}</style>
     </section>

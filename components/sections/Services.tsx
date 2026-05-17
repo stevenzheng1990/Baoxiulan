@@ -63,16 +63,16 @@ function ServiceCard({
     gridColumn: `span ${span}`,
     background: isFeatured ? 'var(--blue)' : 'var(--white)',
     border: isFeatured ? 'none' : '1px solid var(--border)',
-    borderRadius: 4,
-    padding: isFeatured ? '2.8rem' : '2rem',
+    borderRadius: 2,
+    padding: isFeatured ? '2.25rem' : '1.5rem 1.5rem 1.35rem',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    minHeight: isFeatured ? 280 : 180,
+    minHeight: isFeatured ? 240 : 156,
     position: 'relative',
     overflow: 'hidden',
     cursor: 'default',
-    transition: 'box-shadow 0.3s ease',
+    transition: 'box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease',
   }
 
   return (
@@ -83,7 +83,9 @@ function ServiceCard({
       onMouseEnter={(e) => {
         const el = e.currentTarget
         if (!isFeatured) {
-          el.style.boxShadow = '0 4px 24px rgba(0,3,163,0.08)'
+          el.style.boxShadow = '0 1px 0 var(--blue), 0 12px 28px -16px rgba(0,3,163,0.18)'
+          el.style.borderColor = 'transparent'
+          el.style.transform = 'translateY(-2px)'
         }
         const line = el.querySelector('.card-line') as HTMLElement | null
         const more = el.querySelector('.card-more') as HTMLElement | null
@@ -97,6 +99,8 @@ function ServiceCard({
         const el = e.currentTarget
         if (!isFeatured) {
           el.style.boxShadow = 'none'
+          el.style.borderColor = 'var(--border)'
+          el.style.transform = 'translateY(0)'
         }
         const line = el.querySelector('.card-line') as HTMLElement | null
         const more = el.querySelector('.card-more') as HTMLElement | null
@@ -219,40 +223,30 @@ export default function Services({ services }: Props) {
     <>
       <section
         id="services"
+        className="section"
         style={{
           background: 'var(--off-white)',
-          padding: '7rem 0',
         }}
       >
-        <div
-          style={{
-            maxWidth: 1280,
-            margin: '0 auto',
-            padding: '0 2rem',
-          }}
-        >
+        <div className="container">
           {/* Section header */}
           <div
             ref={headingRef}
             className="rsg"
-            style={{ marginBottom: '4rem', maxWidth: 640 }}
+            style={{
+              marginBottom: 'clamp(2rem, 4vw, 3rem)',
+              maxWidth: 640,
+            }}
           >
-            <p className="section-tag">诊疗领域 · Services</p>
+            <p className="eyebrow">诊疗领域 · Services</p>
             <h2
-              className="section-heading"
+              className="h-display"
+              style={{ marginTop: '0.85rem' }}
               dangerouslySetInnerHTML={{
                 __html: '12 个核心领域，覆盖<em>关键发展期</em>',
               }}
             />
-            <p
-              style={{
-                marginTop: '1.2rem',
-                fontFamily: 'var(--sans)',
-                fontSize: '0.9rem',
-                lineHeight: 1.75,
-                color: 'var(--muted)',
-              }}
-            >
+            <p className="lede" style={{ marginTop: '1rem' }}>
               从出生到学龄前，宝秀兰以循证医学为基础，提供全周期、多维度的儿童早期发展干预服务。
             </p>
           </div>
@@ -263,7 +257,7 @@ export default function Services({ services }: Props) {
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(12, 1fr)',
-              gap: '1rem',
+              gap: '0.65rem',
             }}
           >
             {items.map((service, i) => (

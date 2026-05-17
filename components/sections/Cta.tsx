@@ -5,9 +5,9 @@ import { SITE_CONFIG } from '@/content/site'
 export default function Cta() {
   return (
     <section
+      className="section"
       style={{
         background: 'var(--blue)',
-        padding: 'clamp(5rem, 10vw, 9rem) clamp(1.25rem, 5vw, 4rem)',
         overflow: 'hidden',
         position: 'relative',
       }}
@@ -34,9 +34,8 @@ export default function Cta() {
       </svg>
 
       <div
+        className="container"
         style={{
-          maxWidth: '1320px',
-          margin: '0 auto',
           position: 'relative',
           zIndex: 1,
         }}
@@ -45,7 +44,7 @@ export default function Cta() {
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
-            gap: 'clamp(3rem, 6vw, 6rem)',
+            gap: 'clamp(2.25rem, 4.5vw, 4.5rem)',
             alignItems: 'center',
           }}
           className="cta-grid"
