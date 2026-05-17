@@ -173,7 +173,6 @@ export default function Founder({ expert }: FounderProps) {
                 style={{
                   fontFamily: 'var(--serif-en)',
                   fontStyle: 'italic',
-                  fontSize: '0.45em',
                   fontSize: 'clamp(1.2rem, 2vw, 1.6rem)',
                   color: 'var(--blue)',
                   fontWeight: 300,
