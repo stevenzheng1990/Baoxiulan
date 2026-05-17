@@ -41,46 +41,43 @@ export default function Founder({ expert }: FounderProps) {
       <div className="container">
         <div className="founder-grid">
           {/* ── LEFT COL — Portrait + meta strip ── */}
-          <aside className="r-l founder-left">
-            <div
-              className="r-clip-up sheen founder-portrait"
-              style={{
-                position: 'relative',
-                aspectRatio: '4 / 5',
-                overflow: 'hidden',
-                background: 'var(--off-white)',
-              }}
-            >
-              <Image
-                src={data.photoPath ?? '/doctors/baoxiulan.png'}
-                alt={data.name}
-                fill
-                className="kenburns"
-                style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                sizes="(max-width: 900px) 90vw, 380px"
-                priority
-              />
+          <aside className="founder-left">
+            <figure className="founder-portrait r-img">
               <div
                 style={{
-                  position: 'absolute',
-                  inset: 'auto 0 0 0',
-                  padding: '0.85rem 1rem',
+                  position: 'relative',
+                  aspectRatio: '4 / 5',
+                  overflow: 'hidden',
+                  background: 'var(--off-white)',
+                  border: '1px solid var(--border)',
+                }}
+              >
+                <Image
+                  src={data.photoPath ?? '/doctors/baoxiulan.png'}
+                  alt={data.name}
+                  fill
+                  style={{ objectFit: 'cover', objectPosition: 'center 18%' }}
+                  sizes="(max-width: 900px) 70vw, 300px"
+                  priority
+                />
+              </div>
+              <figcaption
+                style={{
+                  marginTop: '0.85rem',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'baseline',
-                  background:
-                    'linear-gradient(to top, rgba(0,0,0,0.45), transparent)',
-                  color: '#fff',
                   fontFamily: 'var(--sans)',
                   fontSize: '0.62rem',
                   letterSpacing: '0.22em',
                   textTransform: 'uppercase',
+                  color: 'var(--muted)',
                 }}
               >
-                <span>Founder · 创始人</span>
-                <span style={{ opacity: 0.75 }}>Since 1983</span>
-              </div>
-            </div>
+                <span style={{ color: 'var(--blue)' }}>Founder · 创始人</span>
+                <span>Since 1983</span>
+              </figcaption>
+            </figure>
           </aside>
 
           {/* ── RIGHT COL ── */}
@@ -308,24 +305,24 @@ export default function Founder({ expert }: FounderProps) {
       <style>{`
         .founder-grid {
           display: grid;
-          grid-template-columns: minmax(280px, 0.78fr) 1.22fr;
-          gap: clamp(2.25rem, 4.5vw, 4.5rem);
+          grid-template-columns: minmax(220px, 300px) 1fr;
+          gap: clamp(2rem, 4vw, 4rem);
           align-items: start;
         }
-        .founder-left { position: sticky; top: 6rem; }
+        .founder-portrait { width: 100%; max-width: 300px; }
         .founder-meta {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 2rem;
         }
         @media (max-width: 900px) {
-          .founder-grid { grid-template-columns: 1fr; }
-          .founder-left { position: static; }
-          .founder-portrait { max-width: 420px; }
+          .founder-grid { grid-template-columns: 1fr; gap: 2rem; }
+          .founder-portrait { max-width: 280px; }
         }
         @media (max-width: 640px) {
           .founder-meta { grid-template-columns: 1fr; gap: 1.5rem; }
           .founder-stats { gap: 1rem !important; }
+          .founder-portrait { max-width: 240px; }
         }
       `}</style>
     </section>

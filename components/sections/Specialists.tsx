@@ -156,57 +156,58 @@ export default function Specialists() {
             borderBottom: '1px solid var(--border)',
             borderInline: '1px solid var(--border)',
             display: 'grid',
-            gridTemplateColumns: 'minmax(240px, 320px) 1fr',
+            gridTemplateColumns: 'minmax(180px, 240px) 1fr',
+            gap: 'clamp(1.25rem, 2.5vw, 2rem)',
+            padding: 'clamp(1.5rem, 2.5vw, 2.25rem)',
             animation: 'specialistFade 0.45s cubic-bezier(0.22,1,0.36,1) both',
           }}
         >
           {/* Portrait */}
-          <div style={{ position: 'relative' }}>
+          <figure style={{ margin: 0 }}>
             <div
               key={`portrait-${activeTab}`}
-              className="sheen in"
               style={{
                 position: 'relative',
                 aspectRatio: '4 / 5',
                 overflow: 'hidden',
-                animation: 'portraitClip 1.05s cubic-bezier(0.77,0,0.18,1) both',
                 background: 'var(--off-white)',
+                border: '1px solid var(--border)',
+                animation: 'portraitFade 0.6s cubic-bezier(0.22,1,0.36,1) both',
               }}
             >
               <Image
                 src={doctor.photoPath ?? '/doctors/zhoucongle.png'}
                 alt={doctor.name}
                 fill
-                className="kenburns"
-                style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                sizes="(max-width: 900px) 90vw, 320px"
+                style={{ objectFit: 'cover', objectPosition: 'center 18%' }}
+                sizes="(max-width: 900px) 70vw, 240px"
               />
-              <div
+              <span
                 style={{
                   position: 'absolute',
-                  top: '0.85rem',
-                  left: '0.85rem',
+                  top: '0.7rem',
+                  left: '0.7rem',
                   background: 'var(--blue)',
                   color: 'var(--white)',
                   fontFamily: 'var(--serif-en)',
                   fontStyle: 'italic',
                   fontWeight: 300,
-                  fontSize: '0.8rem',
-                  padding: '0.25rem 0.55rem',
+                  fontSize: '0.78rem',
+                  padding: '0.18rem 0.5rem',
                   letterSpacing: '0.02em',
                 }}
               >
                 {tabNumbers[activeTab]}
-              </div>
+              </span>
             </div>
-          </div>
+          </figure>
 
           {/* Info */}
           <div
             style={{
-              padding: 'clamp(1.5rem, 2.5vw, 2.25rem)',
               display: 'flex',
               flexDirection: 'column',
+              minWidth: 0,
             }}
           >
             <h3
@@ -389,16 +390,21 @@ export default function Specialists() {
 
       <style>{`
         @keyframes specialistFade {
-          from { opacity: 0; transform: translateY(10px); }
+          from { opacity: 0; transform: translateY(8px); }
           to   { opacity: 1; transform: none; }
         }
-        @keyframes portraitClip {
-          from { clip-path: inset(0 100% 0 0); }
-          to   { clip-path: inset(0 0 0 0); }
+        @keyframes portraitFade {
+          from { opacity: 0; transform: scale(1.03); }
+          to   { opacity: 1; transform: scale(1); }
         }
-        @media (max-width: 900px) {
-          .specialists-panel { grid-template-columns: 1fr !important; }
-          .specialists-panel > div:first-child > div { aspect-ratio: 3 / 2 !important; }
+        @media (max-width: 720px) {
+          .specialists-panel {
+            grid-template-columns: 1fr !important;
+          }
+          .specialists-panel figure {
+            max-width: 220px;
+            justify-self: start;
+          }
         }
         @media (max-width: 640px) {
           .specialists-tabs {
@@ -412,7 +418,7 @@ export default function Specialists() {
         }
         @media (prefers-reduced-motion: reduce) {
           .specialists-panel,
-          .specialists-panel [style*="portraitClip"] { animation: none !important; }
+          .specialists-panel figure > div { animation: none !important; }
         }
       `}</style>
     </section>
