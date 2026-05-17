@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Article {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  content     String
+  category    String   @default("育儿课堂")
+  author      String   @default("宝秀兰医疗团队")
+  publishedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  published   Boolean  @default(false)
+  coverImage  String?
+  metaTitle   String?
+  metaDesc    String?
+}
+
+model Expert {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  nameEn      String?
+  title       String
+  role        String
+  org         String?
+  bio         String
+  specialties String   // JSON array stored as string
+  credentials String   // JSON array stored as string
+  photoPath   String?
+  sortOrder   Int      @default(0)
+  isFounder   Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  shortDesc   String
+  fullDesc    String?
+  sortOrder   Int      @default(0)
+  published   Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+}
+
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model AdminUser {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}

@@ -1,0 +1,103 @@
+// Static site-wide content and configuration.
+// Dynamic content (articles, experts) lives in the database.
+// Update these values for environment-specific settings.
+
+export const SITE_CONFIG = {
+  name: '宝秀兰医疗',
+  nameEn: 'Baoxiulan Medical',
+  tagline: '儿童早期发展优化中心',
+  taglineEn: 'Pediatric Early Development Center',
+  description:
+    '鲍秀兰教授创办的儿童早期发展优化中心，专注 0–6 岁高危儿早期干预、发育评估与系统训练，三十余年守护儿童健康成长。',
+  url: 'https://www.baoxiulan.com',
+  phone: '400-0066-650',
+  email: 'marketing@baoxiulan.com',
+  address: '北京市大兴区景明路 16 号院',
+  coordinates: { lat: 39.72, lng: 116.34 },
+  hours: '周一至周日 09:00–18:00',
+  established: '1991',
+  logo: '/logo.png',
+  ogImage: '/og-default.jpg',
+  baiduVerification: 'REPLACE_WITH_BAIDU_VERIFICATION_CODE',
+  baiduAnalyticsId: 'REPLACE_WITH_BAIDU_ANALYTICS_ID',
+  social: {
+    weibo: 'https://weibo.com/baoxiulan',
+    wechat: 'baoxiulan_medical',
+    wechatQr: '/assets/wechat-qr.jpg',
+  },
+}
+
+// Fallback data — overridden by DB when available
+export const SERVICES_SEED = [
+  { slug: 'gaoweizhaoqi', name: '高危儿 / 早产儿早期干预', shortDesc: '以鲍秀兰教授原创方案为核心，把握脑发育黄金窗口，系统评估并规划干预路径。', sortOrder: 1 },
+  { slug: 'naopankf', name: '脑瘫患儿康复干预', shortDesc: '多学科协作，综合运动、认知与语言系统训练方案。', sortOrder: 2 },
+  { slug: 'asd', name: '自闭症谱系障碍 ASD', shortDesc: '多维度行为与认知评估，结合 ABA 与发展介入疗法。', sortOrder: 3 },
+  { slug: 'fayuluohou', name: '全面发育落后', shortDesc: '精准评估发育水平，制定系统追赶干预方案。', sortOrder: 4 },
+  { slug: 'gangjuetonghe', name: '感觉统合障碍', shortDesc: '专业感统评估量表与系统训练课程。', sortOrder: 5 },
+  { slug: 'yanyu', name: '言语发音障碍', shortDesc: '构音障碍、语言发育迟缓的一对一专项干预。', sortOrder: 6 },
+  { slug: 'zhuyili', name: '注意力缺陷', shortDesc: '精准注意力评估与行为干预训练方案。', sortOrder: 7 },
+  { slug: 'adhd', name: '多动症 ADHD', shortDesc: '综合行为与认知干预，家庭联动管理方案。', sortOrder: 8 },
+  { slug: 'xuexi', name: '学习障碍', shortDesc: '阅读、书写、数学学习障碍的专项评估与训练。', sortOrder: 9 },
+  { slug: 'weiyangkunnan', name: '喂养困难 / 营养咨询', shortDesc: '婴幼儿喂养行为评估与个性化营养干预指导。', sortOrder: 10 },
+  { slug: 'xinlixingwei', name: '心理行为发育评估', shortDesc: '标准化心理行为量表全套评估服务。', sortOrder: 11 },
+  { slug: 'jiating', name: '家庭育儿指导课程', shortDesc: '父母赋能课程，将干预融入家庭日常生活。', sortOrder: 12 },
+]
+
+export const EXPERTS_SEED = [
+  {
+    slug: 'bao-xiulan',
+    name: '鲍秀兰',
+    nameEn: 'Bao Xiulan',
+    title: '教授 · 主任医师',
+    role: '北京宝秀兰医疗创始人 · 国务院特殊津贴专家',
+    org: '北京协和医院儿科教授',
+    bio: '中国新生儿发育医学开拓者。1983 年赴美国哈佛医学院进修，是中国唯一获得 Brazelton 新生儿行为评估认证的医生。创立新生儿 20 项神经行为评估法（NBNA），该方法已在国内临床应用近 40 年。主持国家"八五"攻关课题《0–3 岁早期教育和窒息儿、早产儿干预》，参与制定国家《高危儿早期干预指南》。',
+    specialties: ['0–3 岁早期教育', '窒息儿 / 早产儿干预', '脑瘫超早期诊断', '新生儿行为神经测查', '小儿生长发育', '矮小症 / 垂体侏儒', '小儿癫痫'],
+    credentials: ['国务院特殊津贴专家', '北京协和医院儿科教授', 'NBNA 法创始人', '哈佛医学院 Brazelton 认证（全国唯一）', '国家科技进步奖 / 北京市科技进步奖双料得主', '国家卫健委《高危儿早期干预指南》首席专家', '中国优生优育协会婴幼儿发育专委会主任委员'],
+    photoPath: '/assets/doctors/01-baoxiulan.jpg',
+    sortOrder: 1,
+    isFounder: true,
+  },
+  {
+    slug: 'zhou-congle',
+    name: '周丛乐',
+    nameEn: 'Zhou Congle',
+    title: '教授 · 主任医师 · 博士生导师',
+    role: '北京宝秀兰医疗首席专家',
+    org: '北京大学第一医院儿科',
+    bio: '新生儿脑科学权威专家，北大医院新生儿脑损伤专科门诊创建者，年均接诊量 3000+。主导建立北京新生儿脑健康研究队列，纳入病例 12000+ 例。',
+    specialties: ['新生儿脑损伤诊断与治疗', '早产儿脑白质损伤超声诊断', '发育迟缓 / 脑瘫', '婴幼儿神经发育诊断', '脑损伤超声影像与脑功能评价'],
+    credentials: ['中华医学会围产医学分会常务委员', '中国妇幼保健协会高危儿健康管理专委会副主任委员', '国家卫健委《新生儿脑损伤诊疗规范》制定专家', '中国医师协会儿科医师分会超声学组顾问'],
+    photoPath: '/assets/doctors/02-zhoucongle.jpg',
+    sortOrder: 2,
+    isFounder: false,
+  },
+  {
+    slug: 'sun-shuying',
+    name: '孙淑英',
+    nameEn: 'Sun Shuying',
+    title: '副主任医师 · 国家科技进步奖获得者',
+    role: '北京宝秀兰医疗首席专家',
+    org: '首都儿科研究所生长发育研究室',
+    bio: '儿科临床与科研工作 40 年，师从鲍秀兰教授。国内首个高危儿早期干预中心联合创建者，创立"医教结合"干预模式，有效降低脑瘫发生率。',
+    specialties: ['发育迟缓 / 脑瘫等生长发育障碍', '0–6 岁高危儿童早期干预', '婴幼儿神经行为发育评估', '高危儿脑健康管理', '矮小、性早熟等生长发育评估'],
+    credentials: ['中国优生优育协会常务理事', '中国优生优育协会婴幼儿发育专委会主任委员', '卫生部认证发育评估标准制定参与者', '国家科技进步奖获得者'],
+    photoPath: '/assets/doctors/03-sunshuying.jpg',
+    sortOrder: 3,
+    isFounder: false,
+  },
+  {
+    slug: 'liu-weimin',
+    name: '刘维民',
+    nameEn: 'Liu Weimin',
+    title: '医学博士 · 主任',
+    role: '北京宝秀兰联合创始人 · 首席专家',
+    org: '高危儿发育干预专家',
+    bio: '哈佛大学布雷寿顿研究所新生儿行为观察认证、美国 SOS 喂养法国际认证。NBO 认证培训师，累计培训医护人员 1200+。亚洲喂养障碍协会认证专家，国家"十三五计划"儿童早期发展重点专项。',
+    specialties: ['发育迟缓、脑瘫、儿童孤独症', '喂养困难、过敏性疾病早期诊断与干预', '脑损伤儿童影像诊断治疗', '儿童健康管理与早期干预'],
+    credentials: ['中国优生优育协会婴幼儿发育专委会执行主任委员', '北京市卫健委"优秀医师"', '哈佛大学布雷寿顿研究所 NBO 认证', '美国 SOS 喂养法国际认证', '亚洲喂养障碍协会认证专家'],
+    photoPath: '/assets/doctors/04-liuweimin.jpg',
+    sortOrder: 4,
+    isFounder: false,
+  },
+]
