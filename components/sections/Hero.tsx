@@ -4,19 +4,17 @@ import { useEffect, useRef } from 'react'
 import { SITE_CONFIG } from '@/content/site'
 
 const STATS = [
-  { value: '34+', unit: '年', label: '临床积淀 / since 1991' },
-  { value: '12个', unit: '', label: '核心诊疗领域' },
-  { value: '5项', unit: '', label: '国家级科技进步奖' },
+  { value: '34', sup: '+', label: '年临床积淀 / since 1991' },
+  { value: '12个', sup: '', label: '核心诊疗领域' },
+  { value: '5', sup: '项', label: '国家级科技进步奖' },
 ]
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Trigger entrance animation after mount
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
-    // Small rAF delay to ensure CSS class transition fires
     const id = requestAnimationFrame(() => {
       el.classList.add('hero-revealed')
     })
@@ -36,10 +34,10 @@ export default function Hero() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          paddingTop: 64, // nav height
+          paddingTop: 64,
         }}
       >
-        {/* ── Geometric SVG decoration ─────────────────────── */}
+        {/* Geometric SVG grid / concentric circles */}
         <svg
           aria-hidden="true"
           style={{
@@ -55,11 +53,9 @@ export default function Hero() {
           viewBox="0 0 680 680"
           fill="none"
         >
-          {/* Concentric circles */}
           {[60, 120, 180, 240, 300, 340].map((r) => (
             <circle key={r} cx={340} cy={340} r={r} stroke="white" strokeWidth={0.8} />
           ))}
-          {/* Grid lines through center */}
           {Array.from({ length: 12 }, (_, i) => {
             const angle = (i * 180) / 12
             const rad = (angle * Math.PI) / 180
@@ -67,11 +63,21 @@ export default function Hero() {
             const y1 = 340 + 340 * Math.sin(rad)
             const x2 = 340 - 340 * Math.cos(rad)
             const y2 = 340 - 340 * Math.sin(rad)
-            return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="white" strokeWidth={0.6} />
+            return (
+              <line
+                key={i}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke="white"
+                strokeWidth={0.6}
+              />
+            )
           })}
         </svg>
 
-        {/* ── Rotating circle border ───────────────────────── */}
+        {/* Animated rotating dashed circle */}
         <div
           aria-hidden="true"
           style={{
@@ -98,17 +104,15 @@ export default function Hero() {
           </svg>
         </div>
 
-        {/* ── Main content ─────────────────────────────────── */}
+        {/* Main content */}
         <div
           style={{
             position: 'relative',
             zIndex: 2,
             maxWidth: 1280,
             margin: '0 auto',
-            padding: '0 2rem',
+            padding: '5rem 2rem',
             width: '100%',
-            paddingTop: '5rem',
-            paddingBottom: '5rem',
           }}
         >
           {/* Top label */}
@@ -127,7 +131,7 @@ export default function Hero() {
             {SITE_CONFIG.tagline} · Beijing, China
           </p>
 
-          {/* Headline */}
+          {/* H1 — three stagger-reveal lines */}
           <h1
             style={{
               fontFamily: 'var(--serif-cn)',
@@ -140,31 +144,13 @@ export default function Hero() {
               marginBottom: '3.5rem',
             }}
           >
-            <span
-              className="hero-line"
-              style={{
-                display: 'block',
-                animationDelay: '0.1s',
-              }}
-            >
+            <span className="hero-line" style={{ display: 'block', animationDelay: '0.1s' }}>
               守护成长
             </span>
-            <span
-              className="hero-line"
-              style={{
-                display: 'block',
-                animationDelay: '0.2s',
-              }}
-            >
+            <span className="hero-line" style={{ display: 'block', animationDelay: '0.2s' }}>
               的每一个
             </span>
-            <span
-              className="hero-line"
-              style={{
-                display: 'block',
-                animationDelay: '0.3s',
-              }}
-            >
+            <span className="hero-line" style={{ display: 'block', animationDelay: '0.3s' }}>
               <em
                 style={{
                   fontFamily: 'var(--serif-en)',
@@ -178,15 +164,15 @@ export default function Hero() {
             </span>
           </h1>
 
-          {/* Bottom 2-col grid */}
+          {/* Bottom 2-column grid */}
           <div
+            className="hero-bottom"
             style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
               gap: '3rem',
               alignItems: 'end',
             }}
-            className="hero-bottom"
           >
             {/* Description */}
             <p
@@ -205,20 +191,14 @@ export default function Hero() {
 
             {/* Stats */}
             <div
-              style={{
-                display: 'flex',
-                gap: '2.5rem',
-                justifyContent: 'flex-end',
-              }}
               className="hero-stats"
+              style={{ display: 'flex', gap: '2.5rem', justifyContent: 'flex-end' }}
             >
               {STATS.map((stat, i) => (
                 <div
                   key={stat.label}
                   className="hero-line"
-                  style={{
-                    animationDelay: `${0.55 + i * 0.08}s`,
-                  }}
+                  style={{ animationDelay: `${0.55 + i * 0.08}s` }}
                 >
                   <div
                     style={{
@@ -232,7 +212,7 @@ export default function Hero() {
                     }}
                   >
                     {stat.value}
-                    {stat.unit && (
+                    {stat.sup && (
                       <sup
                         style={{
                           fontFamily: 'var(--serif-cn)',
@@ -243,7 +223,7 @@ export default function Hero() {
                           color: 'rgba(255,255,255,0.65)',
                         }}
                       >
-                        {stat.unit}
+                        {stat.sup}
                       </sup>
                     )}
                   </div>
@@ -264,9 +244,10 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* ── Scroll indicator (desktop only) ─────────────── */}
+        {/* Scroll indicator — desktop only */}
         <div
           aria-hidden="true"
+          className="scroll-indicator"
           style={{
             position: 'absolute',
             right: '2.5rem',
@@ -277,7 +258,6 @@ export default function Hero() {
             gap: '0.5rem',
             zIndex: 2,
           }}
-          className="scroll-indicator"
         >
           <span
             style={{
@@ -321,14 +301,8 @@ export default function Hero() {
         }
 
         @keyframes heroSlideUp {
-          from {
-            opacity: 0;
-            transform: translateY(28px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(28px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes scrollDrop {
