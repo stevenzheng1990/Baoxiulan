@@ -7,10 +7,12 @@
  */
 
 import { PrismaClient } from '@prisma/client'
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import bcrypt from 'bcryptjs'
 import { EXPERTS_SEED, SERVICES_SEED, SITE_CONFIG } from '../content/site'
 
-const prisma = new PrismaClient()
+const adapter = new PrismaBetterSqlite3({ url: 'file:./dev.db' })
+const prisma = new PrismaClient({ adapter } as ConstructorParameters<typeof PrismaClient>[0])
 
 async function main() {
   console.log('🌱 Starting seed...')

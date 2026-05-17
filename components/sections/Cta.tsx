@@ -1,3 +1,5 @@
+'use client'
+
 import { SITE_CONFIG } from '@/content/site'
 
 export default function Cta() {

@@ -130,27 +130,24 @@ export default function Nav() {
             style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}
             className="nav-desktop"
           >
+            {/* Inject hover styles via a <style> tag — avoids passing event handlers through RSC boundary */}
+            <style>{`
+              .nav-link { opacity: 0.85; transition: opacity 0.2s ease; }
+              .nav-link:hover { opacity: 1; }
+              .nav-cta-btn:hover { background: rgba(255,255,255,0.2) !important; color: #ffffff !important; }
+              nav.scrolled .nav-cta-btn:hover { background: var(--blue) !important; color: #ffffff !important; }
+            `}</style>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
+                className="nav-link"
                 style={{
                   fontFamily: 'var(--sans)',
                   fontSize: '0.875rem',
                   letterSpacing: '0.04em',
                   color: textColor,
-                  opacity: 0.85,
                   transition: 'color 0.2s ease, opacity 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget as HTMLElement
-                  el.style.opacity = '1'
-                  el.style.color = atTop ? '#ffffff' : 'var(--blue)'
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLElement
-                  el.style.opacity = '0.85'
-                  el.style.color = textColor
                 }}
               >
                 {link.label}
@@ -159,7 +156,8 @@ export default function Nav() {
 
             {/* CTA */}
             <Link
-              href="#appointment"
+              href="#contact"
+              className="nav-cta-btn"
               style={{
                 fontFamily: 'var(--sans)',
                 fontSize: '0.8rem',
@@ -171,16 +169,6 @@ export default function Nav() {
                 background: atTop ? 'rgba(255,255,255,0.08)' : 'transparent',
                 transition: 'background 0.25s ease, color 0.25s ease, border-color 0.4s ease',
                 whiteSpace: 'nowrap',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.background = atTop ? 'rgba(255,255,255,0.2)' : 'var(--blue)'
-                el.style.color = '#ffffff'
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.background = atTop ? 'rgba(255,255,255,0.08)' : 'transparent'
-                el.style.color = atTop ? '#ffffff' : 'var(--blue)'
               }}
             >
               预约就诊
