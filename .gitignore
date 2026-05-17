@@ -41,3 +41,13 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
+
+# SQLite database files (runtime data, not source)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Allow migration lock file
+!prisma/migrations/migration_lock.toml
+
