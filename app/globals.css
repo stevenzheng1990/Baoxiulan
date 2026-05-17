@@ -66,6 +66,126 @@ a { text-decoration: none; color: inherit; }
 .rsg.in > *:nth-child(11) { transition-delay: 0.64s; }
 .rsg.in > *:nth-child(12) { transition-delay: 0.70s; }
 
+/* ─── Modern text animations ─── */
+
+/* Blur fade reveal — premium feel, GPU accelerated */
+.r-blur {
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateY(24px);
+  transition:
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.1s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, filter, transform;
+}
+.r-blur.in { opacity: 1; filter: blur(0); transform: none; }
+
+/* Word/line mask reveal — heading text rises behind a clip */
+.r-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.r-mask > span {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.r-mask.in > span,
+.in .r-mask > span { transform: none; }
+
+/* Clip-path image reveal — modern cinematic wipe */
+.r-clip {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.4s cubic-bezier(0.77, 0, 0.18, 1);
+  will-change: clip-path;
+}
+.r-clip.in { clip-path: inset(0 0 0 0); }
+
+.r-clip-up {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.4s cubic-bezier(0.77, 0, 0.18, 1);
+  will-change: clip-path;
+}
+.r-clip-up.in { clip-path: inset(0 0 0 0); }
+
+/* Slow Ken-Burns drift for hero/feature images */
+.kenburns {
+  animation: kenburns 18s ease-in-out infinite alternate;
+  transform-origin: center center;
+  will-change: transform;
+}
+@keyframes kenburns {
+  0%   { transform: scale(1.04) translate3d(0, 0, 0); }
+  100% { transform: scale(1.12) translate3d(-1.5%, -1%, 0); }
+}
+
+/* Gradient sheen sweep — apply over an image container */
+.sheen { position: relative; overflow: hidden; }
+.sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 70%
+  );
+  transform: translateX(-110%);
+  pointer-events: none;
+}
+.sheen.in::after,
+.in .sheen::after {
+  animation: sheen-sweep 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+}
+@keyframes sheen-sweep {
+  to { transform: translateX(110%); }
+}
+
+/* Floating subtle motion — for decorative elements */
+.float-slow {
+  animation: float-slow 9s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+/* Animated underline for inline emphasis */
+.ink-underline {
+  background-image: linear-gradient(var(--blue), var(--blue));
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  transition: background-size 1.1s cubic-bezier(0.77, 0, 0.18, 1) 0.3s;
+}
+.in .ink-underline,
+.ink-underline.in { background-size: 100% 1px; }
+
+/* Mobile-aware respect for users' motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .r, .r-l, .r-r, .r-blur, .r-clip, .r-clip-up,
+  .rsg > *, .r-mask > span {
+    transition: opacity 0.3s ease !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+  }
+  .kenburns, .float-slow, .sheen::after { animation: none !important; }
+}
+
+/* Slightly tighter motion distances on small screens — feels snappier */
+@media (max-width: 640px) {
+  .r   { transform: translateY(20px); }
+  .r-l { transform: translateX(-20px); }
+  .r-r { transform: translateX(20px); }
+  .r-blur { transform: translateY(14px); filter: blur(8px); }
+}
+
 /* ─── Shared section chrome ─── */
 .section-tag {
   display: inline-flex;

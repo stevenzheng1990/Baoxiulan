@@ -70,6 +70,7 @@ export default function Founder({ expert }: FounderProps) {
           <div className="r-l">
             {/* Portrait */}
             <div
+              className="r-clip-up sheen"
               style={{
                 position: 'relative',
                 aspectRatio: '4/5',
@@ -81,6 +82,7 @@ export default function Founder({ expert }: FounderProps) {
                 src={data.photoPath ?? '/doctors/baoxiulan.png'}
                 alt={data.name}
                 fill
+                className="kenburns"
                 style={{ objectFit: 'cover', objectPosition: 'center top' }}
                 sizes="(max-width: 768px) 90vw, 420px"
                 priority
@@ -154,7 +156,7 @@ export default function Founder({ expert }: FounderProps) {
           </div>
 
           {/* ── RIGHT COL ── */}
-          <div className="r">
+          <div className="r r-blur">
             {/* Name block */}
             <div style={{ marginBottom: '1.5rem' }}>
               <h2
@@ -387,6 +389,7 @@ export default function Founder({ expert }: FounderProps) {
         {/* Decorative full-width text */}
         <div
           aria-hidden="true"
+          className="r-blur"
           style={{
             marginTop: 'clamp(3rem, 6vw, 5rem)',
             overflow: 'hidden',

@@ -288,12 +288,12 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <Founder />
+      <Specialists />
       <MarqueeBar />
       <About />
       <Numbers />
       <Services services={SERVICES_SEED} />
-      <Founder />
-      <Specialists />
       <Process />
       <Articles />
       <Cta />

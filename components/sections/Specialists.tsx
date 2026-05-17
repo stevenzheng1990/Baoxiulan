@@ -39,7 +39,7 @@ export default function Specialists() {
       <div style={{ maxWidth: '1320px', margin: '0 auto' }}>
         {/* Section header */}
         <div
-          className="r"
+          className="r r-blur"
           style={{ marginBottom: 'clamp(2.5rem, 5vw, 4rem)', maxWidth: '640px' }}
         >
           <div className="section-tag">我们的专家 · Specialists</div>
@@ -155,16 +155,20 @@ export default function Specialists() {
           {/* LEFT: Portrait */}
           <div style={{ position: 'relative' }}>
             <div
+              className="sheen in"
               style={{
                 position: 'relative',
                 aspectRatio: '4/5',
                 overflow: 'hidden',
+                animation: 'portraitClip 1.1s cubic-bezier(0.77,0,0.18,1) both',
               }}
+              key={`portrait-${activeTab}`}
             >
               <Image
                 src={doctor.photoPath ?? '/doctors/zhoucongle.png'}
                 alt={doctor.name}
                 fill
+                className="kenburns"
                 style={{ objectFit: 'cover', objectPosition: 'center top' }}
                 sizes="(max-width: 768px) 90vw, 340px"
               />
@@ -350,6 +354,13 @@ export default function Specialists() {
         @keyframes specialistFade {
           from { opacity: 0; transform: translateY(12px); }
           to   { opacity: 1; transform: none; }
+        }
+        @keyframes portraitClip {
+          from { clip-path: inset(0 100% 0 0); }
+          to   { clip-path: inset(0 0 0 0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [style*="portraitClip"] { animation: none !important; }
         }
         @media (max-width: 900px) {
           .specialist-panel {
