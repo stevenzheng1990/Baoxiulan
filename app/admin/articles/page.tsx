@@ -4,10 +4,19 @@ import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
+interface ArticleRow {
+  id: number
+  title: string
+  category: string
+  published: boolean
+  publishedAt: Date
+  author: string
+}
+
 export default async function ArticlesPage() {
   await requireAdmin()
 
-  const articles = await prisma.article.findMany({
+  const articles: ArticleRow[] = await prisma.article.findMany({
     orderBy: { publishedAt: 'desc' },
     select: {
       id: true,

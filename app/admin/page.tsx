@@ -4,19 +4,27 @@ import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
+interface RecentArticle {
+  id: number
+  title: string
+  category: string
+  published: boolean
+  publishedAt: Date
+}
+
 export default async function AdminDashboard() {
   await requireAdmin()
 
-  const [totalArticles, publishedArticles, totalExperts, recentArticles] = await Promise.all([
+  const [totalArticles, publishedArticles, totalExperts] = await Promise.all([
     prisma.article.count(),
     prisma.article.count({ where: { published: true } }),
     prisma.expert.count(),
-    prisma.article.findMany({
-      orderBy: { publishedAt: 'desc' },
-      take: 5,
-      select: { id: true, title: true, category: true, published: true, publishedAt: true },
-    }),
   ])
+  const recentArticles: RecentArticle[] = await prisma.article.findMany({
+    orderBy: { publishedAt: 'desc' },
+    take: 5,
+    select: { id: true, title: true, category: true, published: true, publishedAt: true },
+  }) as RecentArticle[]
 
   const lastUpdated = recentArticles[0]?.publishedAt
     ? new Date(recentArticles[0].publishedAt).toLocaleDateString('zh-CN')
