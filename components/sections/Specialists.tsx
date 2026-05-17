@@ -162,7 +162,7 @@ export default function Specialists() {
               }}
             >
               <Image
-                src={doctor.photoPath ?? '/assets/doctors/02-zhoucongle.jpg'}
+                src={doctor.photoPath ?? '/doctors/zhoucongle.png'}
                 alt={doctor.name}
                 fill
                 style={{ objectFit: 'cover', objectPosition: 'center top' }}

@@ -78,7 +78,7 @@ export default function Founder({ expert }: FounderProps) {
               }}
             >
               <Image
-                src={data.photoPath ?? '/assets/doctors/01-baoxiulan.jpg'}
+                src={data.photoPath ?? '/doctors/baoxiulan.png'}
                 alt={data.name}
                 fill
                 style={{ objectFit: 'cover', objectPosition: 'center top' }}
