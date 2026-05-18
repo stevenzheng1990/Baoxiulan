@@ -1,26 +1,14 @@
-/* ════════════════════════════════════════════════════
-   Program 简笔线描配图 — 静态展示
-   ════════════════════════════════════════════════════ */
+/* ProgramArt — 简笔线描配图（在 .fac-card-icon 容器内渲染） */
 .art-img {
-  width: 62%;
-  aspect-ratio: 1;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.art-img :global(img),
 .art-img img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   display: block;
-}
-.fac-program:hover .art-img {
-  transform: scale(1.06);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .art-img { transition: none; }
-  .fac-program:hover .art-img { transform: none; }
 }
