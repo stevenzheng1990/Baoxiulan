@@ -44,7 +44,7 @@ const PROGRAMS: Program[] = [
     summary:
       '以 Bobath、Vojta、Rood 疗法结合引导式教育与儿童游戏，针对早产儿、高危儿、脑瘫、自闭症等儿童进行个体化运动训练，全面提高运动、认知、语言与社交能力。',
     audience: '早产儿 · 脑瘫 · 发育迟缓',
-    highlights: ['运动功能训练', '立位训练', '悬吊运动训练 (S-E-T)', '减重步态训练'],
+    highlights: ['运动功能训练', '立位训练', '悬吊运动训练', '减重步态训练'],
   },
   {
     slug: 'behavior',
@@ -58,7 +58,7 @@ const PROGRAMS: Program[] = [
     slug: 'sensory',
     name: '感觉统合训练',
     summary:
-      '采用美国感觉统合（SIPT）训练理念，应用悬吊设施进行多感觉统合训练，纠正感觉反应不足/过度/调节困难，同时促进认知、言语、情绪、专注力与社交能力发展。',
+      '采用美国感觉统合（SIPT）训练理念，应用悬吊设施进行多感觉统合训练，纠正感觉反应不足、过度或调节困难，同时促进认知、言语、情绪、专注力与社交能力发展。',
     age: '0–12 岁',
     audience: '感统失调 · 协调与专注力发展',
     highlights: ['悬吊感统训练', '多感觉刺激', '协调能力建立', '专注力提升'],
@@ -70,7 +70,7 @@ const PROGRAMS: Program[] = [
       '基于国际感统理论与 ICF-CY 框架，依托 ACTED 评估训练体系，通过教具操作与感知觉游戏，建立肩、肘、腕关节正确活动，提高抓握、手眼协调、运笔书写与日常生活技能。',
     age: '0–6 岁',
     audience: '上肢活动受限 · 精细运动落后',
-    highlights: ['上肢功能训练', '精细动作训练', '日常生活活动 (ADL)', '入园前能力建设'],
+    highlights: ['上肢功能训练', '精细动作训练', '日常生活活动', '入园前能力建设'],
   },
   {
     slug: 'tuina',
@@ -89,6 +89,171 @@ const FEATURES = [
   { label: '理论基础', value: 'ICF-CY 国际框架' },
   { label: '协作医院', value: '全国 21 家' },
 ]
+
+/**
+ * Custom SVG illustrations — line art, brand blue + gold accent.
+ * Each path animates via stroke-dashoffset when card enters viewport.
+ */
+function ProgramArt({ slug }: { slug: string }) {
+  const common = {
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.4,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+  }
+  const gold = '#B08A4A'
+
+  switch (slug) {
+    case 'early':
+      return (
+        <svg viewBox="0 0 220 220" className="art-svg">
+          {/* concentric sensory arcs */}
+          <path d="M30 110 A 80 80 0 0 1 110 30" {...common} />
+          <path d="M50 110 A 60 60 0 0 1 110 50" {...common} />
+          <path d="M70 110 A 40 40 0 0 1 110 70" {...common} />
+          {/* baby head */}
+          <circle cx="110" cy="115" r="22" {...common} />
+          <circle cx="103" cy="111" r="1.6" fill="currentColor" stroke="none" />
+          <circle cx="117" cy="111" r="1.6" fill="currentColor" stroke="none" />
+          <path d="M102 122 Q110 130 118 122" {...common} />
+          {/* sensory accent dots */}
+          <circle cx="110" cy="32" r="3.2" fill={gold} stroke="none" />
+          <circle cx="32" cy="110" r="3.2" fill={gold} stroke="none" />
+          <circle cx="55" cy="55" r="2.4" fill={gold} stroke="none" />
+        </svg>
+      )
+    case 'inclusion':
+      return (
+        <svg viewBox="0 0 220 220" className="art-svg">
+          {/* orbital ring */}
+          <circle cx="110" cy="110" r="60" strokeDasharray="2 5" {...common} />
+          {/* center */}
+          <circle cx="110" cy="110" r="14" {...common} />
+          <circle cx="110" cy="110" r="4" fill={gold} stroke="none" />
+          {/* satellites */}
+          <circle cx="110" cy="50" r="11" {...common} />
+          <circle cx="170" cy="110" r="11" {...common} />
+          <circle cx="110" cy="170" r="11" {...common} />
+          <circle cx="50" cy="110" r="11" {...common} />
+          {/* connecting lines */}
+          <path d="M110 64 V96" {...common} />
+          <path d="M156 110 H124" {...common} />
+          <path d="M110 156 V124" {...common} />
+          <path d="M64 110 H96" {...common} />
+        </svg>
+      )
+    case 'speech':
+      return (
+        <svg viewBox="0 0 220 220" className="art-svg">
+          {/* speech bubble */}
+          <path d="M45 65 H175 Q185 65 185 75 V140 Q185 150 175 150 H125 L100 175 V150 H45 Q35 150 35 140 V75 Q35 65 45 65 Z" {...common} />
+          {/* waveform */}
+          <path d="M55 108 L72 92 L88 122 L104 82 L120 130 L136 95 L152 115 L168 100" {...common} />
+          {/* gold accent dot */}
+          <circle cx="168" cy="100" r="3.2" fill={gold} stroke="none" />
+          <circle cx="55" cy="108" r="3.2" fill={gold} stroke="none" />
+        </svg>
+      )
+    case 'motor':
+      return (
+        <svg viewBox="0 0 220 220" className="art-svg">
+          {/* head */}
+          <circle cx="135" cy="55" r="14" {...common} />
+          {/* torso */}
+          <path d="M135 69 L115 120" {...common} />
+          {/* arms (mid-stride) */}
+          <path d="M120 95 L90 70" {...common} />
+          <path d="M120 95 L160 110" {...common} />
+          {/* legs */}
+          <path d="M115 120 L150 165" {...common} />
+          <path d="M115 120 L95 170" {...common} />
+          {/* foot accents */}
+          <circle cx="150" cy="165" r="3" fill={gold} stroke="none" />
+          <circle cx="95" cy="170" r="3" fill={gold} stroke="none" />
+          {/* motion lines */}
+          <path d="M30 95 H62" strokeDasharray="3 4" {...common} />
+          <path d="M30 115 H52" strokeDasharray="3 4" {...common} />
+          <path d="M30 135 H72" strokeDasharray="3 4" {...common} />
+        </svg>
+      )
+    case 'behavior':
+      return (
+        <svg viewBox="0 0 220 220" className="art-svg">
+          {/* left scattered */}
+          <circle cx="40" cy="60" r="4" {...common} />
+          <circle cx="62" cy="105" r="4" {...common} />
+          <circle cx="38" cy="142" r="4" {...common} />
+          <circle cx="74" cy="76" r="4" {...common} />
+          <circle cx="55" cy="160" r="4" {...common} />
+          {/* arrow */}
+          <path d="M95 110 L130 110 M122 102 L130 110 L122 118" {...common} />
+          {/* right ordered grid */}
+          <circle cx="155" cy="70" r="4" fill={gold} stroke="none" />
+          <circle cx="180" cy="70" r="4" {...common} />
+          <circle cx="155" cy="110" r="4" {...common} />
+          <circle cx="180" cy="110" r="4" {...common} />
+          <circle cx="155" cy="150" r="4" {...common} />
+          <circle cx="180" cy="150" r="4" {...common} />
+          <path d="M150 70 L150 150" strokeDasharray="2 4" {...common} />
+          <path d="M185 70 L185 150" strokeDasharray="2 4" {...common} />
+        </svg>
+      )
+    case 'sensory':
+      return (
+        <svg viewBox="0 0 220 220" className="art-svg">
+          {/* 5 overlapping circles representing senses */}
+          <circle cx="110" cy="72" r="40" {...common} opacity="0.7" />
+          <circle cx="78" cy="100" r="40" {...common} opacity="0.7" />
+          <circle cx="142" cy="100" r="40" {...common} opacity="0.7" />
+          <circle cx="90" cy="138" r="40" {...common} opacity="0.7" />
+          <circle cx="130" cy="138" r="40" {...common} opacity="0.7" />
+          {/* center accent */}
+          <circle cx="110" cy="112" r="5" fill={gold} stroke="none" />
+        </svg>
+      )
+    case 'ot':
+      return (
+        <svg viewBox="0 0 220 220" className="art-svg">
+          {/* palm */}
+          <path d="M75 110 V165 Q75 175 85 175 H145 Q155 175 155 165 V110" {...common} />
+          {/* wrist accent */}
+          <path d="M75 170 H155" {...common} />
+          {/* fingers */}
+          <path d="M85 110 V62 Q85 56 91 56 Q97 56 97 62 V110" {...common} />
+          <path d="M104 110 V52 Q104 46 110 46 Q116 46 116 52 V110" {...common} />
+          <path d="M123 110 V58 Q123 52 129 52 Q135 52 135 58 V110" {...common} />
+          <path d="M142 110 V72 Q142 66 148 66 Q154 66 154 72 V110" {...common} />
+          {/* thumb */}
+          <path d="M75 125 Q55 122 58 102 Q63 88 75 96" {...common} />
+          {/* accent dot — pinch point */}
+          <circle cx="75" cy="100" r="3.2" fill={gold} stroke="none" />
+        </svg>
+      )
+    case 'tuina':
+      return (
+        <svg viewBox="0 0 220 220" className="art-svg">
+          {/* simplified body silhouette */}
+          <circle cx="110" cy="48" r="14" {...common} />
+          <path d="M110 62 L110 142" {...common} />
+          <path d="M110 78 L78 116" {...common} />
+          <path d="M110 78 L142 116" {...common} />
+          <path d="M110 142 L88 188" {...common} />
+          <path d="M110 142 L132 188" {...common} />
+          {/* acupoints in gold (along meridian) */}
+          <circle cx="110" cy="82" r="3.2" fill={gold} stroke="none" />
+          <circle cx="92" cy="100" r="3.2" fill={gold} stroke="none" />
+          <circle cx="128" cy="100" r="3.2" fill={gold} stroke="none" />
+          <circle cx="110" cy="115" r="3.2" fill={gold} stroke="none" />
+          <circle cx="110" cy="135" r="3.2" fill={gold} stroke="none" />
+          {/* connection lines */}
+          <path d="M92 100 L110 115 L128 100" strokeDasharray="2 3" {...common} />
+        </svg>
+      )
+    default:
+      return null
+  }
+}
 
 export default function FacilitiesPage() {
   const heroRef = useRef<HTMLElement>(null)
@@ -111,7 +276,7 @@ export default function FacilitiesPage() {
           }
         })
       },
-      { threshold: 0.18, rootMargin: '0px 0px -10% 0px' }
+      { threshold: 0.18, rootMargin: '0px 0px -8% 0px' }
     )
     els.forEach((el) => observer.observe(el))
     return () => observer.disconnect()
@@ -134,7 +299,7 @@ export default function FacilitiesPage() {
           <source src="/video/facilities.mp4" type="video/mp4" />
         </video>
 
-        {/* White transparent overlay — lets video breathe through */}
+        {/* Subtle vignette — top + bottom soft white, mid stays clear */}
         <div aria-hidden="true" className="fac-hero-overlay" />
 
         <div className="fac-hero-inner">
@@ -191,46 +356,74 @@ export default function FacilitiesPage() {
             </p>
           </header>
 
-          <ol className="fac-grid">
-            {PROGRAMS.map((p, i) => (
-              <li
-                key={p.slug}
-                className="fac-card fac-r"
-                style={{ ['--d' as string]: `${(i % 2) * 0.1}s` }}
-              >
-                <span className="fac-card-bd fac-bd-t" aria-hidden="true" />
-                <span className="fac-card-bd fac-bd-r" aria-hidden="true" />
-                <span className="fac-card-bd fac-bd-b" aria-hidden="true" />
-                <span className="fac-card-bd fac-bd-l" aria-hidden="true" />
-                <span className="fac-card-corner fac-c-tl" aria-hidden="true" />
-                <span className="fac-card-corner fac-c-br" aria-hidden="true" />
+          {/* ── Editorial zigzag layout ── */}
+          <ol className="fac-programs">
+            {PROGRAMS.map((p, i) => {
+              const side = i % 2 === 0 ? 'left' : 'right'
+              return (
+                <li
+                  key={p.slug}
+                  className={`fac-program fac-program-${side} fac-r`}
+                  style={{ ['--d' as string]: `${(i % 2) * 0.05}s` }}
+                >
+                  {/* Art panel */}
+                  <div className="fac-art">
+                    <span className="fac-art-bd fac-art-bd-t" aria-hidden="true" />
+                    <span className="fac-art-bd fac-art-bd-r" aria-hidden="true" />
+                    <span className="fac-art-bd fac-art-bd-b" aria-hidden="true" />
+                    <span className="fac-art-bd fac-art-bd-l" aria-hidden="true" />
+                    <span className="fac-art-corner fac-art-c-tl" aria-hidden="true" />
+                    <span className="fac-art-corner fac-art-c-br" aria-hidden="true" />
 
-                <header className="fac-card-head">
-                  <span className="fac-card-no">{String(i + 1).padStart(2, '0')}</span>
-                  <span className="fac-card-rule" aria-hidden="true" />
-                </header>
+                    <span className="fac-art-grid" aria-hidden="true" />
+                    <span className="fac-art-glow" aria-hidden="true" />
 
-                <h3 className="fac-card-title">{p.name}</h3>
+                    <div className="fac-art-svg-wrap">
+                      <ProgramArt slug={p.slug} />
+                    </div>
 
-                <div className="fac-card-tags">
-                  {p.age && <span className="fac-card-tag fac-card-tag-age">{p.age}</span>}
-                  {p.audience && <span className="fac-card-tag">{p.audience}</span>}
-                </div>
+                    <span className="fac-art-no" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="fac-art-name-vert" aria-hidden="true">{p.name}</span>
+                  </div>
 
-                <p className="fac-card-summary">{p.summary}</p>
+                  {/* Body */}
+                  <div className="fac-body">
+                    <div className="fac-body-head">
+                      <span className="fac-body-eyebrow">
+                        <span className="fac-body-eyebrow-mark" aria-hidden="true" />
+                        康复项目 · 第 {String(i + 1).padStart(2, '0')}
+                      </span>
+                    </div>
 
-                <div className="fac-card-divider" aria-hidden="true" />
+                    <h3 className="fac-body-title">
+                      <span className="fac-body-title-inner">{p.name}</span>
+                    </h3>
 
-                <ul className="fac-card-hl">
-                  {p.highlights.map((h) => (
-                    <li key={h}>
-                      <span className="fac-card-hl-mark" aria-hidden="true" />
-                      {h}
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
+                    <div className="fac-body-tags">
+                      {p.age && <span className="fac-body-tag fac-tag-age">{p.age}</span>}
+                      {p.audience && <span className="fac-body-tag">{p.audience}</span>}
+                    </div>
+
+                    <p className="fac-body-summary">{p.summary}</p>
+
+                    <div className="fac-body-divider" aria-hidden="true">
+                      <span className="fac-body-divider-line" />
+                      <span className="fac-body-divider-text">训练重点</span>
+                      <span className="fac-body-divider-line" />
+                    </div>
+
+                    <ul className="fac-body-hl">
+                      {p.highlights.map((h, hi) => (
+                        <li key={h} style={{ ['--hd' as string]: `${hi * 0.08}s` }}>
+                          <span className="fac-body-hl-mark" aria-hidden="true" />
+                          <span className="fac-body-hl-text">{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              )
+            })}
           </ol>
         </div>
       </section>
@@ -244,7 +437,7 @@ export default function FacilitiesPage() {
           --fac-gold-soft: rgba(176, 138, 74, 0.72);
           --fac-gold-line: rgba(176, 138, 74, 0.4);
           --fac-blue: #0003A3;
-          --fac-blue-soft: rgba(0, 3, 163, 0.7);
+          --fac-blue-soft: rgba(0, 3, 163, 0.72);
           --fac-blue-mute: rgba(0, 3, 163, 0.55);
           --fac-line: rgba(0, 3, 163, 0.14);
         }
@@ -275,12 +468,16 @@ export default function FacilitiesPage() {
           from { opacity: 0; transform: scale(1.06); }
           to   { opacity: 1; transform: scale(1); }
         }
+        /* Soft vignette — keep video visible, fade edges */
         .fac-hero-overlay {
           position: absolute; inset: 0; z-index: 1;
           pointer-events: none;
           background:
-            radial-gradient(ellipse 55% 50% at 50% 45%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.78) 70%, rgba(255,255,255,0.9) 100%),
-            linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.82) 100%);
+            linear-gradient(180deg,
+              rgba(255,255,255,0.55) 0%,
+              rgba(255,255,255,0.18) 30%,
+              rgba(255,255,255,0.18) 70%,
+              rgba(255,255,255,0.55) 100%);
         }
 
         .fac-hero-inner {
@@ -293,12 +490,15 @@ export default function FacilitiesPage() {
           align-items: center;
           text-align: center;
           gap: clamp(1rem, 2.5vw, 1.6rem);
+          /* Light readability glow behind text */
+          text-shadow: 0 1px 16px rgba(255,255,255,0.75);
         }
+        .fac-hero-meta-cell { text-shadow: none; }
 
-        /* ── Reveal classes (server-render-safe) ── */
+        /* ── Reveal classes ── */
         .fac-r {
           opacity: 0;
-          transform: translateY(16px);
+          transform: translateY(18px);
           filter: blur(4px);
           transition:
             opacity 1.1s cubic-bezier(0.16,1,0.3,1),
@@ -355,7 +555,7 @@ export default function FacilitiesPage() {
           font-size: clamp(0.94rem, 1.15vw, 1.05rem);
           line-height: 1.9;
           letter-spacing: 0.06em;
-          color: var(--fac-blue-soft);
+          color: var(--fac-blue);
           margin: 0;
         }
 
@@ -368,15 +568,15 @@ export default function FacilitiesPage() {
           max-width: 880px;
         }
         .fac-hero-meta-cell {
-          padding: clamp(0.85rem, 1.6vw, 1.1rem) clamp(0.5rem, 1vw, 0.8rem);
+          padding: clamp(0.95rem, 1.8vw, 1.25rem) clamp(0.6rem, 1vw, 0.9rem);
           border-top: 1px solid var(--fac-gold-line);
           display: flex;
           flex-direction: column;
           gap: 0.45rem;
           align-items: center;
-          background: rgba(255,255,255,0.45);
-          backdrop-filter: blur(4px);
-          -webkit-backdrop-filter: blur(4px);
+          background: rgba(255,255,255,0.78);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
           min-width: 0;
         }
         .fac-hero-meta-value {
@@ -414,10 +614,11 @@ export default function FacilitiesPage() {
           letter-spacing: 0.4em;
           color: var(--fac-blue-mute);
           writing-mode: vertical-rl;
+          text-shadow: 0 1px 12px rgba(255,255,255,0.65);
         }
         .fac-hero-cue-line {
           width: 1px; height: 48px;
-          background: rgba(0,3,163,0.18);
+          background: rgba(0,3,163,0.22);
           position: relative; overflow: hidden;
         }
         .fac-hero-cue-line::after {
@@ -500,159 +701,417 @@ export default function FacilitiesPage() {
           margin: 0;
         }
 
-        /* ── Programs grid ── */
-        .fac-grid {
+        /* ╔═══════════ Programs — editorial zigzag ═══════════ */
+        .fac-programs {
           list-style: none;
           margin: 0; padding: 0;
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: clamp(1rem, 2vw, 1.6rem);
-        }
-        .fac-card {
-          position: relative;
-          background: #ffffff;
-          padding: clamp(1.6rem, 3vw, 2.2rem) clamp(1.4rem, 2.5vw, 2rem) clamp(1.6rem, 3vw, 2rem);
           display: flex;
           flex-direction: column;
-          gap: clamp(0.85rem, 1.4vw, 1.1rem);
-          transition: transform 0.55s cubic-bezier(0.22,1,0.36,1),
-                      box-shadow 0.55s ease;
-          min-width: 0;
+          gap: clamp(3rem, 6vw, 5rem);
         }
-        .fac-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 26px 60px -32px rgba(0,3,163,0.28);
+        .fac-program {
+          position: relative;
+          display: grid;
+          grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+          gap: clamp(2rem, 4.5vw, 4.5rem);
+          align-items: center;
         }
+        .fac-program-right .fac-art { order: 2; }
+        .fac-program-right .fac-body { order: 1; text-align: right; }
+        .fac-program-right .fac-body-tags { justify-content: flex-end; }
+        .fac-program-right .fac-body-head { justify-content: flex-end; }
+        .fac-program-right .fac-body-hl { direction: rtl; }
+        .fac-program-right .fac-body-hl li { direction: ltr; }
+        .fac-program-right .fac-body-divider { direction: rtl; }
 
-        /* 4-segment border */
-        .fac-card-bd {
-          position: absolute;
-          background: var(--fac-line);
-        }
-        .fac-bd-t { top: 0; left: 0; height: 1px; width: 100%; }
-        .fac-bd-r { top: 0; right: 0; width: 1px; height: 100%; }
-        .fac-bd-b { bottom: 0; right: 0; height: 1px; width: 100%; }
-        .fac-bd-l { bottom: 0; left: 0; width: 1px; height: 100%; }
-
-        /* Gold corner foils */
-        .fac-card-corner {
-          position: absolute;
-          width: 12px; height: 12px;
-          opacity: 0;
-          transition: opacity 0.5s ease;
-        }
-        .fac-c-tl { top: -1px; left: -1px; border-top: 1px solid var(--fac-gold); border-left: 1px solid var(--fac-gold); }
-        .fac-c-br { bottom: -1px; right: -1px; border-bottom: 1px solid var(--fac-gold); border-right: 1px solid var(--fac-gold); }
-        .fac-card:hover .fac-card-corner { opacity: 0.85; }
-
-        .fac-card-head {
+        /* ── Art panel ── */
+        .fac-art {
+          position: relative;
+          aspect-ratio: 1 / 1;
+          background: #ffffff;
           display: flex;
           align-items: center;
-          gap: 0.8rem;
+          justify-content: center;
+          color: var(--fac-blue);
+          overflow: hidden;
+          isolation: isolate;
+          transition: transform 0.7s cubic-bezier(0.22,1,0.36,1),
+                      box-shadow 0.7s cubic-bezier(0.22,1,0.36,1);
+          opacity: 0;
+          clip-path: inset(0 100% 0 0);
+          transition:
+            opacity 1s cubic-bezier(0.16,1,0.3,1) calc(0.15s + var(--d)),
+            clip-path 1.2s cubic-bezier(0.83,0,0.17,1) calc(0.15s + var(--d)),
+            transform 0.7s cubic-bezier(0.22,1,0.36,1),
+            box-shadow 0.7s cubic-bezier(0.22,1,0.36,1);
         }
-        .fac-card-no {
+        .fac-program-right .fac-art {
+          clip-path: inset(0 0 0 100%);
+        }
+        .fac-r.in .fac-art {
+          opacity: 1;
+          clip-path: inset(0 0 0 0);
+        }
+
+        /* Faint grid pattern background */
+        .fac-art-grid {
+          position: absolute; inset: 0;
+          background-image:
+            linear-gradient(to right, rgba(0,3,163,0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0,3,163,0.05) 1px, transparent 1px);
+          background-size: 28px 28px;
+          opacity: 0;
+          transition: opacity 0.6s ease;
+          pointer-events: none;
+        }
+        .fac-art-glow {
+          position: absolute;
+          width: 70%; aspect-ratio: 1;
+          background: radial-gradient(circle, rgba(176,138,74,0.18) 0%, rgba(176,138,74,0) 65%);
+          left: 50%; top: 50%;
+          transform: translate(-50%, -50%) scale(0.6);
+          opacity: 0;
+          transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1);
+          pointer-events: none;
+        }
+
+        .fac-art-svg-wrap {
+          position: relative;
+          width: 65%;
+          aspect-ratio: 1;
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+        }
+        .art-svg {
+          width: 100%; height: 100%;
+          color: var(--fac-blue);
+          overflow: visible;
+        }
+        .art-svg path, .art-svg circle {
+          stroke-dasharray: 600;
+          stroke-dashoffset: 600;
+        }
+        .fac-r.in .art-svg path,
+        .fac-r.in .art-svg circle {
+          animation: fac-draw 2.2s cubic-bezier(0.83,0,0.17,1) calc(0.55s + var(--d)) forwards;
+        }
+        @keyframes fac-draw {
+          to { stroke-dashoffset: 0; }
+        }
+        /* Filled circles use a different animation */
+        .art-svg circle[fill]:not([fill="none"]) {
+          opacity: 0;
+          transform-origin: center;
+          transform: scale(0);
+          stroke-dasharray: none;
+          stroke-dashoffset: 0;
+        }
+        .fac-r.in .art-svg circle[fill]:not([fill="none"]) {
+          animation: fac-pop 0.7s cubic-bezier(0.34,1.56,0.64,1) calc(1.8s + var(--d)) forwards;
+        }
+        @keyframes fac-pop {
+          0%   { opacity: 0; transform: scale(0); }
+          60%  { opacity: 1; transform: scale(1.3); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Decorative meta on the art panel */
+        .fac-art-no {
+          position: absolute;
+          top: clamp(0.85rem, 1.5vw, 1.2rem);
+          left: clamp(0.85rem, 1.5vw, 1.2rem);
           font-family: var(--serif-cn);
           font-weight: 500;
-          font-size: clamp(0.78rem, 0.95vw, 0.88rem);
+          font-size: clamp(1rem, 1.3vw, 1.15rem);
           letter-spacing: 0.18em;
           color: var(--fac-gold);
+          z-index: 3;
         }
-        .fac-card-rule {
-          flex: 1; height: 1px;
+        .fac-art-name-vert {
+          position: absolute;
+          right: clamp(0.6rem, 1.2vw, 0.95rem);
+          bottom: clamp(0.85rem, 1.5vw, 1.2rem);
+          font-family: var(--serif-cn);
+          font-size: 0.66rem;
+          letter-spacing: 0.5em;
+          color: var(--fac-gold-soft);
+          writing-mode: vertical-rl;
+          z-index: 3;
+        }
+
+        /* 4-segment border on art panel */
+        .fac-art-bd {
+          position: absolute;
           background: var(--fac-line);
+          z-index: 3;
         }
-        .fac-card-title {
+        .fac-art-bd-t { top: 0; left: 0; height: 1px; width: 100%; }
+        .fac-art-bd-r { top: 0; right: 0; width: 1px; height: 100%; }
+        .fac-art-bd-b { bottom: 0; right: 0; height: 1px; width: 100%; }
+        .fac-art-bd-l { bottom: 0; left: 0; width: 1px; height: 100%; }
+        .fac-art-corner {
+          position: absolute; z-index: 4;
+          width: 14px; height: 14px;
+          opacity: 0;
+          transition: opacity 0.5s ease, width 0.45s cubic-bezier(0.22,1,0.36,1), height 0.45s cubic-bezier(0.22,1,0.36,1);
+        }
+        .fac-art-c-tl { top: -1px; left: -1px; border-top: 1px solid var(--fac-gold); border-left: 1px solid var(--fac-gold); }
+        .fac-art-c-br { bottom: -1px; right: -1px; border-bottom: 1px solid var(--fac-gold); border-right: 1px solid var(--fac-gold); }
+
+        .fac-program:hover .fac-art {
+          transform: translateY(-4px);
+          box-shadow: 0 28px 60px -30px rgba(0,3,163,0.3);
+        }
+        .fac-program:hover .fac-art-svg-wrap {
+          transform: scale(1.05);
+        }
+        .fac-program:hover .fac-art-glow {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        .fac-program:hover .fac-art-grid {
+          opacity: 1;
+        }
+        .fac-program:hover .fac-art-corner {
+          opacity: 1;
+          width: 20px; height: 20px;
+        }
+
+        /* ── Body ── */
+        .fac-body {
+          display: flex;
+          flex-direction: column;
+          gap: clamp(0.85rem, 1.5vw, 1.15rem);
+          min-width: 0;
+        }
+        .fac-body-head {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+        }
+        .fac-body-eyebrow {
+          font-family: var(--serif-cn);
+          font-size: 0.72rem;
+          letter-spacing: 0.28em;
+          padding-left: 0.28em;
+          color: var(--fac-gold);
+          display: inline-flex;
+          align-items: center;
+          gap: 0.6rem;
+        }
+        .fac-body-eyebrow-mark {
+          width: 6px; height: 6px;
+          background: var(--fac-gold);
+          transform: rotate(45deg);
+        }
+
+        .fac-body-title {
           font-family: var(--serif-cn);
           font-weight: 500;
-          font-size: clamp(1.25rem, 1.9vw, 1.55rem);
-          letter-spacing: 0.06em;
-          line-height: 1.3;
+          font-size: clamp(1.55rem, 2.6vw, 2.2rem);
+          letter-spacing: 0.08em;
+          line-height: 1.25;
           color: var(--fac-blue);
           margin: 0;
-          padding-left: 0.06em;
-          word-break: break-word;
-          overflow-wrap: anywhere;
+          padding-left: 0.08em;
+          overflow: hidden;
         }
-        .fac-card-tags {
+        .fac-body-title-inner {
+          display: inline-block;
+          transform: translateY(110%);
+          transition: transform 1.2s cubic-bezier(0.83,0,0.17,1) calc(0.35s + var(--d));
+        }
+        .fac-r.in .fac-body-title-inner {
+          transform: translateY(0);
+        }
+        .fac-program:hover .fac-body-title {
+          transform: translateX(4px);
+          transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+        }
+        .fac-program-right:hover .fac-body-title {
+          transform: translateX(-4px);
+        }
+
+        .fac-body-tags {
           display: flex;
           flex-wrap: wrap;
           gap: 0.45rem;
+          opacity: 0;
+          transform: translateY(8px);
+          transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1) calc(0.7s + var(--d)),
+                      transform 0.9s cubic-bezier(0.16,1,0.3,1) calc(0.7s + var(--d));
         }
-        .fac-card-tag {
+        .fac-r.in .fac-body-tags { opacity: 1; transform: translateY(0); }
+        .fac-body-tag {
           font-family: var(--serif-cn);
-          font-size: 0.7rem;
+          font-size: 0.72rem;
           letter-spacing: 0.12em;
-          padding: 0.3rem 0.7rem;
+          padding: 0.34rem 0.75rem;
           border: 1px solid var(--fac-line);
           color: var(--fac-blue-soft);
           background: #ffffff;
+          transition: border-color 0.4s ease, color 0.4s ease;
         }
-        .fac-card-tag-age {
+        .fac-tag-age {
           border-color: var(--fac-gold-line);
           color: var(--fac-gold);
         }
-        .fac-card-summary {
+        .fac-program:hover .fac-body-tag {
+          border-color: rgba(0,3,163,0.3);
+        }
+        .fac-program:hover .fac-body-tag.fac-tag-age {
+          border-color: var(--fac-gold);
+        }
+
+        .fac-body-summary {
           font-family: var(--serif-cn);
-          font-size: clamp(0.86rem, 1vw, 0.94rem);
-          line-height: 1.85;
-          letter-spacing: 0.04em;
+          font-size: clamp(0.92rem, 1.1vw, 1.02rem);
+          line-height: 1.95;
+          letter-spacing: 0.05em;
           color: var(--fac-blue-soft);
           margin: 0;
           word-break: break-word;
           overflow-wrap: anywhere;
+          opacity: 0;
+          transform: translateY(10px);
+          transition: opacity 1s cubic-bezier(0.16,1,0.3,1) calc(0.85s + var(--d)),
+                      transform 1s cubic-bezier(0.16,1,0.3,1) calc(0.85s + var(--d));
         }
-        .fac-card-divider {
-          width: 28px; height: 1px;
+        .fac-r.in .fac-body-summary { opacity: 1; transform: translateY(0); }
+
+        .fac-body-divider {
+          display: flex;
+          align-items: center;
+          gap: 0.85rem;
+          margin-top: 0.3rem;
+          opacity: 0;
+          transition: opacity 0.9s ease calc(1s + var(--d));
+        }
+        .fac-r.in .fac-body-divider { opacity: 1; }
+        .fac-body-divider-line {
+          height: 1px;
           background: var(--fac-gold-line);
-          margin-top: 0.2rem;
+          flex: 0 0 22px;
         }
-        .fac-card-hl {
+        .fac-body-divider-line:last-child { flex: 1; }
+        .fac-body-divider-text {
+          font-family: var(--serif-cn);
+          font-size: 0.7rem;
+          letter-spacing: 0.32em;
+          padding-left: 0.32em;
+          color: var(--fac-gold);
+          white-space: nowrap;
+        }
+
+        .fac-body-hl {
           list-style: none;
           margin: 0; padding: 0;
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 0.5rem 1rem;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0.55rem 1.2rem;
         }
-        .fac-card-hl li {
+        .fac-body-hl li {
           display: flex;
           align-items: baseline;
           gap: 0.55rem;
           font-family: var(--serif-cn);
-          font-size: 0.84rem;
+          font-size: 0.88rem;
           letter-spacing: 0.04em;
           color: var(--fac-blue);
-          line-height: 1.5;
+          line-height: 1.55;
           word-break: break-word;
           overflow-wrap: anywhere;
           min-width: 0;
+          opacity: 0;
+          transform: translateX(-12px);
+          transition:
+            opacity 0.85s cubic-bezier(0.16,1,0.3,1) calc(1.15s + var(--d) + var(--hd, 0s)),
+            transform 0.85s cubic-bezier(0.16,1,0.3,1) calc(1.15s + var(--d) + var(--hd, 0s));
         }
-        .fac-card-hl-mark {
-          width: 4px; height: 4px;
+        .fac-program-right .fac-body-hl li {
+          transform: translateX(12px);
+        }
+        .fac-r.in .fac-body-hl li {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        .fac-body-hl-mark {
+          width: 5px; height: 5px;
           background: var(--fac-gold);
           transform: rotate(45deg);
           flex-shrink: 0;
           translate: 0 -2px;
+          transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .fac-body-hl li:hover .fac-body-hl-mark {
+          transform: rotate(45deg) scale(1.6);
+          background: var(--fac-blue);
         }
 
         /* ╔═══════════ Responsive ═══════════ */
+        @media (max-width: 920px) {
+          .fac-program,
+          .fac-program-right {
+            grid-template-columns: 1fr;
+            gap: 1.4rem;
+          }
+          .fac-program-right .fac-art { order: 1; }
+          .fac-program-right .fac-body {
+            order: 2;
+            text-align: left;
+          }
+          .fac-program-right .fac-body-tags,
+          .fac-program-right .fac-body-head {
+            justify-content: flex-start;
+          }
+          .fac-program-right .fac-body-hl { direction: ltr; }
+          .fac-program-right .fac-body-divider { direction: ltr; }
+          .fac-program-right .fac-body-hl li { transform: translateX(-12px); }
+          .fac-art {
+            aspect-ratio: 16 / 10;
+            max-width: 480px;
+            width: 100%;
+            margin-inline: auto;
+          }
+          .fac-art-svg-wrap { width: 50%; }
+        }
         @media (max-width: 860px) {
           .fac-hero { min-height: 80svh; padding: 96px 1rem 4rem; }
           .fac-hero-meta { grid-template-columns: repeat(2, 1fr); }
-          .fac-grid { grid-template-columns: 1fr; }
           .fac-hero-cue { display: none; }
         }
         @media (max-width: 480px) {
           .fac-hero-title { letter-spacing: 0.03em; font-size: clamp(1.7rem, 8vw, 2.3rem); }
           .fac-section-title { font-size: clamp(1.3rem, 6vw, 1.7rem); letter-spacing: 0.04em; }
-          .fac-card-hl { grid-template-columns: 1fr; }
+          .fac-body-hl { grid-template-columns: 1fr; }
           .fac-hero-meta-value { letter-spacing: 0.04em; font-size: 0.92rem; }
           .fac-hero-meta-label { letter-spacing: 0.22em; padding-left: 0.22em; }
+          .fac-body-title { letter-spacing: 0.04em; }
         }
 
         @media (prefers-reduced-motion: reduce) {
           .fac-hero-video { animation: none; opacity: 1; transform: none; }
           .fac-hero-cue-line::after { animation: none; }
-          .fac-r { transition: none !important; opacity: 1 !important; transform: none !important; filter: none !important; }
+          .fac-r,
+          .fac-art,
+          .fac-body-title-inner,
+          .fac-body-tags,
+          .fac-body-summary,
+          .fac-body-divider,
+          .fac-body-hl li,
+          .art-svg path,
+          .art-svg circle {
+            transition: none !important;
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+            filter: none !important;
+            clip-path: none !important;
+            stroke-dashoffset: 0 !important;
+          }
         }
       `}</style>
     </>
