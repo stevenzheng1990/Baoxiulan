@@ -1,364 +1,695 @@
 'use client'
 
-/**
- * ProgramArt
- * 八幅诊疗康复项目的自绘 SVG 插图 + 编排化动画
- *
- * 设计原则
- * - 240×240 viewBox，留白充裕（≥24px padding）
- * - 主结构 stroke 1.6，次结构 1.2，强调线 2
- * - 金色点缀（#B08A4A）控制在 3-5 处以内
- * - 每张图建立独立的入场叙事：先骨架、后细节、最后金色焦点
- * - 入场后保留低幅度的持续动画（呼吸 / 漂移 / 脉冲）赋予生命感
- * - hover 时所有图整体放大 1.05 + 关键元素加强动作
- *
- * 动画机制
- * - 所有 path/circle 使用 pathLength="1" → stroke-dasharray:1 stroke-dashoffset:1→0
- * - 通过 CSS 变量 --seq 控制每个元素的序列号
- * - 当父级 .fac-r 进入视口加上 .in 类时触发整套编排
- * - prefers-reduced-motion 全部跳过
- */
+import { useEffect, useRef, useState } from 'react'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 
-const COMMON = {
-  fill: 'none',
-  stroke: 'currentColor',
-  strokeLinecap: 'round' as const,
-  strokeLinejoin: 'round' as const,
-  pathLength: 1,
-}
-
+const BLUE = '#0003A3'
+const BLUE_FILL = 'rgba(0,3,163,0.08)'
+const BLUE_FILL_SOFT = 'rgba(0,3,163,0.04)'
 const GOLD = '#B08A4A'
+const GOLD_FILL = 'rgba(176,138,74,0.18)'
+const WARM = '#F4EFE3'
 
-interface ArtProps {
-  slug: string
+/** Manifest of which programs have a Lottie file installed under /public/lottie/.
+ *  Initially empty (all use SVG scenes); user drops .lottie files in and the
+ *  player auto-engages. We HEAD-check on mount before swapping. */
+const LOTTIE_FILES: Record<string, string> = {
+  early: '/lottie/early.lottie',
+  inclusion: '/lottie/inclusion.lottie',
+  speech: '/lottie/speech.lottie',
+  motor: '/lottie/motor.lottie',
+  behavior: '/lottie/behavior.lottie',
+  sensory: '/lottie/sensory.lottie',
+  ot: '/lottie/ot.lottie',
+  tuina: '/lottie/tuina.lottie',
 }
 
-export default function ProgramArt({ slug }: ArtProps) {
-  switch (slug) {
-    /* ──────────── 01 早期综合训练 ────────────
-       视觉叙事：被环抱的初生婴儿，五种感官从中心向外辐射
-       构图：左侧大弧 = 拥抱；中心填充小圆 = 婴儿；
-            右上方 5 条短射线 + 金点 = 视/听/触/动/前庭感官 */
-    case 'early':
-      return (
-        <svg viewBox="0 0 240 240" className="art-svg art-early" aria-hidden="true">
-          {/* 背景两道更柔和的拥抱波 */}
-          <path d="M 36 80 Q 96 36 196 96" {...COMMON} strokeWidth={1.1} className="art-l art-bg-1" />
-          <path d="M 30 130 Q 84 90 200 156" {...COMMON} strokeWidth={1.1} className="art-l art-bg-2" />
+// ─────────────────────────────────────────────────────────────
+// SVG SCENE ILLUSTRATIONS — concrete, multi-element compositions
+// All viewBox 0 0 280 240 (landscape, generous breathing space)
+// ─────────────────────────────────────────────────────────────
 
-          {/* 主拥抱弧（最厚） */}
-          <path d="M 84 36 C 28 96, 28 168, 96 208" {...COMMON} strokeWidth={2} className="art-l art-embrace" />
+function SceneEarly() {
+  // Cradle + hanging mobile + swaddled baby + ambient glow
+  return (
+    <svg viewBox="0 0 280 240" className="scene scene-early" aria-hidden="true">
+      {/* Ambient back glows */}
+      <circle cx="60" cy="60" r="40" fill={BLUE_FILL_SOFT} className="amb amb-1" />
+      <circle cx="230" cy="80" r="50" fill={GOLD_FILL} className="amb amb-2" />
 
-          {/* 婴儿轮廓 */}
-          <circle cx="138" cy="128" r="16" {...COMMON} strokeWidth={1.6} className="art-l art-baby" />
-          <path d="M 122 138 Q 138 162 154 138" {...COMMON} strokeWidth={1.6} className="art-l art-baby-body" />
+      {/* Hanging mobile bar */}
+      <line x1="80" y1="28" x2="200" y2="28" stroke={BLUE} strokeWidth="1.6" strokeLinecap="round" className="mobile-bar" />
+      <circle cx="80" cy="28" r="3" fill={BLUE} className="mobile-pin" />
+      <circle cx="200" cy="28" r="3" fill={BLUE} className="mobile-pin" />
 
-          {/* 婴儿填充小金芯 */}
-          <circle cx="138" cy="128" r="3.2" fill={GOLD} className="art-d art-heart" />
+      {/* Three hanging toys */}
+      <g className="mobile-toy mobile-toy-1">
+        <line x1="100" y1="28" x2="100" y2="78" stroke={BLUE} strokeWidth="1" strokeLinecap="round" />
+        {/* star */}
+        <path
+          d="M 100 80 L 103 89 L 113 89 L 105 95 L 108 105 L 100 99 L 92 105 L 95 95 L 87 89 L 97 89 Z"
+          fill={GOLD}
+          stroke={BLUE}
+          strokeWidth="1"
+          strokeLinejoin="round"
+        />
+      </g>
+      <g className="mobile-toy mobile-toy-2">
+        <line x1="140" y1="28" x2="140" y2="90" stroke={BLUE} strokeWidth="1" strokeLinecap="round" />
+        {/* moon */}
+        <path
+          d="M 130 102 A 12 12 0 1 0 130 78 A 9 9 0 1 1 130 102 Z"
+          fill={WARM}
+          stroke={BLUE}
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+        />
+      </g>
+      <g className="mobile-toy mobile-toy-3">
+        <line x1="180" y1="28" x2="180" y2="74" stroke={BLUE} strokeWidth="1" strokeLinecap="round" />
+        {/* heart */}
+        <path
+          d="M 180 96 C 170 86, 162 80, 168 72 C 174 64, 180 72, 180 76 C 180 72, 186 64, 192 72 C 198 80, 190 86, 180 96 Z"
+          fill={GOLD_FILL}
+          stroke={GOLD}
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+        />
+      </g>
 
-          {/* 五条感官射线（从婴儿头部边缘向外） */}
-          <g className="art-rays">
-            <line x1="151" y1="115" x2="184" y2="84" {...COMMON} strokeWidth={1.3} className="art-l art-ray" style={{ ['--seq' as string]: 0 }} />
-            <line x1="156" y1="128" x2="194" y2="128" {...COMMON} strokeWidth={1.3} className="art-l art-ray" style={{ ['--seq' as string]: 1 }} />
-            <line x1="151" y1="142" x2="184" y2="172" {...COMMON} strokeWidth={1.3} className="art-l art-ray" style={{ ['--seq' as string]: 2 }} />
-            <line x1="138" y1="111" x2="156" y2="74" {...COMMON} strokeWidth={1.3} className="art-l art-ray" style={{ ['--seq' as string]: 3 }} />
-            <line x1="124" y1="115" x2="100" y2="84" {...COMMON} strokeWidth={1.3} className="art-l art-ray" style={{ ['--seq' as string]: 4 }} />
+      {/* Cradle */}
+      <g className="cradle">
+        {/* legs */}
+        <line x1="80" y1="186" x2="68" y2="220" stroke={BLUE} strokeWidth="1.4" strokeLinecap="round" />
+        <line x1="200" y1="186" x2="212" y2="220" stroke={BLUE} strokeWidth="1.4" strokeLinecap="round" />
+        {/* rocker base */}
+        <path d="M 56 222 Q 140 240 224 222" fill="none" stroke={BLUE} strokeWidth="1.6" strokeLinecap="round" />
+        {/* cradle bowl */}
+        <path
+          d="M 60 168 L 220 168 L 210 200 Q 140 218 70 200 Z"
+          fill="#ffffff"
+          stroke={BLUE}
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        {/* inner rim shadow */}
+        <line x1="68" y1="174" x2="212" y2="174" stroke={BLUE} strokeWidth="0.6" opacity="0.4" />
+      </g>
+
+      {/* Swaddled baby inside */}
+      <g className="baby">
+        {/* swaddle blanket */}
+        <path
+          d="M 116 188 Q 116 168 140 168 Q 164 168 164 188 L 164 196 Q 140 204 116 196 Z"
+          fill={WARM}
+          stroke={BLUE}
+          strokeWidth="1.2"
+          strokeLinejoin="round"
+        />
+        {/* face */}
+        <circle cx="140" cy="172" r="9" fill="#ffffff" stroke={BLUE} strokeWidth="1.3" />
+        <circle cx="137" cy="171" r="0.9" fill={BLUE} />
+        <circle cx="143" cy="171" r="0.9" fill={BLUE} />
+        <path d="M 137 175 Q 140 177 143 175" fill="none" stroke={BLUE} strokeWidth="0.9" strokeLinecap="round" />
+      </g>
+
+      {/* Sleep zzz */}
+      <g className="zzz">
+        <text x="186" y="158" fontSize="10" fill={GOLD} fontFamily="serif" fontStyle="italic">z</text>
+        <text x="194" y="148" fontSize="11" fill={GOLD} fontFamily="serif" fontStyle="italic">z</text>
+        <text x="203" y="136" fontSize="13" fill={GOLD} fontFamily="serif" fontStyle="italic">z</text>
+      </g>
+    </svg>
+  )
+}
+
+function SceneInclusion() {
+  // Teacher + 4 children seated in semicircle, with picture-card center
+  return (
+    <svg viewBox="0 0 280 240" className="scene scene-inclusion" aria-hidden="true">
+      {/* Floor mat (rounded rect) */}
+      <ellipse cx="140" cy="200" rx="120" ry="22" fill={BLUE_FILL_SOFT} />
+      <ellipse cx="140" cy="198" rx="110" ry="18" fill="none" stroke={BLUE} strokeWidth="1" strokeDasharray="2 3" opacity="0.5" />
+
+      {/* Teacher (top center, larger) */}
+      <g className="figure figure-teacher">
+        <circle cx="140" cy="52" r="14" fill={WARM} stroke={BLUE} strokeWidth="1.5" />
+        {/* eyes */}
+        <circle cx="136" cy="51" r="1.1" fill={BLUE} />
+        <circle cx="144" cy="51" r="1.1" fill={BLUE} />
+        {/* smile */}
+        <path d="M 134 56 Q 140 60 146 56" fill="none" stroke={BLUE} strokeWidth="1" strokeLinecap="round" />
+        {/* body */}
+        <path d="M 122 90 Q 122 70 140 68 Q 158 70 158 90 L 158 110 L 122 110 Z" fill={BLUE_FILL} stroke={BLUE} strokeWidth="1.4" strokeLinejoin="round" />
+        {/* gold collar accent */}
+        <circle cx="140" cy="74" r="2.5" fill={GOLD} />
+      </g>
+
+      {/* Center picture card */}
+      <g className="card">
+        <rect x="120" y="120" width="40" height="48" fill="#ffffff" stroke={BLUE} strokeWidth="1.5" rx="2" />
+        {/* simple sun on card */}
+        <circle cx="140" cy="138" r="6" fill={GOLD_FILL} stroke={GOLD} strokeWidth="1.2" />
+        <line x1="140" y1="128" x2="140" y2="132" stroke={GOLD} strokeWidth="1.2" strokeLinecap="round" />
+        <line x1="140" y1="144" x2="140" y2="148" stroke={GOLD} strokeWidth="1.2" strokeLinecap="round" />
+        <line x1="130" y1="138" x2="134" y2="138" stroke={GOLD} strokeWidth="1.2" strokeLinecap="round" />
+        <line x1="146" y1="138" x2="150" y2="138" stroke={GOLD} strokeWidth="1.2" strokeLinecap="round" />
+        {/* small caption line */}
+        <line x1="126" y1="158" x2="154" y2="158" stroke={BLUE} strokeWidth="0.9" strokeLinecap="round" opacity="0.6" />
+        <line x1="130" y1="162" x2="150" y2="162" stroke={BLUE} strokeWidth="0.9" strokeLinecap="round" opacity="0.4" />
+      </g>
+
+      {/* 4 children seated around */}
+      <g className="figure figure-child child-1" style={{ ['--ci' as string]: 0 }}>
+        <circle cx="56" cy="146" r="10" fill="#ffffff" stroke={BLUE} strokeWidth="1.4" />
+        <path d="M 42 192 Q 42 168 56 166 Q 70 168 70 192 Z" fill={BLUE_FILL} stroke={BLUE} strokeWidth="1.3" strokeLinejoin="round" />
+      </g>
+      <g className="figure figure-child child-2" style={{ ['--ci' as string]: 1 }}>
+        <circle cx="98" cy="172" r="10" fill="#ffffff" stroke={BLUE} strokeWidth="1.4" />
+        <path d="M 84 200 Q 84 184 98 182 Q 112 184 112 200 Z" fill={WARM} stroke={BLUE} strokeWidth="1.3" strokeLinejoin="round" />
+      </g>
+      <g className="figure figure-child child-3" style={{ ['--ci' as string]: 2 }}>
+        <circle cx="182" cy="172" r="10" fill="#ffffff" stroke={BLUE} strokeWidth="1.4" />
+        <path d="M 168 200 Q 168 184 182 182 Q 196 184 196 200 Z" fill={WARM} stroke={BLUE} strokeWidth="1.3" strokeLinejoin="round" />
+      </g>
+      <g className="figure figure-child child-4" style={{ ['--ci' as string]: 3 }}>
+        <circle cx="224" cy="146" r="10" fill="#ffffff" stroke={BLUE} strokeWidth="1.4" />
+        <path d="M 210 192 Q 210 168 224 166 Q 238 168 238 192 Z" fill={BLUE_FILL} stroke={BLUE} strokeWidth="1.3" strokeLinejoin="round" />
+      </g>
+
+      {/* Connecting attention lines from children to card */}
+      <g className="links" opacity="0.5">
+        <path d="M 64 144 Q 100 130 120 134" fill="none" stroke={GOLD} strokeWidth="0.8" strokeDasharray="2 3" />
+        <path d="M 104 168 Q 116 154 124 146" fill="none" stroke={GOLD} strokeWidth="0.8" strokeDasharray="2 3" />
+        <path d="M 176 168 Q 164 154 156 146" fill="none" stroke={GOLD} strokeWidth="0.8" strokeDasharray="2 3" />
+        <path d="M 216 144 Q 180 130 160 134" fill="none" stroke={GOLD} strokeWidth="0.8" strokeDasharray="2 3" />
+      </g>
+    </svg>
+  )
+}
+
+function SceneSpeech() {
+  // Therapist + child + flashcard + speech bubbles
+  return (
+    <svg viewBox="0 0 280 240" className="scene scene-speech" aria-hidden="true">
+      {/* Desk line */}
+      <line x1="20" y1="200" x2="260" y2="200" stroke={BLUE} strokeWidth="1.6" strokeLinecap="round" />
+      <line x1="20" y1="204" x2="260" y2="204" stroke={BLUE} strokeWidth="0.6" opacity="0.4" />
+
+      {/* Ambient glow */}
+      <circle cx="140" cy="60" r="50" fill={GOLD_FILL} className="amb amb-1" />
+
+      {/* Therapist (left) */}
+      <g className="figure figure-therapist">
+        <circle cx="60" cy="92" r="16" fill={WARM} stroke={BLUE} strokeWidth="1.6" />
+        <circle cx="55" cy="91" r="1.2" fill={BLUE} />
+        <circle cx="65" cy="91" r="1.2" fill={BLUE} />
+        <path d="M 54 97 Q 60 101 66 97" fill="none" stroke={BLUE} strokeWidth="1" strokeLinecap="round" />
+        {/* body / coat */}
+        <path d="M 36 142 Q 36 116 60 112 Q 84 116 84 142 L 84 200 L 36 200 Z" fill="#ffffff" stroke={BLUE} strokeWidth="1.6" strokeLinejoin="round" />
+        {/* lapels */}
+        <line x1="60" y1="120" x2="50" y2="172" stroke={BLUE} strokeWidth="1" />
+        <line x1="60" y1="120" x2="70" y2="172" stroke={BLUE} strokeWidth="1" />
+        {/* gold lapel pin */}
+        <circle cx="58" cy="132" r="2.5" fill={GOLD} />
+        {/* arm holding card */}
+        <path d="M 82 150 Q 100 158 116 168" fill="none" stroke={BLUE} strokeWidth="1.6" strokeLinecap="round" />
+      </g>
+
+      {/* Flashcard */}
+      <g className="card">
+        <rect x="116" y="138" width="48" height="56" fill="#ffffff" stroke={BLUE} strokeWidth="1.5" rx="2" />
+        {/* apple icon on card */}
+        <circle cx="140" cy="160" r="10" fill={GOLD_FILL} stroke={GOLD} strokeWidth="1.3" />
+        <path d="M 140 148 Q 142 145 144 148" fill="none" stroke={BLUE} strokeWidth="1.1" strokeLinecap="round" />
+        <line x1="140" y1="146" x2="140" y2="150" stroke={BLUE} strokeWidth="1.1" strokeLinecap="round" />
+        {/* word lines */}
+        <line x1="124" y1="178" x2="156" y2="178" stroke={BLUE} strokeWidth="1" strokeLinecap="round" opacity="0.65" />
+        <line x1="128" y1="184" x2="152" y2="184" stroke={BLUE} strokeWidth="1" strokeLinecap="round" opacity="0.4" />
+      </g>
+
+      {/* Child (right) */}
+      <g className="figure figure-child">
+        <circle cx="220" cy="108" r="13" fill="#ffffff" stroke={BLUE} strokeWidth="1.6" />
+        <circle cx="216" cy="107" r="1.1" fill={BLUE} />
+        <circle cx="224" cy="107" r="1.1" fill={BLUE} />
+        <ellipse cx="220" cy="113" rx="2.5" ry="1.5" fill="none" stroke={BLUE} strokeWidth="1" />
+        {/* body */}
+        <path d="M 200 152 Q 200 130 220 128 Q 240 130 240 152 L 240 200 L 200 200 Z" fill={BLUE_FILL} stroke={BLUE} strokeWidth="1.5" strokeLinejoin="round" />
+      </g>
+
+      {/* Speech bubble from child */}
+      <g className="speech-bubble">
+        <path
+          d="M 196 76 Q 196 64 208 64 L 256 64 Q 268 64 268 76 L 268 96 Q 268 108 256 108 L 224 108 L 214 118 L 218 108 L 208 108 Q 196 108 196 96 Z"
+          fill="#ffffff"
+          stroke={BLUE}
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+        {/* wave inside bubble */}
+        <path d="M 208 88 Q 216 78 224 88 Q 232 98 240 88 Q 248 78 256 88" fill="none" stroke={GOLD} strokeWidth="1.5" strokeLinecap="round" className="bubble-wave" />
+      </g>
+    </svg>
+  )
+}
+
+function SceneMotor() {
+  // Balance beam scene with child standing arms-out, therapy ball nearby
+  return (
+    <svg viewBox="0 0 280 240" className="scene scene-motor" aria-hidden="true">
+      {/* Floor */}
+      <line x1="10" y1="222" x2="270" y2="222" stroke={BLUE} strokeWidth="1.4" strokeLinecap="round" />
+      <line x1="10" y1="226" x2="270" y2="226" stroke={BLUE} strokeWidth="0.5" opacity="0.3" />
+
+      {/* Floor dots (background) */}
+      <g opacity="0.35">
+        <circle cx="30" cy="218" r="1" fill={BLUE} />
+        <circle cx="50" cy="216" r="1" fill={BLUE} />
+        <circle cx="250" cy="218" r="1" fill={BLUE} />
+      </g>
+
+      {/* Balance beam */}
+      <g className="beam">
+        <rect x="70" y="186" width="140" height="10" fill={WARM} stroke={BLUE} strokeWidth="1.5" rx="1" />
+        {/* support legs */}
+        <line x1="86" y1="196" x2="78" y2="222" stroke={BLUE} strokeWidth="1.4" strokeLinecap="round" />
+        <line x1="194" y1="196" x2="202" y2="222" stroke={BLUE} strokeWidth="1.4" strokeLinecap="round" />
+        {/* wood grain */}
+        <line x1="80" y1="190" x2="200" y2="190" stroke={BLUE} strokeWidth="0.4" opacity="0.4" />
+      </g>
+
+      {/* Therapy ball */}
+      <g className="ball">
+        <circle cx="244" cy="200" r="22" fill={GOLD_FILL} stroke={BLUE} strokeWidth="1.5" />
+        <path d="M 224 200 Q 244 196 264 200" fill="none" stroke={BLUE} strokeWidth="0.8" opacity="0.5" />
+        <path d="M 244 178 Q 248 200 244 222" fill="none" stroke={BLUE} strokeWidth="0.8" opacity="0.5" />
+        {/* highlight */}
+        <ellipse cx="237" cy="190" rx="4" ry="3" fill="#ffffff" opacity="0.7" />
+      </g>
+
+      {/* Child on beam (arms out for balance) */}
+      <g className="figure figure-balancer">
+        {/* head */}
+        <circle cx="140" cy="92" r="14" fill={WARM} stroke={BLUE} strokeWidth="1.6" />
+        <circle cx="135" cy="91" r="1.1" fill={BLUE} />
+        <circle cx="145" cy="91" r="1.1" fill={BLUE} />
+        <path d="M 134 96 Q 140 100 146 96" fill="none" stroke={BLUE} strokeWidth="1" strokeLinecap="round" />
+        {/* torso */}
+        <path d="M 128 108 L 128 154 L 152 154 L 152 108 Z" fill={BLUE_FILL} stroke={BLUE} strokeWidth="1.5" strokeLinejoin="round" />
+        {/* arms outstretched (animated) */}
+        <g className="arms">
+          <line x1="128" y1="118" x2="92" y2="124" stroke={BLUE} strokeWidth="1.8" strokeLinecap="round" />
+          <line x1="152" y1="118" x2="188" y2="124" stroke={BLUE} strokeWidth="1.8" strokeLinecap="round" />
+          {/* gold balance dots at hand tips */}
+          <circle cx="90" cy="124" r="2.5" fill={GOLD} />
+          <circle cx="190" cy="124" r="2.5" fill={GOLD} />
+        </g>
+        {/* legs */}
+        <line x1="134" y1="154" x2="130" y2="186" stroke={BLUE} strokeWidth="1.8" strokeLinecap="round" />
+        <line x1="146" y1="154" x2="150" y2="186" stroke={BLUE} strokeWidth="1.8" strokeLinecap="round" />
+      </g>
+
+      {/* Motion arc indicator */}
+      <path
+        d="M 92 132 Q 140 144 188 132"
+        fill="none"
+        stroke={GOLD}
+        strokeWidth="0.9"
+        strokeDasharray="2 3"
+        opacity="0.6"
+        className="motion-arc"
+      />
+    </svg>
+  )
+}
+
+function SceneBehavior() {
+  // PECS-style: 4 picture cards + hand reaching, with a star "reward" lighting up
+  return (
+    <svg viewBox="0 0 280 240" className="scene scene-behavior" aria-hidden="true">
+      {/* Background subtle grid */}
+      <g opacity="0.18">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <line key={`gx${i}`} x1={30 + i * 56} y1="30" x2={30 + i * 56} y2="210" stroke={BLUE} strokeWidth="0.5" />
+        ))}
+        {[0, 1, 2, 3].map((i) => (
+          <line key={`gy${i}`} x1="30" y1={30 + i * 56} x2="254" y2={30 + i * 56} stroke={BLUE} strokeWidth="0.5" />
+        ))}
+      </g>
+
+      {/* Reward star (top) */}
+      <g className="reward">
+        <path
+          d="M 140 36 L 146 52 L 164 52 L 150 62 L 156 80 L 140 70 L 124 80 L 130 62 L 116 52 L 134 52 Z"
+          fill={GOLD_FILL}
+          stroke={GOLD}
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+        <circle cx="140" cy="58" r="3" fill={GOLD} />
+      </g>
+
+      {/* 4 PECS cards in a row */}
+      <g className="cards">
+        {/* Card 1 — sun */}
+        <g className="pecs-card" style={{ ['--pi' as string]: 0 }}>
+          <rect x="22" y="106" width="56" height="68" fill="#ffffff" stroke={BLUE} strokeWidth="1.5" rx="3" />
+          <circle cx="50" cy="130" r="9" fill={GOLD_FILL} stroke={GOLD} strokeWidth="1.3" />
+          <g stroke={GOLD} strokeWidth="1.2" strokeLinecap="round">
+            <line x1="50" y1="118" x2="50" y2="122" />
+            <line x1="50" y1="138" x2="50" y2="142" />
+            <line x1="38" y1="130" x2="42" y2="130" />
+            <line x1="58" y1="130" x2="62" y2="130" />
           </g>
+          <line x1="30" y1="156" x2="70" y2="156" stroke={BLUE} strokeWidth="0.9" opacity="0.6" />
+          <line x1="32" y1="162" x2="68" y2="162" stroke={BLUE} strokeWidth="0.9" opacity="0.4" />
+        </g>
 
-          {/* 五个金色感官点 */}
-          <g className="art-dots">
-            <circle cx="184" cy="84" r="3.4" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 0 }} />
-            <circle cx="194" cy="128" r="3.4" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 1 }} />
-            <circle cx="184" cy="172" r="3.4" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 2 }} />
-            <circle cx="156" cy="74" r="3.4" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 3 }} />
-            <circle cx="100" cy="84" r="3.4" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 4 }} />
-          </g>
-        </svg>
-      )
-
-    /* ──────────── 02 融合教育 ────────────
-       视觉叙事：1 位老师居中，5 位孩童围绕，外环 dashed 表示融合空间
-       入场：外环旋转扫入 → 中心圆 → 卫星圆顺时针 → 连线 → 金点 */
-    case 'inclusion':
-      return (
-        <svg viewBox="0 0 240 240" className="art-svg art-inclusion" aria-hidden="true">
-          {/* 外环 dashed (大圆) */}
-          <circle cx="120" cy="120" r="84" strokeDasharray="3 6" {...COMMON} strokeWidth={1.2} className="art-l art-orbit" />
-
-          {/* 中心 facilitator */}
-          <circle cx="120" cy="120" r="16" {...COMMON} strokeWidth={1.8} className="art-l art-core" />
-          <circle cx="120" cy="120" r="4" fill={GOLD} className="art-d art-core-fill" />
-
-          {/* 5 个卫星圆（位置围绕中心 72°） */}
-          <g className="art-sats">
-            <circle cx="120" cy="46" r="10" {...COMMON} strokeWidth={1.4} className="art-l art-sat" style={{ ['--seq' as string]: 0 }} />
-            <circle cx="190" cy="98" r="10" {...COMMON} strokeWidth={1.4} className="art-l art-sat" style={{ ['--seq' as string]: 1 }} />
-            <circle cx="164" cy="184" r="10" {...COMMON} strokeWidth={1.4} className="art-l art-sat" style={{ ['--seq' as string]: 2 }} />
-            <circle cx="76" cy="184" r="10" {...COMMON} strokeWidth={1.4} className="art-l art-sat" style={{ ['--seq' as string]: 3 }} />
-            <circle cx="50" cy="98" r="10" {...COMMON} strokeWidth={1.4} className="art-l art-sat" style={{ ['--seq' as string]: 4 }} />
-          </g>
-
-          {/* 连接线（中心到各卫星） */}
-          <g className="art-links">
-            <line x1="120" y1="104" x2="120" y2="56" {...COMMON} strokeWidth={1} className="art-l art-link" style={{ ['--seq' as string]: 0 }} />
-            <line x1="134" y1="115" x2="180" y2="100" {...COMMON} strokeWidth={1} className="art-l art-link" style={{ ['--seq' as string]: 1 }} />
-            <line x1="130" y1="135" x2="158" y2="174" {...COMMON} strokeWidth={1} className="art-l art-link" style={{ ['--seq' as string]: 2 }} />
-            <line x1="110" y1="135" x2="82" y2="174" {...COMMON} strokeWidth={1} className="art-l art-link" style={{ ['--seq' as string]: 3 }} />
-            <line x1="106" y1="115" x2="60" y2="100" {...COMMON} strokeWidth={1} className="art-l art-link" style={{ ['--seq' as string]: 4 }} />
-          </g>
-
-          {/* 金色节点夹角 */}
-          <g className="art-dots">
-            <circle cx="120" cy="46" r="2.6" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 0 }} />
-            <circle cx="190" cy="98" r="2.6" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 1 }} />
-            <circle cx="164" cy="184" r="2.6" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 2 }} />
-            <circle cx="76" cy="184" r="2.6" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 3 }} />
-            <circle cx="50" cy="98" r="2.6" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 4 }} />
-          </g>
-        </svg>
-      )
-
-    /* ──────────── 03 言语认知 ────────────
-       视觉叙事：右向头部侧影，脑内螺旋（思维），口部三道波（言语）
-       入场：头部轮廓 → 脑内螺旋 → 三波依次扩散 → 金点
-       持续：三波循环脉动；脑内金点缓慢呼吸 */
-    case 'speech':
-      return (
-        <svg viewBox="0 0 240 240" className="art-svg art-speech" aria-hidden="true">
-          {/* 头部侧影（朝右） */}
+        {/* Card 2 — heart */}
+        <g className="pecs-card" style={{ ['--pi' as string]: 1 }}>
+          <rect x="86" y="106" width="56" height="68" fill="#ffffff" stroke={BLUE} strokeWidth="1.5" rx="3" />
           <path
-            d="M 78 76 Q 78 50 108 46 Q 152 42 168 78 Q 178 102 168 132 L 156 132 L 156 156 L 130 162 L 120 188 L 76 188 L 76 144 Q 60 132 64 110 Q 68 88 78 76 Z"
-            {...COMMON}
-            strokeWidth={1.6}
-            className="art-l art-head"
+            d="M 114 145 C 100 132, 94 122, 102 116 C 110 110, 114 116, 114 120 C 114 116, 118 110, 126 116 C 134 122, 128 132, 114 145 Z"
+            fill={BLUE_FILL}
+            stroke={BLUE}
+            strokeWidth="1.3"
+            strokeLinejoin="round"
           />
+          <line x1="94" y1="156" x2="134" y2="156" stroke={BLUE} strokeWidth="0.9" opacity="0.6" />
+          <line x1="96" y1="162" x2="132" y2="162" stroke={BLUE} strokeWidth="0.9" opacity="0.4" />
+        </g>
 
-          {/* 脑内螺旋 (思维) */}
+        {/* Card 3 — checkmark (the chosen / target one) */}
+        <g className="pecs-card pecs-card-active" style={{ ['--pi' as string]: 2 }}>
+          <rect x="150" y="106" width="56" height="68" fill={GOLD_FILL} stroke={GOLD} strokeWidth="1.8" rx="3" />
           <path
-            d="M 124 96 m 18 0 a 18 18 0 1 1 -18 -18 a 12 12 0 0 1 12 12 a 6 6 0 0 1 -6 6"
-            {...COMMON}
-            strokeWidth={1.3}
-            className="art-l art-spiral"
+            d="M 164 132 L 174 142 L 192 122"
+            fill="none"
+            stroke={GOLD}
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
-          {/* 螺旋中心金点 */}
-          <circle cx="124" cy="96" r="3" fill={GOLD} className="art-d art-thought" />
+          <line x1="158" y1="156" x2="198" y2="156" stroke={GOLD} strokeWidth="1" opacity="0.7" />
+          <line x1="160" y1="162" x2="196" y2="162" stroke={GOLD} strokeWidth="1" opacity="0.5" />
+        </g>
 
-          {/* 言语三波 (从口部向右扩散) */}
-          <g className="art-waves">
-            <path d="M 175 150 Q 188 156 175 168" {...COMMON} strokeWidth={1.4} className="art-l art-wave" style={{ ['--seq' as string]: 0 }} />
-            <path d="M 188 142 Q 208 156 188 174" {...COMMON} strokeWidth={1.4} className="art-l art-wave" style={{ ['--seq' as string]: 1 }} />
-            <path d="M 200 134 Q 226 156 200 180" {...COMMON} strokeWidth={1.4} className="art-l art-wave" style={{ ['--seq' as string]: 2 }} />
-          </g>
-        </svg>
-      )
+        {/* Card 4 — circle */}
+        <g className="pecs-card" style={{ ['--pi' as string]: 3 }}>
+          <rect x="214" y="106" width="44" height="68" fill="#ffffff" stroke={BLUE} strokeWidth="1.5" rx="3" />
+          <circle cx="236" cy="132" r="10" fill="none" stroke={BLUE} strokeWidth="1.4" />
+          <line x1="220" y1="156" x2="252" y2="156" stroke={BLUE} strokeWidth="0.9" opacity="0.6" />
+          <line x1="222" y1="162" x2="250" y2="162" stroke={BLUE} strokeWidth="0.9" opacity="0.4" />
+        </g>
+      </g>
 
-    /* ──────────── 04 运动训练 ────────────
-       视觉叙事：从左到右三个形态——爬→坐→站，进阶发展
-       入场：基线 → 三人依次绘出 → 金色阶段点连成轨迹
-       持续：站立小人头部轻微浮动（呼吸） */
-    case 'motor':
-      return (
-        <svg viewBox="0 0 240 240" className="art-svg art-motor" aria-hidden="true">
-          {/* 基线 */}
-          <line x1="32" y1="190" x2="208" y2="190" {...COMMON} strokeWidth={1.4} className="art-l art-baseline" />
+      {/* Hand reaching to active card */}
+      <g className="hand">
+        {/* index finger pointing */}
+        <path
+          d="M 178 220 Q 178 200 178 185 L 178 156 L 174 156 L 174 196 L 168 196 L 168 220 Z"
+          fill={WARM}
+          stroke={BLUE}
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+        {/* knuckle line */}
+        <line x1="174" y1="180" x2="178" y2="180" stroke={BLUE} strokeWidth="0.6" opacity="0.4" />
+      </g>
+    </svg>
+  )
+}
 
-          {/* 爬行 baby */}
-          <g className="art-stage" style={{ ['--seq' as string]: 0 }}>
-            <circle cx="55" cy="160" r="9" {...COMMON} strokeWidth={1.5} className="art-l" />
-            <path d="M 47 168 Q 60 180 78 175" {...COMMON} strokeWidth={1.5} className="art-l" />
-            <line x1="55" y1="169" x2="48" y2="188" {...COMMON} strokeWidth={1.4} className="art-l" />
-            <line x1="68" y1="172" x2="70" y2="188" {...COMMON} strokeWidth={1.4} className="art-l" />
-          </g>
+function SceneSensory() {
+  // Child on therapy swing, hanging from ceiling mount, with motion arc
+  return (
+    <svg viewBox="0 0 280 240" className="scene scene-sensory" aria-hidden="true">
+      {/* Ceiling mount */}
+      <line x1="60" y1="20" x2="220" y2="20" stroke={BLUE} strokeWidth="2" strokeLinecap="round" />
+      <line x1="60" y1="24" x2="220" y2="24" stroke={BLUE} strokeWidth="0.5" opacity="0.4" />
+      <circle cx="120" cy="20" r="3" fill={BLUE} />
+      <circle cx="160" cy="20" r="3" fill={BLUE} />
 
-          {/* 坐立 toddler */}
-          <g className="art-stage" style={{ ['--seq' as string]: 1 }}>
-            <circle cx="120" cy="138" r="11" {...COMMON} strokeWidth={1.5} className="art-l" />
-            <path d="M 120 149 L 120 178 Q 120 188 110 188 L 132 188" {...COMMON} strokeWidth={1.5} className="art-l" />
-            <line x1="120" y1="160" x2="106" y2="166" {...COMMON} strokeWidth={1.4} className="art-l" />
-            <line x1="120" y1="160" x2="134" y2="166" {...COMMON} strokeWidth={1.4} className="art-l" />
-          </g>
+      {/* Ambient glow */}
+      <circle cx="140" cy="160" r="80" fill={GOLD_FILL} className="amb amb-1" />
 
-          {/* 直立 child */}
-          <g className="art-stage art-stage-stand" style={{ ['--seq' as string]: 2 }}>
-            <circle cx="190" cy="100" r="13" {...COMMON} strokeWidth={1.6} className="art-l art-stand-head" />
-            <line x1="190" y1="113" x2="190" y2="160" {...COMMON} strokeWidth={1.6} className="art-l" />
-            <line x1="190" y1="125" x2="172" y2="148" {...COMMON} strokeWidth={1.5} className="art-l" />
-            <line x1="190" y1="125" x2="208" y2="148" {...COMMON} strokeWidth={1.5} className="art-l" />
-            <line x1="190" y1="160" x2="178" y2="190" {...COMMON} strokeWidth={1.5} className="art-l" />
-            <line x1="190" y1="160" x2="202" y2="190" {...COMMON} strokeWidth={1.5} className="art-l" />
-          </g>
+      {/* Swing assembly — animated as a unit */}
+      <g className="swing">
+        {/* Ropes */}
+        <line x1="120" y1="22" x2="100" y2="142" stroke={BLUE} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="160" y1="22" x2="180" y2="142" stroke={BLUE} strokeWidth="1.5" strokeLinecap="round" />
+        {/* Swing platform (cocoon style) */}
+        <path
+          d="M 90 142 Q 140 122 190 142 Q 196 168 180 192 Q 140 208 100 192 Q 84 168 90 142 Z"
+          fill={WARM}
+          stroke={BLUE}
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        {/* Inside shadow */}
+        <path d="M 96 152 Q 140 140 184 152" fill="none" stroke={BLUE} strokeWidth="0.7" opacity="0.4" />
 
-          {/* 进阶金色轨迹点（上方） */}
-          <g className="art-progress">
-            <circle cx="55" cy="60" r="3" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 0 }} />
-            <circle cx="120" cy="50" r="3" fill={GOLD} className="art-d" style={{ ['--seq' as string]: 1 }} />
-            <circle cx="190" cy="42" r="4" fill={GOLD} className="art-d art-d-final" style={{ ['--seq' as string]: 2 }} />
-          </g>
-          {/* 连接进阶点的虚线 */}
-          <path d="M 55 60 Q 110 38 190 42" {...COMMON} strokeWidth={1} strokeDasharray="2 4" className="art-l art-progress-line" />
-        </svg>
-      )
+        {/* Child seated */}
+        <g className="figure figure-swinger">
+          {/* head */}
+          <circle cx="140" cy="156" r="13" fill="#ffffff" stroke={BLUE} strokeWidth="1.6" />
+          <circle cx="136" cy="155" r="1.1" fill={BLUE} />
+          <circle cx="144" cy="155" r="1.1" fill={BLUE} />
+          {/* happy smile */}
+          <path d="M 134 160 Q 140 166 146 160" fill="none" stroke={BLUE} strokeWidth="1.2" strokeLinecap="round" />
+          {/* body peeking out */}
+          <path d="M 130 169 L 130 184 L 150 184 L 150 169 Z" fill={BLUE_FILL} stroke={BLUE} strokeWidth="1.3" strokeLinejoin="round" />
+        </g>
+      </g>
 
-    /* ──────────── 05 行为矫正 ────────────
-       视觉叙事：左侧无序散点（with 弱连线）→ 中央箭头 → 右侧规整 3×3 矩阵
-       入场：散点抖动出现 → 箭头扫过 → 矩阵 snap-in → 金色成功点
-       持续：左侧散点保持微抖动（无序状态），右侧静止（秩序） */
-    case 'behavior':
-      return (
-        <svg viewBox="0 0 240 240" className="art-svg art-behavior" aria-hidden="true">
-          {/* 左侧散乱点 */}
-          <g className="art-scatter">
-            <circle cx="42" cy="64" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-scatter-c" style={{ ['--seq' as string]: 0 }} />
-            <circle cx="74" cy="98" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-scatter-c" style={{ ['--seq' as string]: 1 }} />
-            <circle cx="38" cy="138" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-scatter-c" style={{ ['--seq' as string]: 2 }} />
-            <circle cx="64" cy="172" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-scatter-c" style={{ ['--seq' as string]: 3 }} />
-            <circle cx="86" cy="58" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-scatter-c" style={{ ['--seq' as string]: 4 }} />
-          </g>
-          {/* 散乱点之间的弱连线 */}
-          <g className="art-scatter-lines">
-            <path d="M 42 64 Q 56 80 74 98" {...COMMON} strokeWidth={0.8} className="art-l art-scatter-l" />
-            <path d="M 74 98 Q 48 120 38 138" {...COMMON} strokeWidth={0.8} className="art-l art-scatter-l" />
-            <path d="M 38 138 Q 56 160 64 172" {...COMMON} strokeWidth={0.8} className="art-l art-scatter-l" />
-            <path d="M 86 58 Q 80 80 74 98" {...COMMON} strokeWidth={0.8} className="art-l art-scatter-l" />
-          </g>
+      {/* Motion arc beneath */}
+      <path
+        d="M 80 220 Q 140 200 200 220"
+        fill="none"
+        stroke={GOLD}
+        strokeWidth="1.1"
+        strokeDasharray="3 4"
+        opacity="0.7"
+        className="motion-arc"
+      />
 
-          {/* 中央过渡箭头 */}
-          <g className="art-arrow">
-            <line x1="106" y1="120" x2="138" y2="120" {...COMMON} strokeWidth={1.6} className="art-l art-arrow-l" />
-            <polyline points="130 113, 138 120, 130 127" {...COMMON} strokeWidth={1.6} className="art-l art-arrow-h" />
-          </g>
+      {/* Floor line */}
+      <line x1="20" y1="228" x2="260" y2="228" stroke={BLUE} strokeWidth="1.2" strokeLinecap="round" opacity="0.5" />
+    </svg>
+  )
+}
 
-          {/* 右侧规整 3×3 矩阵 */}
-          <g className="art-grid">
-            <circle cx="160" cy="64" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-grid-c" style={{ ['--seq' as string]: 0 }} />
-            <circle cx="186" cy="64" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-grid-c" style={{ ['--seq' as string]: 1 }} />
-            <circle cx="212" cy="64" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-grid-c" style={{ ['--seq' as string]: 2 }} />
-            <circle cx="160" cy="120" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-grid-c" style={{ ['--seq' as string]: 3 }} />
-            <circle cx="186" cy="120" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-grid-c" style={{ ['--seq' as string]: 4 }} />
-            <circle cx="212" cy="120" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-grid-c" style={{ ['--seq' as string]: 5 }} />
-            <circle cx="160" cy="176" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-grid-c" style={{ ['--seq' as string]: 6 }} />
-            <circle cx="186" cy="176" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-grid-c" style={{ ['--seq' as string]: 7 }} />
-            <circle cx="212" cy="176" r="3.5" {...COMMON} strokeWidth={1.4} className="art-l art-grid-c" style={{ ['--seq' as string]: 8 }} />
-          </g>
-          {/* 矩阵格线 */}
-          <g className="art-grid-lines">
-            <line x1="160" y1="64" x2="212" y2="64" {...COMMON} strokeWidth={0.8} className="art-l art-grid-ln" style={{ ['--seq' as string]: 0 }} />
-            <line x1="160" y1="120" x2="212" y2="120" {...COMMON} strokeWidth={0.8} className="art-l art-grid-ln" style={{ ['--seq' as string]: 1 }} />
-            <line x1="160" y1="176" x2="212" y2="176" {...COMMON} strokeWidth={0.8} className="art-l art-grid-ln" style={{ ['--seq' as string]: 2 }} />
-            <line x1="160" y1="64" x2="160" y2="176" {...COMMON} strokeWidth={0.8} className="art-l art-grid-ln" style={{ ['--seq' as string]: 3 }} />
-            <line x1="186" y1="64" x2="186" y2="176" {...COMMON} strokeWidth={0.8} className="art-l art-grid-ln" style={{ ['--seq' as string]: 4 }} />
-            <line x1="212" y1="64" x2="212" y2="176" {...COMMON} strokeWidth={0.8} className="art-l art-grid-ln" style={{ ['--seq' as string]: 5 }} />
-          </g>
-          {/* 成功金点 */}
-          <circle cx="212" cy="64" r="4" fill={GOLD} className="art-d art-success" />
-        </svg>
-      )
+function SceneOT() {
+  // Table-top fine motor: hand picking up colored beads/blocks
+  return (
+    <svg viewBox="0 0 280 240" className="scene scene-ot" aria-hidden="true">
+      {/* Ambient */}
+      <circle cx="80" cy="60" r="36" fill={BLUE_FILL_SOFT} />
 
-    /* ──────────── 06 感觉统合 ────────────
-       视觉叙事：5 片花瓣从中心呈 72° 辐射，外环连接花瓣尖端 = 整合
-       入场：外环 → 花瓣顺时针逐片绘出 → 花瓣尖金点 → 中心金芯（最后）
-       持续：整组花瓣极慢顺时针旋转（120s/圈） */
-    case 'sensory':
-      return (
-        <svg viewBox="0 0 240 240" className="art-svg art-sensory" aria-hidden="true">
-          {/* 外环 (连接花瓣尖端) */}
-          <circle cx="120" cy="120" r="86" {...COMMON} strokeWidth={1} strokeDasharray="2 5" className="art-l art-outer-ring" />
+      {/* Table */}
+      <rect x="20" y="170" width="240" height="6" fill={WARM} stroke={BLUE} strokeWidth="1.5" />
+      <line x1="20" y1="176" x2="260" y2="176" stroke={BLUE} strokeWidth="0.5" opacity="0.4" />
+      {/* table legs */}
+      <line x1="40" y1="176" x2="40" y2="222" stroke={BLUE} strokeWidth="1.5" />
+      <line x1="240" y1="176" x2="240" y2="222" stroke={BLUE} strokeWidth="1.5" />
+      <line x1="20" y1="224" x2="260" y2="224" stroke={BLUE} strokeWidth="1" opacity="0.5" />
 
-          {/* 5 片花瓣（leaf 形）— 旋转组 */}
-          <g className="art-petals" style={{ transformOrigin: '120px 120px' }}>
-            {[0, 72, 144, 216, 288].map((angle, i) => (
-              <g key={i} transform={`rotate(${angle} 120 120)`} className="art-petal-wrap" style={{ ['--seq' as string]: i }}>
-                {/* 花瓣轮廓 */}
-                <path
-                  d="M 120 40 Q 132 80 120 120 Q 108 80 120 40 Z"
-                  {...COMMON}
-                  strokeWidth={1.4}
-                  className="art-l art-petal"
-                />
-                {/* 花瓣尖金点 */}
-                <circle cx="120" cy="40" r="3" fill={GOLD} className="art-d art-petal-tip" />
-              </g>
-            ))}
-          </g>
+      {/* Blocks on table — staggered heights */}
+      <g className="blocks">
+        <rect x="50" y="150" width="18" height="20" fill={WARM} stroke={BLUE} strokeWidth="1.3" rx="1" className="block block-1" />
+        <rect x="74" y="138" width="18" height="32" fill={GOLD_FILL} stroke={GOLD} strokeWidth="1.5" rx="1" className="block block-2" />
+        <rect x="98" y="158" width="18" height="12" fill={BLUE_FILL} stroke={BLUE} strokeWidth="1.3" rx="1" className="block block-3" />
+      </g>
 
-          {/* 中心金芯 */}
-          <circle cx="120" cy="120" r="6" fill={GOLD} className="art-d art-center" />
-        </svg>
-      )
+      {/* Beads strung */}
+      <g className="beads">
+        <circle cx="158" cy="162" r="5" fill={GOLD} stroke={BLUE} strokeWidth="1" className="bead bead-1" />
+        <circle cx="172" cy="162" r="5" fill={WARM} stroke={BLUE} strokeWidth="1" className="bead bead-2" />
+        <circle cx="186" cy="162" r="5" fill={BLUE_FILL} stroke={BLUE} strokeWidth="1" className="bead bead-3" />
+        <circle cx="200" cy="162" r="5" fill={GOLD_FILL} stroke={GOLD} strokeWidth="1" className="bead bead-4" />
+        {/* string */}
+        <line x1="150" y1="162" x2="208" y2="162" stroke={BLUE} strokeWidth="0.8" opacity="0.5" />
+      </g>
 
-    /* ──────────── 07 作业训练 ────────────
-       视觉叙事：手掌 + 5 指 + 拇指/食指捏取处金色 object + 三圈触觉波
-       入场：腕→掌→拇指→四指依次→金 object pop→三圈扩散
-       持续：三圈触觉波循环向外脉动 */
-    case 'ot':
-      return (
-        <svg viewBox="0 0 240 240" className="art-svg art-ot" aria-hidden="true">
-          {/* 腕带 */}
-          <path d="M 90 200 L 90 212 L 158 212 L 158 200" {...COMMON} strokeWidth={1.5} className="art-l art-cuff" />
+      {/* Hand from above with pinch grip */}
+      <g className="hand">
+        {/* arm */}
+        <path
+          d="M 200 8 L 220 8 L 218 60 Q 214 88 198 100 L 188 108 L 184 102 L 180 92 L 178 80 L 200 60 Z"
+          fill={WARM}
+          stroke={BLUE}
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+        {/* thumb */}
+        <path
+          d="M 200 100 Q 196 108 192 116 Q 192 124 200 124 Q 208 124 208 116 Q 208 108 208 100"
+          fill={WARM}
+          stroke={BLUE}
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+        {/* index finger */}
+        <path
+          d="M 188 108 Q 184 120 184 132 Q 184 140 192 140 Q 200 140 200 132 Q 200 120 196 108"
+          fill={WARM}
+          stroke={BLUE}
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+        {/* pinch focus dot */}
+        <circle cx="194" cy="138" r="4" fill={GOLD} className="pinch-dot" />
+        {/* concentric rings around focus */}
+        <circle cx="194" cy="138" r="10" fill="none" stroke={GOLD} strokeWidth="1" opacity="0.7" className="pinch-ring r1" />
+        <circle cx="194" cy="138" r="16" fill="none" stroke={GOLD} strokeWidth="0.9" opacity="0.5" className="pinch-ring r2" />
+        <circle cx="194" cy="138" r="22" fill="none" stroke={GOLD} strokeWidth="0.8" opacity="0.3" className="pinch-ring r3" />
+      </g>
+    </svg>
+  )
+}
 
-          {/* 掌轮廓 */}
+function SceneTuina() {
+  // Massage table + reclining child + two therapist hands applying pressure + acupoints
+  return (
+    <svg viewBox="0 0 280 240" className="scene scene-tuina" aria-hidden="true">
+      {/* Ambient golden glow over child's back */}
+      <ellipse cx="160" cy="148" rx="80" ry="22" fill={GOLD_FILL} className="amb amb-1" />
+
+      {/* Massage table */}
+      <rect x="30" y="170" width="230" height="14" fill={WARM} stroke={BLUE} strokeWidth="1.6" rx="2" />
+      <line x1="30" y1="184" x2="260" y2="184" stroke={BLUE} strokeWidth="0.5" opacity="0.4" />
+      {/* legs */}
+      <line x1="50" y1="184" x2="46" y2="220" stroke={BLUE} strokeWidth="1.4" />
+      <line x1="240" y1="184" x2="244" y2="220" stroke={BLUE} strokeWidth="1.4" />
+      <line x1="20" y1="222" x2="260" y2="222" stroke={BLUE} strokeWidth="1" opacity="0.5" />
+
+      {/* Child reclining on side */}
+      <g className="child">
+        {/* head */}
+        <circle cx="78" cy="142" r="14" fill={WARM} stroke={BLUE} strokeWidth="1.6" />
+        {/* eyes (closed, content) */}
+        <path d="M 71 142 Q 74 144 77 142" fill="none" stroke={BLUE} strokeWidth="1" strokeLinecap="round" />
+        <path d="M 79 142 Q 82 144 85 142" fill="none" stroke={BLUE} strokeWidth="1" strokeLinecap="round" />
+        {/* peaceful smile */}
+        <path d="M 73 148 Q 78 152 83 148" fill="none" stroke={BLUE} strokeWidth="1" strokeLinecap="round" />
+        {/* body — curved torso along table */}
+        <path
+          d="M 92 142 Q 130 130 200 142 Q 234 144 246 158 L 246 170 Q 200 174 92 170 Z"
+          fill="#ffffff"
+          stroke={BLUE}
+          strokeWidth="1.7"
+          strokeLinejoin="round"
+        />
+        {/* spine curve */}
+        <path
+          d="M 96 152 Q 150 144 230 156"
+          fill="none"
+          stroke={BLUE}
+          strokeWidth="0.7"
+          strokeDasharray="2 3"
+          opacity="0.6"
+          className="spine"
+        />
+        {/* legs poking out */}
+        <path d="M 234 170 Q 252 174 256 168" fill="none" stroke={BLUE} strokeWidth="1.5" strokeLinecap="round" />
+      </g>
+
+      {/* Acupoints along the spine */}
+      <g className="points">
+        <circle cx="120" cy="150" r="3.5" fill={GOLD} className="point" style={{ ['--pi' as string]: 0 }} />
+        <circle cx="150" cy="148" r="3.5" fill={GOLD} className="point" style={{ ['--pi' as string]: 1 }} />
+        <circle cx="180" cy="150" r="3.5" fill={GOLD} className="point" style={{ ['--pi' as string]: 2 }} />
+        <circle cx="210" cy="154" r="3.5" fill={GOLD} className="point" style={{ ['--pi' as string]: 3 }} />
+      </g>
+
+      {/* Two therapist hands above */}
+      <g className="hands">
+        {/* left hand */}
+        <g className="hand hand-left">
           <path
-            d="M 76 200 L 76 130 Q 76 110 88 110 L 88 134 L 100 134 L 100 80 Q 100 70 110 70 Q 120 70 120 80 L 120 134 L 132 134 L 132 64 Q 132 54 142 54 Q 152 54 152 64 L 152 134 L 164 134 L 164 90 Q 164 80 172 80 Q 180 80 180 90 L 180 200 Z"
-            {...COMMON}
-            strokeWidth={1.6}
-            className="art-l art-palm"
+            d="M 130 90 L 156 90 L 154 130 L 150 138 L 144 138 L 142 132 L 138 134 L 134 130 L 130 132 L 128 124 Z"
+            fill={WARM}
+            stroke={BLUE}
+            strokeWidth="1.5"
+            strokeLinejoin="round"
           />
-
-          {/* 拇指 (外凸曲线) */}
+          {/* finger separators */}
+          <path d="M 142 110 L 142 130" stroke={BLUE} strokeWidth="0.7" opacity="0.5" />
+          <path d="M 148 110 L 150 130" stroke={BLUE} strokeWidth="0.7" opacity="0.5" />
+        </g>
+        {/* right hand */}
+        <g className="hand hand-right">
           <path
-            d="M 76 142 Q 50 140 50 116 Q 50 92 70 100 L 88 130"
-            {...COMMON}
-            strokeWidth={1.6}
-            className="art-l art-thumb"
+            d="M 184 96 L 210 96 L 208 134 L 204 142 L 198 142 L 196 136 L 192 138 L 188 134 L 184 136 L 182 128 Z"
+            fill={WARM}
+            stroke={BLUE}
+            strokeWidth="1.5"
+            strokeLinejoin="round"
           />
+          <path d="M 196 116 L 196 136" stroke={BLUE} strokeWidth="0.7" opacity="0.5" />
+          <path d="M 202 116 L 204 136" stroke={BLUE} strokeWidth="0.7" opacity="0.5" />
+        </g>
+      </g>
 
-          {/* 食指与拇指捏取点 */}
-          <circle cx="70" cy="98" r="4.5" fill={GOLD} className="art-d art-pinch" />
+      {/* Steam/qi wisps rising from points */}
+      <g className="wisps" opacity="0.5">
+        <path d="M 120 144 Q 122 134 120 124" fill="none" stroke={GOLD} strokeWidth="0.9" strokeLinecap="round" />
+        <path d="M 180 144 Q 178 134 180 124" fill="none" stroke={GOLD} strokeWidth="0.9" strokeLinecap="round" />
+      </g>
+    </svg>
+  )
+}
 
-          {/* 三圈触觉扩散波 */}
-          <g className="art-pulse">
-            <circle cx="70" cy="98" r="10" {...COMMON} strokeWidth={1} className="art-l art-ring art-ring-1" />
-            <circle cx="70" cy="98" r="18" {...COMMON} strokeWidth={1} className="art-l art-ring art-ring-2" />
-            <circle cx="70" cy="98" r="28" {...COMMON} strokeWidth={1} className="art-l art-ring art-ring-3" />
-          </g>
-        </svg>
-      )
+// ─────────────────────────────────────────────────────────────
+// Main component
+// ─────────────────────────────────────────────────────────────
 
-    /* ──────────── 08 小儿推拿 ────────────
-       视觉叙事：儿童侧坐剪影 + 沿背部经络的金色穴位 + 上方推拿之手
-       入场：身体轮廓 → 经络曲线 → 4 穴位依次（头→腰） → 推拿手
-       持续：穴位金点沿经络方向逐个脉动（top→bottom 2.5s 循环） */
-    case 'tuina':
-      return (
-        <svg viewBox="0 0 240 240" className="art-svg art-tuina" aria-hidden="true">
-          {/* 儿童侧坐剪影：头 + 弯曲脊柱 + 蜷起的腿 */}
-          <circle cx="100" cy="60" r="14" {...COMMON} strokeWidth={1.6} className="art-l art-head" />
-          <path d="M 100 74 Q 108 130 122 168" {...COMMON} strokeWidth={1.8} className="art-l art-spine" />
-          {/* 腿 */}
-          <path d="M 122 168 Q 158 168 168 144" {...COMMON} strokeWidth={1.6} className="art-l art-leg" />
-          {/* 手臂 */}
-          <path d="M 102 92 Q 130 102 138 122" {...COMMON} strokeWidth={1.5} className="art-l art-arm" />
+const SCENES: Record<string, () => React.JSX.Element> = {
+  early: SceneEarly,
+  inclusion: SceneInclusion,
+  speech: SceneSpeech,
+  motor: SceneMotor,
+  behavior: SceneBehavior,
+  sensory: SceneSensory,
+  ot: SceneOT,
+  tuina: SceneTuina,
+}
 
-          {/* 经络曲线 (虚线沿脊柱) */}
-          <path d="M 100 88 Q 108 130 122 162" {...COMMON} strokeWidth={1} strokeDasharray="2 3" className="art-l art-meridian" />
+export default function ProgramArt({ slug }: { slug: string }) {
+  const [lottieAvailable, setLottieAvailable] = useState(false)
+  const checkedRef = useRef(false)
 
-          {/* 4 个金色穴位（top→bottom） */}
-          <g className="art-points">
-            <circle cx="100" cy="88" r="3.8" fill={GOLD} className="art-d art-point" style={{ ['--seq' as string]: 0 }} />
-            <circle cx="105" cy="112" r="3.8" fill={GOLD} className="art-d art-point" style={{ ['--seq' as string]: 1 }} />
-            <circle cx="112" cy="138" r="3.8" fill={GOLD} className="art-d art-point" style={{ ['--seq' as string]: 2 }} />
-            <circle cx="122" cy="162" r="3.8" fill={GOLD} className="art-d art-point" style={{ ['--seq' as string]: 3 }} />
-          </g>
+  useEffect(() => {
+    if (checkedRef.current) return
+    checkedRef.current = true
+    const url = LOTTIE_FILES[slug]
+    if (!url) return
+    // HEAD check — only swap to Lottie if the file actually exists
+    fetch(url, { method: 'HEAD' })
+      .then((res) => {
+        if (res.ok && (res.headers.get('content-length') || '1') !== '0') {
+          setLottieAvailable(true)
+        }
+      })
+      .catch(() => {
+        /* keep SVG fallback */
+      })
+  }, [slug])
 
-          {/* 推拿之手（仅两小指头示意） */}
-          <g className="art-hand">
-            <path d="M 60 96 Q 70 86 80 92" {...COMMON} strokeWidth={1.5} className="art-l" />
-            <path d="M 64 110 Q 74 100 84 106" {...COMMON} strokeWidth={1.5} className="art-l" />
-          </g>
-        </svg>
-      )
-
-    default:
-      return null
+  if (lottieAvailable) {
+    return (
+      <div className="art-lottie">
+        <DotLottieReact
+          src={LOTTIE_FILES[slug]}
+          loop
+          autoplay
+          style={{ width: '100%', height: '100%' }}
+        />
+      </div>
+    )
   }
+
+  const Scene = SCENES[slug]
+  return Scene ? <Scene /> : null
 }

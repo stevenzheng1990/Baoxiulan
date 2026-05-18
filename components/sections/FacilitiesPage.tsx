@@ -214,7 +214,6 @@ export default function FacilitiesPage() {
                     <span className="fac-art-corner fac-art-c-br" aria-hidden="true" />
 
                     <span className="fac-art-grid" aria-hidden="true" />
-                    <span className="fac-art-glow" aria-hidden="true" />
 
                     <div className="fac-art-svg-wrap">
                       <ProgramArt slug={p.slug} />
@@ -602,29 +601,19 @@ export default function FacilitiesPage() {
           transition: opacity 0.6s ease;
           pointer-events: none;
         }
-        .fac-art-glow {
-          position: absolute;
-          width: 70%; aspect-ratio: 1;
-          background: radial-gradient(circle, rgba(176,138,74,0.18) 0%, rgba(176,138,74,0) 65%);
-          left: 50%; top: 50%;
-          transform: translate(-50%, -50%) scale(0.6);
-          opacity: 0;
-          transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1);
-          pointer-events: none;
-        }
-
         .fac-art-svg-wrap {
           position: relative;
-          width: 65%;
-          aspect-ratio: 1;
+          width: 92%;
+          height: 88%;
           z-index: 2;
           display: flex;
           align-items: center;
           justify-content: center;
           transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
         }
-        .art-svg {
-          width: 100%; height: 100%;
+        .art-svg, .scene {
+          width: 100%;
+          height: 100%;
         }
 
         /* Decorative meta on the art panel */
@@ -673,13 +662,6 @@ export default function FacilitiesPage() {
         .fac-program:hover .fac-art {
           transform: translateY(-4px);
           box-shadow: 0 28px 60px -30px rgba(0,3,163,0.3);
-        }
-        .fac-program:hover .fac-art-svg-wrap {
-          transform: scale(1.05);
-        }
-        .fac-program:hover .fac-art-glow {
-          opacity: 1;
-          transform: translate(-50%, -50%) scale(1);
         }
         .fac-program:hover .fac-art-grid {
           opacity: 1;
@@ -885,7 +867,7 @@ export default function FacilitiesPage() {
             width: 100%;
             margin-inline: auto;
           }
-          .fac-art-svg-wrap { width: 50%; }
+          .fac-art-svg-wrap { width: 85%; height: 82%; }
         }
         @media (max-width: 860px) {
           .fac-hero { min-height: 80svh; padding: 96px 1rem 4rem; }

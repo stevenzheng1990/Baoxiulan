@@ -1,334 +1,420 @@
 /* ════════════════════════════════════════════════════════════════
-   ProgramArt — choreographed SVG illustrations
+   Program scene illustrations — concrete multi-element compositions
    ════════════════════════════════════════════════════════════════ */
 
-/* Base: every drawable line/path/circle outline */
-.art-svg {
+.scene {
+  width: 100%;
+  height: 100%;
   overflow: visible;
-  color: var(--fac-blue);
   transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.art-svg .art-l {
-  fill: none;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
+.art-lottie {
+  width: 90%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-/* Filled accent (gold dots) */
-.art-svg .art-d {
-  opacity: 0;
+.fac-program:hover .scene,
+.fac-program:hover .art-lottie {
+  transform: scale(1.04);
+}
+
+/* Ambient back-glows breathe softly */
+@keyframes scene-amb-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50%      { transform: scale(1.12); opacity: 1; }
+}
+.scene .amb {
   transform-box: fill-box;
   transform-origin: center;
-  transform: scale(0);
+  animation: scene-amb-breathe 6s ease-in-out infinite;
 }
+.scene .amb-2 { animation-delay: 1.5s; }
 
-/* Universal draw + pop keyframes */
-@keyframes art-draw {
-  to { stroke-dashoffset: 0; }
+/* ──────────────────────────────────────
+   01 — Early · 摇篮 + mobile + 婴儿
+   ────────────────────────────────────── */
+@keyframes early-mobile-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(2deg); }
 }
-@keyframes art-pop {
-  0%   { opacity: 0; transform: scale(0); }
-  55%  { opacity: 1; transform: scale(1.35); }
-  100% { opacity: 1; transform: scale(1); }
+.scene-early .mobile-toy {
+  transform-origin: top center;
+  transform-box: view-box;
 }
+.scene-early .mobile-toy-1 { animation: early-mobile-sway 4.2s ease-in-out 0.0s infinite; transform-origin: 100px 28px; }
+.scene-early .mobile-toy-2 { animation: early-mobile-sway 4.6s ease-in-out 0.4s infinite; transform-origin: 140px 28px; }
+.scene-early .mobile-toy-3 { animation: early-mobile-sway 4.4s ease-in-out 0.2s infinite; transform-origin: 180px 28px; }
 
-/* Hover whole-art subtle zoom */
-.fac-program:hover .art-svg { transform: scale(1.04); }
+@keyframes early-cradle-rock {
+  0%, 100% { transform: rotate(-0.8deg); }
+  50%      { transform: rotate(0.8deg); }
+}
+.scene-early .cradle,
+.scene-early .baby {
+  transform-origin: 140px 230px;
+  transform-box: view-box;
+  animation: early-cradle-rock 5.5s ease-in-out infinite;
+}
+.scene-early .baby { animation-delay: 0s; }
 
-/* ════════════════════════════════════════════
-   01 — 早期综合训练 · Early
-   T0.4 背景弧 → T0.8 主拥抱 → T1.5 婴儿 →
-   T1.9 五射线（错开） → T2.4 五金点（错开） → 持续脉动
-   ════════════════════════════════════════════ */
-.fac-r.in .art-early .art-bg-1   { animation: art-draw 1.4s cubic-bezier(0.83,0,0.17,1) 0.40s forwards; }
-.fac-r.in .art-early .art-bg-2   { animation: art-draw 1.4s cubic-bezier(0.83,0,0.17,1) 0.55s forwards; }
-.fac-r.in .art-early .art-embrace{ animation: art-draw 1.7s cubic-bezier(0.83,0,0.17,1) 0.80s forwards; }
-.fac-r.in .art-early .art-baby   { animation: art-draw 1.0s cubic-bezier(0.83,0,0.17,1) 1.50s forwards; }
-.fac-r.in .art-early .art-baby-body { animation: art-draw 0.7s cubic-bezier(0.83,0,0.17,1) 1.85s forwards; }
-.fac-r.in .art-early .art-heart  { animation: art-pop 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.05s forwards; }
-.fac-r.in .art-early .art-ray    { animation: art-draw 0.55s cubic-bezier(0.83,0,0.17,1) calc(2.15s + var(--seq) * 0.085s) forwards; }
-.fac-r.in .art-early .art-dots .art-d {
-  animation: art-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) calc(2.55s + var(--seq) * 0.085s) forwards;
+@keyframes early-zzz-rise {
+  0%   { opacity: 0; transform: translateY(8px); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-12px); }
 }
-/* Continuous: 婴儿心跳脉动 */
-@keyframes art-early-heart {
-  0%, 70%, 100% { transform: scale(1); }
-  35%  { transform: scale(1.45); }
-  45%  { transform: scale(1); }
-  55%  { transform: scale(1.25); }
+.scene-early .zzz text {
+  opacity: 0;
 }
-.fac-r.in .art-early .art-heart {
-  animation:
-    art-pop 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.05s forwards,
-    art-early-heart 3.4s ease-in-out 3.5s infinite;
-}
+.scene-early .zzz text:nth-child(1) { animation: early-zzz-rise 3s ease-out 0.0s infinite; }
+.scene-early .zzz text:nth-child(2) { animation: early-zzz-rise 3s ease-out 1.0s infinite; }
+.scene-early .zzz text:nth-child(3) { animation: early-zzz-rise 3s ease-out 2.0s infinite; }
 
-/* ════════════════════════════════════════════
-   02 — 融合教育 · Inclusion
-   T0.4 外环（同步扫入） → T1.2 中心圆 → 1.4-1.8 顺时针卫星圆 →
-   T2.0-2.4 连线 → T2.6 金节点 → 持续：外环极慢旋转
-   ════════════════════════════════════════════ */
-.fac-r.in .art-inclusion .art-orbit { animation: art-draw 1.8s cubic-bezier(0.83,0,0.17,1) 0.40s forwards; }
-.fac-r.in .art-inclusion .art-core  { animation: art-draw 0.7s cubic-bezier(0.83,0,0.17,1) 1.20s forwards; }
-.fac-r.in .art-inclusion .art-core-fill {
-  animation: art-pop 0.7s cubic-bezier(0.34,1.56,0.64,1) 1.55s forwards;
+/* ──────────────────────────────────────
+   02 — Inclusion · 老师 + 4 孩童 + 卡片
+   ────────────────────────────────────── */
+@keyframes inclusion-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-1.5px); }
 }
-.fac-r.in .art-inclusion .art-sat {
-  animation: art-draw 0.6s cubic-bezier(0.83,0,0.17,1) calc(1.40s + var(--seq) * 0.12s) forwards;
+.scene-inclusion .figure-teacher {
+  transform-box: view-box;
+  transform-origin: 140px 80px;
+  animation: inclusion-bob 3.2s ease-in-out infinite;
 }
-.fac-r.in .art-inclusion .art-link {
-  animation: art-draw 0.55s cubic-bezier(0.65,0,0.35,1) calc(2.00s + var(--seq) * 0.08s) forwards;
+.scene-inclusion .figure-child {
+  transform-box: view-box;
+  animation: inclusion-bob 3.4s ease-in-out infinite;
 }
-.fac-r.in .art-inclusion .art-dots .art-d {
-  animation: art-pop 0.45s cubic-bezier(0.34,1.56,0.64,1) calc(2.55s + var(--seq) * 0.08s) forwards;
-}
-/* Continuous: 外环顺时针缓慢旋转 */
-@keyframes art-spin-slow { to { transform: rotate(360deg); } }
-.art-inclusion .art-orbit { transform-origin: 120px 120px; }
-.fac-r.in .art-inclusion .art-orbit {
-  animation:
-    art-draw 1.8s cubic-bezier(0.83,0,0.17,1) 0.40s forwards,
-    art-spin-slow 90s linear 3s infinite;
-}
+.scene-inclusion .child-1 { transform-origin: 56px 160px; animation-delay: 0.0s; }
+.scene-inclusion .child-2 { transform-origin: 98px 180px; animation-delay: 0.4s; }
+.scene-inclusion .child-3 { transform-origin: 182px 180px; animation-delay: 0.8s; }
+.scene-inclusion .child-4 { transform-origin: 224px 160px; animation-delay: 1.2s; }
 
-/* ════════════════════════════════════════════
-   03 — 言语认知 · Speech
-   T0.4 头部轮廓 → T1.6 螺旋 → T2.2 螺旋金点 →
-   T2.0-2.6 三波依次 → 持续：三波循环扩散 + 金点呼吸
-   ════════════════════════════════════════════ */
-.fac-r.in .art-speech .art-head    { animation: art-draw 1.4s cubic-bezier(0.83,0,0.17,1) 0.40s forwards; }
-.fac-r.in .art-speech .art-spiral  { animation: art-draw 1.0s cubic-bezier(0.83,0,0.17,1) 1.55s forwards; }
-.fac-r.in .art-speech .art-thought { animation: art-pop 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.30s forwards; }
-
-/* 入场三波 + 持续脉冲 */
-@keyframes art-wave-in {
-  from { stroke-dashoffset: 1; opacity: 1; }
-  to   { stroke-dashoffset: 0; opacity: 1; }
-}
-@keyframes art-wave-cycle {
-  0%   { stroke-dashoffset: 0; opacity: 1; }
-  50%  { stroke-dashoffset: 0; opacity: 0.2; }
-  51%  { stroke-dashoffset: 1; opacity: 0.8; }
-  100% { stroke-dashoffset: 0; opacity: 1; }
-}
-.fac-r.in .art-speech .art-wave {
-  animation:
-    art-wave-in 0.7s cubic-bezier(0.83,0,0.17,1) calc(2.00s + var(--seq) * 0.22s) forwards,
-    art-wave-cycle 2.6s cubic-bezier(0.45,0,0.55,1) calc(4s + var(--seq) * 0.22s) infinite;
-}
-
-/* Continuous: 思维金点缓慢呼吸 */
-@keyframes art-breathe {
+@keyframes inclusion-card-pulse {
   0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.4); }
+  50%      { transform: scale(1.04); }
 }
-.fac-r.in .art-speech .art-thought {
-  animation:
-    art-pop 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.30s forwards,
-    art-breathe 3.2s ease-in-out 3.5s infinite;
-}
-
-/* ════════════════════════════════════════════
-   04 — 运动训练 · Motor
-   T0.4 基线 → T1.0/1.4/1.8 三人 stage 依次 →
-   T2.2-2.5 进阶虚线 + 金点 → 持续：站立小人轻微浮动
-   ════════════════════════════════════════════ */
-.fac-r.in .art-motor .art-baseline { animation: art-draw 1.2s cubic-bezier(0.83,0,0.17,1) 0.40s forwards; }
-.fac-r.in .art-motor .art-stage .art-l {
-  animation: art-draw 0.65s cubic-bezier(0.83,0,0.17,1) forwards;
-}
-.fac-r.in .art-motor .art-stage[style*="--seq:0"] .art-l { animation-delay: 1.00s; }
-.fac-r.in .art-motor .art-stage[style*="--seq:1"] .art-l { animation-delay: 1.40s; }
-.fac-r.in .art-motor .art-stage[style*="--seq:2"] .art-l { animation-delay: 1.80s; }
-
-.fac-r.in .art-motor .art-progress-line {
-  animation: art-draw 1.1s cubic-bezier(0.83,0,0.17,1) 2.30s forwards;
-}
-.fac-r.in .art-motor .art-progress .art-d {
-  animation: art-pop 0.55s cubic-bezier(0.34,1.56,0.64,1) calc(2.50s + var(--seq) * 0.12s) forwards;
+.scene-inclusion .card {
+  transform-box: view-box;
+  transform-origin: 140px 144px;
+  animation: inclusion-card-pulse 4s ease-in-out infinite;
 }
 
-/* Continuous: 站立小人头部呼吸 */
-@keyframes art-motor-bob {
+/* Attention dashes flow toward card */
+@keyframes inclusion-link-flow {
+  0%   { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -10; }
+}
+.scene-inclusion .links path {
+  animation: inclusion-link-flow 4s linear infinite;
+}
+
+/* ──────────────────────────────────────
+   03 — Speech · 治疗师 + 闪卡 + 儿童 + 气泡
+   ────────────────────────────────────── */
+@keyframes speech-bubble-pop {
+  0%, 90%, 100% { transform: scale(1); }
+  93%           { transform: scale(1.08); }
+}
+.scene-speech .speech-bubble {
+  transform-box: view-box;
+  transform-origin: 230px 86px;
+  animation: speech-bubble-pop 3s ease-in-out infinite;
+}
+
+@keyframes speech-wave-flow {
+  0%   { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -32; }
+}
+.scene-speech .bubble-wave {
+  stroke-dasharray: 4 4;
+  animation: speech-wave-flow 1.8s linear infinite;
+}
+
+@keyframes speech-card-hold {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-1px) rotate(-1deg); }
+}
+.scene-speech .card {
+  transform-box: view-box;
+  transform-origin: 140px 162px;
+  animation: speech-card-hold 4.4s ease-in-out infinite;
+}
+
+@keyframes speech-child-nod {
+  0%, 100% { transform: rotate(0deg); }
+  40%      { transform: rotate(-1.5deg); }
+  60%      { transform: rotate(1.5deg); }
+}
+.scene-speech .figure-child {
+  transform-box: view-box;
+  transform-origin: 220px 200px;
+  animation: speech-child-nod 5s ease-in-out infinite;
+}
+
+/* ──────────────────────────────────────
+   04 — Motor · 平衡梁 + 站立小人 + 球
+   ────────────────────────────────────── */
+@keyframes motor-balance {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50%      { transform: rotate(1.5deg); }
+}
+.scene-motor .figure-balancer {
+  transform-box: view-box;
+  transform-origin: 140px 190px;
+  animation: motor-balance 4s ease-in-out infinite;
+}
+
+@keyframes motor-arms-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(2deg); }
+}
+.scene-motor .arms {
+  transform-box: view-box;
+  transform-origin: 140px 118px;
+  animation: motor-arms-sway 4s ease-in-out infinite;
+}
+
+@keyframes motor-ball-roll {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50%      { transform: rotate(15deg) translateY(-1px); }
+}
+.scene-motor .ball {
+  transform-box: view-box;
+  transform-origin: 244px 200px;
+  animation: motor-ball-roll 5s ease-in-out infinite;
+}
+
+@keyframes motor-arc-flow {
+  0%   { stroke-dashoffset: 0; opacity: 0.3; }
+  50%  { opacity: 0.8; }
+  100% { stroke-dashoffset: -20; opacity: 0.3; }
+}
+.scene-motor .motion-arc {
+  animation: motor-arc-flow 3s linear infinite;
+}
+
+/* ──────────────────────────────────────
+   05 — Behavior · 卡片矩阵 + 手 + 奖星
+   ────────────────────────────────────── */
+@keyframes behavior-card-lift {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-2px); }
 }
-.fac-r.in .art-motor .art-stand-head {
-  transform-origin: center;
-  animation:
-    art-draw 0.65s cubic-bezier(0.83,0,0.17,1) 1.80s forwards,
-    art-motor-bob 3s ease-in-out 3.5s infinite;
+.scene-behavior .pecs-card {
+  transform-box: view-box;
+  animation: behavior-card-lift 3.5s ease-in-out infinite;
+}
+.scene-behavior .pecs-card[style*="--pi:0"] { animation-delay: 0s;   transform-origin: 50px 140px; }
+.scene-behavior .pecs-card[style*="--pi:1"] { animation-delay: 0.3s; transform-origin: 114px 140px; }
+.scene-behavior .pecs-card[style*="--pi:2"] { animation-delay: 0.6s; transform-origin: 178px 140px; }
+.scene-behavior .pecs-card[style*="--pi:3"] { animation-delay: 0.9s; transform-origin: 236px 140px; }
+
+@keyframes behavior-active-glow {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50%      { filter: drop-shadow(0 0 10px rgba(176,138,74,0.45)); }
+}
+.scene-behavior .pecs-card-active {
+  animation: behavior-card-lift 3.5s ease-in-out 0.6s infinite,
+             behavior-active-glow 2.6s ease-in-out infinite;
 }
 
-/* 最终金点持续微光 */
-@keyframes art-glow-pulse {
+@keyframes behavior-reward-spin {
+  0%, 100% { transform: rotate(-5deg) scale(1); }
+  50%      { transform: rotate(5deg) scale(1.08); }
+}
+.scene-behavior .reward {
+  transform-box: view-box;
+  transform-origin: 140px 58px;
+  animation: behavior-reward-spin 4.5s ease-in-out infinite;
+}
+
+@keyframes behavior-hand-tap {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+.scene-behavior .hand {
+  transform-box: view-box;
+  transform-origin: 174px 220px;
+  animation: behavior-hand-tap 2.2s ease-in-out infinite;
+}
+
+/* ──────────────────────────────────────
+   06 — Sensory · 治疗秋千 + 儿童 + 摆动
+   ────────────────────────────────────── */
+@keyframes sensory-swing {
+  0%, 100% { transform: rotate(-6deg); }
+  50%      { transform: rotate(6deg); }
+}
+.scene-sensory .swing {
+  transform-box: view-box;
+  transform-origin: 140px 22px;
+  animation: sensory-swing 4.8s ease-in-out infinite;
+}
+
+@keyframes sensory-arc-flow {
+  0%   { stroke-dashoffset: 0; opacity: 0.4; }
+  50%  { opacity: 0.9; }
+  100% { stroke-dashoffset: -28; opacity: 0.4; }
+}
+.scene-sensory .motion-arc {
+  animation: sensory-arc-flow 4.8s linear infinite;
+}
+
+/* ──────────────────────────────────────
+   07 — OT · 桌面 + 手抓 + 积木 + 珠 + 三圈
+   ────────────────────────────────────── */
+@keyframes ot-hand-reach {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50%      { transform: translateY(3px) translateX(-1px); }
+}
+.scene-ot .hand {
+  transform-box: view-box;
+  transform-origin: 210px 8px;
+  animation: ot-hand-reach 3.2s ease-in-out infinite;
+}
+
+@keyframes ot-block-stack {
+  0%   { transform: translateY(2px); opacity: 0.85; }
+  50%  { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(2px); opacity: 0.85; }
+}
+.scene-ot .block-1 { animation: ot-block-stack 3.5s ease-in-out 0.0s infinite; transform-box: view-box; transform-origin: 59px 170px; }
+.scene-ot .block-2 { animation: ot-block-stack 3.5s ease-in-out 0.3s infinite; transform-box: view-box; transform-origin: 83px 170px; }
+.scene-ot .block-3 { animation: ot-block-stack 3.5s ease-in-out 0.6s infinite; transform-box: view-box; transform-origin: 107px 170px; }
+
+@keyframes ot-bead-shimmer {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.7; }
+}
+.scene-ot .bead-1 { animation: ot-bead-shimmer 2.2s ease-in-out 0.0s infinite; }
+.scene-ot .bead-2 { animation: ot-bead-shimmer 2.2s ease-in-out 0.4s infinite; }
+.scene-ot .bead-3 { animation: ot-bead-shimmer 2.2s ease-in-out 0.8s infinite; }
+.scene-ot .bead-4 { animation: ot-bead-shimmer 2.2s ease-in-out 1.2s infinite; }
+
+@keyframes ot-pinch-pulse {
   0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
-  50%      { transform: scale(1.18); filter: drop-shadow(0 0 6px rgba(176,138,74,0.6)); }
+  50%      { transform: scale(1.4); filter: drop-shadow(0 0 6px rgba(176,138,74,0.7)); }
 }
-.fac-r.in .art-motor .art-d-final {
-  animation:
-    art-pop 0.55s cubic-bezier(0.34,1.56,0.64,1) 2.74s forwards,
-    art-glow-pulse 2.6s ease-in-out 3.5s infinite;
-}
-
-/* ════════════════════════════════════════════
-   05 — 行为矫正 · Behavior
-   T0.4-0.8 左侧散点 + 弱连线 → T1.4 箭头 →
-   T1.7-2.5 右侧矩阵 snap-in + 格线 → T2.8 成功金点
-   持续：左侧散点微抖动
-   ════════════════════════════════════════════ */
-.fac-r.in .art-behavior .art-scatter-c {
-  animation: art-draw 0.5s cubic-bezier(0.83,0,0.17,1) calc(0.40s + var(--seq) * 0.10s) forwards;
-}
-.fac-r.in .art-behavior .art-scatter-l {
-  animation: art-draw 0.7s cubic-bezier(0.65,0,0.35,1) 0.95s forwards;
-}
-.fac-r.in .art-behavior .art-arrow-l { animation: art-draw 0.5s cubic-bezier(0.83,0,0.17,1) 1.40s forwards; }
-.fac-r.in .art-behavior .art-arrow-h { animation: art-draw 0.4s cubic-bezier(0.83,0,0.17,1) 1.85s forwards; }
-/* 矩阵 snap-in (用 pop) */
-.fac-r.in .art-behavior .art-grid-c {
-  /* draw outline + then re-stroke quickly to feel "snapped" */
-  animation: art-draw 0.4s cubic-bezier(0.65,0,0.35,1) calc(1.95s + var(--seq) * 0.06s) forwards;
-}
-.fac-r.in .art-behavior .art-grid-ln {
-  animation: art-draw 0.6s cubic-bezier(0.65,0,0.35,1) calc(2.40s + var(--seq) * 0.06s) forwards;
-}
-.fac-r.in .art-behavior .art-success {
-  animation: art-pop 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.85s forwards;
-}
-
-/* Continuous: 左侧散点微抖动 */
-@keyframes art-jitter {
-  0%, 100% { transform: translate(0, 0); }
-  25%      { transform: translate(0.6px, -0.4px); }
-  50%      { transform: translate(-0.4px, 0.6px); }
-  75%      { transform: translate(0.5px, 0.3px); }
-}
-.fac-r.in .art-behavior .art-scatter-c {
+.scene-ot .pinch-dot {
   transform-box: fill-box;
   transform-origin: center;
-  animation:
-    art-draw 0.5s cubic-bezier(0.83,0,0.17,1) calc(0.40s + var(--seq) * 0.10s) forwards,
-    art-jitter 3.5s ease-in-out calc(3s + var(--seq) * 0.15s) infinite;
+  animation: ot-pinch-pulse 2s ease-in-out infinite;
 }
 
-/* Success 持续微光 */
-.fac-r.in .art-behavior .art-success {
-  animation:
-    art-pop 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.85s forwards,
-    art-glow-pulse 2.4s ease-in-out 3.8s infinite;
+@keyframes ot-ring-expand {
+  0%   { transform: scale(0.4); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
 }
-
-/* ════════════════════════════════════════════
-   06 — 感觉统合 · Sensory
-   T0.4 外环 → T1.4-2.2 五瓣顺时针 → T2.4-2.8 瓣尖金点 →
-   T2.95 中心金芯 → 持续：花瓣组极慢顺时针旋转
-   ════════════════════════════════════════════ */
-.fac-r.in .art-sensory .art-outer-ring { animation: art-draw 1.6s cubic-bezier(0.83,0,0.17,1) 0.40s forwards; }
-.fac-r.in .art-sensory .art-petal {
-  animation: art-draw 0.7s cubic-bezier(0.83,0,0.17,1) calc(1.40s + var(--seq) * 0.16s) forwards;
-}
-.fac-r.in .art-sensory .art-petal-tip {
-  animation: art-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) calc(2.40s + var(--seq) * 0.10s) forwards;
-}
-.fac-r.in .art-sensory .art-center {
-  animation: art-pop 0.7s cubic-bezier(0.34,1.56,0.64,1) 2.95s forwards;
-}
-/* Continuous: 花瓣组极慢旋转 */
-.fac-r.in .art-sensory .art-petals {
-  animation: art-spin-slow 120s linear 3.5s infinite;
-}
-/* 中心金芯持续辐射 */
-@keyframes art-radiate {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
-  50%      { transform: scale(1.25); filter: drop-shadow(0 0 8px rgba(176,138,74,0.55)); }
-}
-.fac-r.in .art-sensory .art-center {
-  animation:
-    art-pop 0.7s cubic-bezier(0.34,1.56,0.64,1) 2.95s forwards,
-    art-radiate 3.6s ease-in-out 3.8s infinite;
-}
-
-/* ════════════════════════════════════════════
-   07 — 作业训练 · OT
-   T0.4 腕带 → T0.7 掌 → T1.6 拇指 → T1.9-2.3 食指/中指/无名指/小指 →
-   T2.5 捏取金点 → T2.7-3.3 三圈触觉波 → 持续：三圈循环扩散
-   ════════════════════════════════════════════ */
-.fac-r.in .art-ot .art-cuff  { animation: art-draw 0.5s cubic-bezier(0.83,0,0.17,1) 0.40s forwards; }
-.fac-r.in .art-ot .art-palm  { animation: art-draw 1.7s cubic-bezier(0.83,0,0.17,1) 0.70s forwards; }
-.fac-r.in .art-ot .art-thumb { animation: art-draw 1.0s cubic-bezier(0.83,0,0.17,1) 1.60s forwards; }
-.fac-r.in .art-ot .art-pinch { animation: art-pop 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.40s forwards; }
-
-/* 三圈先入场再循环扩散 */
-@keyframes art-ring-cycle {
-  0%   { transform: scale(0.5); opacity: 0.9; }
-  100% { transform: scale(1.4); opacity: 0; }
-}
-.art-ot .art-ring {
-  transform-origin: 70px 98px;
+.scene-ot .pinch-ring {
   transform-box: fill-box;
+  transform-origin: center;
 }
-.fac-r.in .art-ot .art-ring-1 {
-  animation:
-    art-draw 0.5s cubic-bezier(0.83,0,0.17,1) 2.60s forwards,
-    art-ring-cycle 2.4s ease-out 3.4s infinite;
+.scene-ot .pinch-ring.r1 { animation: ot-ring-expand 2.4s ease-out 0.0s infinite; }
+.scene-ot .pinch-ring.r2 { animation: ot-ring-expand 2.4s ease-out 0.8s infinite; }
+.scene-ot .pinch-ring.r3 { animation: ot-ring-expand 2.4s ease-out 1.6s infinite; }
+
+/* ──────────────────────────────────────
+   08 — Tuina · 按摩床 + 儿童 + 双手 + 穴位
+   ────────────────────────────────────── */
+@keyframes tuina-breath {
+  0%, 100% { transform: scaleY(1); }
+  50%      { transform: scaleY(1.015); }
 }
-.fac-r.in .art-ot .art-ring-2 {
-  animation:
-    art-draw 0.5s cubic-bezier(0.83,0,0.17,1) 2.85s forwards,
-    art-ring-cycle 2.4s ease-out calc(3.4s + 0.7s) infinite;
-}
-.fac-r.in .art-ot .art-ring-3 {
-  animation:
-    art-draw 0.5s cubic-bezier(0.83,0,0.17,1) 3.10s forwards,
-    art-ring-cycle 2.4s ease-out calc(3.4s + 1.4s) infinite;
+.scene-tuina .child {
+  transform-box: view-box;
+  transform-origin: 160px 170px;
+  animation: tuina-breath 4s ease-in-out infinite;
 }
 
-/* 捏点持续微光 */
-.fac-r.in .art-ot .art-pinch {
-  animation:
-    art-pop 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.40s forwards,
-    art-glow-pulse 2.4s ease-in-out 3.5s infinite;
+@keyframes tuina-hand-press {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(4px); }
+}
+.scene-tuina .hand-left {
+  transform-box: view-box;
+  transform-origin: 142px 90px;
+  animation: tuina-hand-press 2.6s ease-in-out 0.0s infinite;
+}
+.scene-tuina .hand-right {
+  transform-box: view-box;
+  transform-origin: 196px 96px;
+  animation: tuina-hand-press 2.6s ease-in-out 1.3s infinite;
 }
 
-/* ════════════════════════════════════════════
-   08 — 小儿推拿 · Tuina
-   T0.4 头 → T0.8 脊柱 → T1.5 腿 → T1.8 手臂 →
-   T2.1 经络曲线 → T2.5-3.0 4 穴位（top→bottom） →
-   T3.0 推拿之手 → 持续：穴位沿经络方向轮转脉冲
-   ════════════════════════════════════════════ */
-.fac-r.in .art-tuina .art-head    { animation: art-draw 0.7s cubic-bezier(0.83,0,0.17,1) 0.40s forwards; }
-.fac-r.in .art-tuina .art-spine   { animation: art-draw 1.2s cubic-bezier(0.83,0,0.17,1) 0.80s forwards; }
-.fac-r.in .art-tuina .art-leg     { animation: art-draw 0.8s cubic-bezier(0.83,0,0.17,1) 1.50s forwards; }
-.fac-r.in .art-tuina .art-arm     { animation: art-draw 0.7s cubic-bezier(0.83,0,0.17,1) 1.80s forwards; }
-.fac-r.in .art-tuina .art-meridian{ animation: art-draw 1.2s cubic-bezier(0.83,0,0.17,1) 2.10s forwards; }
-.fac-r.in .art-tuina .art-point {
-  animation: art-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) calc(2.50s + var(--seq) * 0.14s) forwards;
+@keyframes tuina-point-pulse {
+  0%, 25%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+  12.5%         { transform: scale(1.6); filter: drop-shadow(0 0 8px rgba(176,138,74,0.7)); }
 }
-.fac-r.in .art-tuina .art-hand .art-l {
-  animation: art-draw 0.6s cubic-bezier(0.83,0,0.17,1) 3.00s forwards;
+.scene-tuina .point {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.scene-tuina .point[style*="--pi:0"] { animation: tuina-point-pulse 4s ease-in-out 0.0s infinite; }
+.scene-tuina .point[style*="--pi:1"] { animation: tuina-point-pulse 4s ease-in-out 1.0s infinite; }
+.scene-tuina .point[style*="--pi:2"] { animation: tuina-point-pulse 4s ease-in-out 2.0s infinite; }
+.scene-tuina .point[style*="--pi:3"] { animation: tuina-point-pulse 4s ease-in-out 3.0s infinite; }
+
+@keyframes tuina-wisp {
+  0%   { opacity: 0; transform: translateY(0); }
+  30%  { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(-12px); }
+}
+.scene-tuina .wisps path {
+  transform-box: view-box;
+  animation: tuina-wisp 3.5s ease-out infinite;
+}
+.scene-tuina .wisps path:nth-child(2) { animation-delay: 1.5s; }
+
+/* ──────────────────────────────────────
+   Entrance — staggered scene reveal via clip-path
+   ────────────────────────────────────── */
+.scene > * {
+  opacity: 0;
+}
+.fac-r.in .scene > * {
+  animation: scene-fade-up 1.4s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.fac-r.in .scene > *:nth-child(1) { animation-delay: 0.10s; }
+.fac-r.in .scene > *:nth-child(2) { animation-delay: 0.22s; }
+.fac-r.in .scene > *:nth-child(3) { animation-delay: 0.34s; }
+.fac-r.in .scene > *:nth-child(4) { animation-delay: 0.46s; }
+.fac-r.in .scene > *:nth-child(5) { animation-delay: 0.58s; }
+.fac-r.in .scene > *:nth-child(6) { animation-delay: 0.70s; }
+.fac-r.in .scene > *:nth-child(7) { animation-delay: 0.82s; }
+.fac-r.in .scene > *:nth-child(8) { animation-delay: 0.94s; }
+.fac-r.in .scene > *:nth-child(9) { animation-delay: 1.06s; }
+.fac-r.in .scene > *:nth-child(10){ animation-delay: 1.18s; }
+.fac-r.in .scene > *:nth-child(11){ animation-delay: 1.30s; }
+.fac-r.in .scene > *:nth-child(12){ animation-delay: 1.42s; }
+@keyframes scene-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Continuous: 穴位沿经络方向轮流脉冲 */
-@keyframes art-point-pulse {
-  0%, 18%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
-  9%             { transform: scale(1.5); filter: drop-shadow(0 0 8px rgba(176,138,74,0.7)); }
-}
-.fac-r.in .art-tuina .art-point {
-  animation:
-    art-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) calc(2.50s + var(--seq) * 0.14s) forwards,
-    art-point-pulse 4.4s ease-in-out calc(4s + var(--seq) * 0.7s) infinite;
-}
-
-/* ════════════════════════════════════════════
-   prefers-reduced-motion
-   ════════════════════════════════════════════ */
+/* prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
-  .art-svg .art-l,
-  .art-svg .art-d {
+  .scene > *,
+  .scene .amb,
+  .scene .mobile-toy,
+  .scene .cradle, .scene .baby,
+  .scene .zzz text,
+  .scene .figure-teacher, .scene .figure-child, .scene .card,
+  .scene .links path, .scene .speech-bubble, .scene .bubble-wave,
+  .scene .figure-child, .scene .figure-balancer, .scene .arms, .scene .ball, .scene .motion-arc,
+  .scene .pecs-card, .scene .pecs-card-active, .scene .reward, .scene .hand,
+  .scene .swing,
+  .scene .block, .scene .bead, .scene .pinch-dot, .scene .pinch-ring,
+  .scene .child, .scene .hand-left, .scene .hand-right, .scene .point, .scene .wisps path {
     animation: none !important;
-    stroke-dashoffset: 0 !important;
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
   }
-  .fac-program:hover .art-svg { transform: none; }
+  .fac-program:hover .scene,
+  .fac-program:hover .art-lottie {
+    transform: none;
+  }
 }
