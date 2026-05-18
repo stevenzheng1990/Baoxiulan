@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import Hero from '@/components/sections/Hero'
+import Awards from '@/components/sections/Awards'
 import MarqueeBar from '@/components/sections/MarqueeBar'
 import Numbers from '@/components/sections/Numbers'
 import Services from '@/components/sections/Services'
@@ -37,6 +38,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <Awards />
       <MarqueeBar />
       <Founder />
       <Specialists />

@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import ContactModal from './ContactModal'
 
 const NAV_LINKS = [
   { label: '机构介绍', href: '#about' },
   { label: '诊疗服务', href: '#services' },
   { label: '专家团队', href: '#experts' },
+  { label: '学术荣誉', href: '#awards' },
   { label: '育儿课堂', href: '#courses' },
 ]
 
@@ -14,6 +16,7 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [progress, setProgress] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [contactOpen, setContactOpen] = useState(false)
   const heroThreshold = useRef<number>(0)
 
   useEffect(() => {
@@ -39,17 +42,17 @@ export default function Nav() {
     left: 0,
     right: 0,
     zIndex: 100,
-    height: 64,
+    height: 68,
     display: 'flex',
     alignItems: 'center',
-    transition: 'background 0.4s ease, box-shadow 0.4s ease',
-    background: atTop ? 'transparent' : 'rgba(255,255,255,0.88)',
-    backdropFilter: atTop ? 'none' : 'blur(16px)',
-    WebkitBackdropFilter: atTop ? 'none' : 'blur(16px)',
-    boxShadow: atTop ? 'none' : '0 1px 0 rgba(0,3,163,0.08)',
+    transition: 'background 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s ease, height 0.4s ease',
+    background: atTop ? 'transparent' : 'rgba(255,255,255,0.82)',
+    backdropFilter: atTop ? 'none' : 'saturate(180%) blur(22px)',
+    WebkitBackdropFilter: atTop ? 'none' : 'saturate(180%) blur(22px)',
+    boxShadow: atTop ? 'none' : '0 1px 0 rgba(0,3,163,0.06), 0 12px 40px -28px rgba(0,3,163,0.18)',
   }
 
-  const textColor = atTop ? 'rgba(255,255,255,0.85)' : 'var(--blue)'
+  const textColor = atTop ? 'rgba(255,255,255,0.88)' : 'var(--ink)'
 
   return (
     <>
@@ -62,18 +65,18 @@ export default function Nav() {
           zIndex: 101,
           height: 2,
           width: `${progress}%`,
-          background: 'var(--blue)',
-          transition: 'width 0.1s linear',
+          background: 'linear-gradient(90deg, var(--blue) 0%, rgba(0,3,163,0.55) 100%)',
+          transition: 'width 0.15s linear',
           pointerEvents: 'none',
         }}
       />
 
-      <nav style={navStyle} role="navigation" aria-label="主导航">
+      <nav style={navStyle} role="navigation" aria-label="主导航" className={atTop ? '' : 'scrolled'}>
         <div
           style={{
             maxWidth: 1280,
             margin: '0 auto',
-            padding: '0 2rem',
+            padding: '0 clamp(1.25rem, 3vw, 2rem)',
             width: '100%',
             display: 'flex',
             alignItems: 'center',
@@ -83,60 +86,72 @@ export default function Nav() {
           {/* Logo */}
           <Link
             href="/"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none' }}
+            className="nav-brand"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', textDecoration: 'none' }}
           >
             <span
+              aria-hidden="true"
+              className="nav-brand-mark"
               style={{
-                display: 'inline-block',
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                background: atTop ? 'rgba(255,255,255,0.9)' : 'var(--blue)',
+                position: 'relative',
+                width: 22,
+                height: 22,
                 flexShrink: 0,
-                transition: 'background 0.4s ease',
               }}
-            />
+            >
+              <span
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  border: `1px solid ${atTop ? 'rgba(255,255,255,0.55)' : 'var(--blue)'}`,
+                  borderRadius: '50%',
+                  transition: 'border-color 0.5s ease',
+                }}
+              />
+              <span
+                style={{
+                  position: 'absolute',
+                  inset: 5,
+                  borderRadius: '50%',
+                  background: atTop ? 'rgba(255,255,255,0.92)' : 'var(--blue)',
+                  transition: 'background 0.5s ease',
+                }}
+              />
+            </span>
             <span
               style={{
                 fontFamily: 'var(--serif-cn)',
-                fontSize: '1.05rem',
+                fontSize: '1.08rem',
                 fontWeight: 500,
-                letterSpacing: '0.04em',
+                letterSpacing: '0.05em',
                 color: atTop ? '#ffffff' : 'var(--ink)',
-                transition: 'color 0.4s ease',
+                transition: 'color 0.5s ease',
               }}
             >
               宝秀兰医疗
             </span>
             <span
+              className="nav-brand-tag"
               style={{
                 fontSize: '0.6rem',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: atTop ? 'rgba(255,255,255,0.5)' : 'var(--muted)',
+                letterSpacing: '0.18em',
+                color: atTop ? 'rgba(255,255,255,0.55)' : 'var(--muted)',
                 borderLeft: `1px solid ${atTop ? 'rgba(255,255,255,0.25)' : 'var(--border)'}`,
-                paddingLeft: '0.6rem',
-                marginLeft: '0.2rem',
-                transition: 'color 0.4s ease, border-color 0.4s ease',
+                paddingLeft: '0.7rem',
+                marginLeft: '0.1rem',
+                transition: 'color 0.5s ease, border-color 0.5s ease',
                 whiteSpace: 'nowrap',
               }}
             >
-              BAOXIULAN · est.&nbsp;1991
+              创立于 1991
             </span>
           </Link>
 
           {/* Desktop nav links */}
           <div
-            style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 'clamp(1.4rem, 2.4vw, 2.4rem)' }}
             className="nav-desktop"
           >
-            {/* Inject hover styles via a <style> tag — avoids passing event handlers through RSC boundary */}
-            <style>{`
-              .nav-link { opacity: 0.85; transition: opacity 0.2s ease; }
-              .nav-link:hover { opacity: 1; }
-              .nav-cta-btn:hover { background: rgba(255,255,255,0.2) !important; color: #ffffff !important; }
-              nav.scrolled .nav-cta-btn:hover { background: var(--blue) !important; color: #ffffff !important; }
-            `}</style>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -147,28 +162,69 @@ export default function Nav() {
                   fontSize: '0.875rem',
                   letterSpacing: '0.04em',
                   color: textColor,
-                  transition: 'color 0.2s ease, opacity 0.2s ease',
+                  position: 'relative',
+                  paddingBlock: '0.4rem',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 {link.label}
+                <span
+                  aria-hidden="true"
+                  className="nav-link-underline"
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    height: 1,
+                    background: atTop ? 'rgba(255,255,255,0.9)' : 'var(--blue)',
+                    transform: 'scaleX(0)',
+                    transformOrigin: 'left center',
+                    transition: 'transform 0.55s cubic-bezier(0.22,1,0.36,1), background 0.5s ease',
+                  }}
+                />
               </Link>
             ))}
 
-            {/* CTA */}
-            <Link
-              href="#contact"
-              className="nav-cta-btn"
+            {/* Contact (QR popup) */}
+            <button
+              type="button"
+              onClick={() => setContactOpen(true)}
+              className="nav-cta-ghost"
               style={{
                 fontFamily: 'var(--sans)',
                 fontSize: '0.8rem',
                 letterSpacing: '0.06em',
-                padding: '0.55rem 1.3rem',
+                padding: '0.55rem 1.1rem',
                 borderRadius: 2,
-                border: atTop ? '1px solid rgba(255,255,255,0.5)' : '1px solid var(--blue)',
-                color: atTop ? '#ffffff' : 'var(--blue)',
-                background: atTop ? 'rgba(255,255,255,0.08)' : 'transparent',
-                transition: 'background 0.25s ease, color 0.25s ease, border-color 0.4s ease',
+                border: atTop ? '1px solid rgba(255,255,255,0.45)' : '1px solid var(--border)',
+                color: atTop ? '#ffffff' : 'var(--ink)',
+                background: 'transparent',
+                transition: 'background 0.35s ease, color 0.35s ease, border-color 0.5s ease',
                 whiteSpace: 'nowrap',
+                cursor: 'pointer',
+              }}
+            >
+              联系我们
+            </button>
+
+            {/* Primary CTA */}
+            <Link
+              href="#appointment"
+              className="nav-cta-solid"
+              style={{
+                fontFamily: 'var(--sans)',
+                fontSize: '0.8rem',
+                letterSpacing: '0.06em',
+                padding: '0.6rem 1.3rem',
+                borderRadius: 2,
+                color: atTop ? '#ffffff' : '#ffffff',
+                background: atTop ? 'rgba(255,255,255,0.16)' : 'var(--blue)',
+                border: `1px solid ${atTop ? 'rgba(255,255,255,0.4)' : 'var(--blue)'}`,
+                transition: 'background 0.35s ease, color 0.35s ease, border-color 0.5s ease, transform 0.3s ease',
+                whiteSpace: 'nowrap',
+                position: 'relative',
+                overflow: 'hidden',
               }}
             >
               预约就诊
@@ -200,7 +256,7 @@ export default function Nav() {
                   height: 1.5,
                   borderRadius: 2,
                   background: atTop ? '#ffffff' : 'var(--blue)',
-                  transition: 'transform 0.3s ease, opacity 0.3s ease',
+                  transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease',
                   transformOrigin: 'center',
                   transform: menuOpen
                     ? i === 0
@@ -219,51 +275,74 @@ export default function Nav() {
         {/* Mobile dropdown */}
         {menuOpen && (
           <div
+            className="nav-mobile-panel"
             style={{
               position: 'absolute',
-              top: 64,
+              top: 68,
               left: 0,
               right: 0,
-              background: 'rgba(255,255,255,0.97)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
+              background: 'rgba(255,255,255,0.96)',
+              backdropFilter: 'blur(22px)',
+              WebkitBackdropFilter: 'blur(22px)',
               borderTop: '1px solid var(--border)',
-              padding: '1rem 2rem 1.5rem',
+              padding: '1rem 1.5rem 1.5rem',
               display: 'flex',
               flexDirection: 'column',
               gap: '0.25rem',
             }}
           >
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.map((link, i) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
+                className="nav-mobile-item"
                 style={{
                   fontFamily: 'var(--sans)',
                   fontSize: '1rem',
                   color: 'var(--ink)',
-                  padding: '0.75rem 0',
+                  padding: '0.85rem 0',
                   borderBottom: '1px solid var(--border)',
                   letterSpacing: '0.03em',
+                  animation: `mobileItemIn 0.5s cubic-bezier(0.16,1,0.3,1) ${i * 0.05}s both`,
                 }}
               >
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="#appointment"
-              onClick={() => setMenuOpen(false)}
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(false)
+                setContactOpen(true)
+              }}
               style={{
                 marginTop: '1rem',
                 textAlign: 'center',
                 padding: '0.75rem',
+                background: 'transparent',
+                border: '1px solid var(--border)',
+                color: 'var(--ink)',
+                fontFamily: 'var(--sans)',
+                fontSize: '0.9rem',
+                letterSpacing: '0.06em',
+                cursor: 'pointer',
+              }}
+            >
+              联系我们
+            </button>
+            <Link
+              href="#appointment"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                marginTop: '0.5rem',
+                textAlign: 'center',
+                padding: '0.85rem',
                 background: 'var(--blue)',
                 color: '#ffffff',
                 fontFamily: 'var(--sans)',
                 fontSize: '0.9rem',
                 letterSpacing: '0.06em',
-                borderRadius: 2,
               }}
             >
               预约就诊
@@ -272,12 +351,53 @@ export default function Nav() {
         )}
       </nav>
 
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
+
       <style>{`
-        @media (max-width: 768px) {
+        .nav-link .nav-link-underline { transform: scaleX(0); }
+        .nav-link:hover .nav-link-underline { transform: scaleX(1); }
+
+        .nav-cta-ghost:hover {
+          background: rgba(255,255,255,0.16);
+          color: #ffffff;
+        }
+        nav.scrolled .nav-cta-ghost:hover {
+          background: var(--blue);
+          color: #ffffff;
+          border-color: var(--blue);
+        }
+        .nav-cta-solid {
+          position: relative;
+        }
+        .nav-cta-solid:hover {
+          transform: translateY(-1px);
+          background: rgba(255,255,255,0.26);
+        }
+        nav.scrolled .nav-cta-solid:hover {
+          background: #00027A;
+          border-color: #00027A;
+        }
+
+        .nav-brand-mark {
+          transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+        }
+        .nav-brand:hover .nav-brand-mark {
+          transform: rotate(180deg);
+        }
+
+        @keyframes mobileItemIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 980px) {
+          .nav-brand-tag { display: none !important; }
+        }
+        @media (max-width: 860px) {
           .nav-desktop { display: none !important; }
           .nav-hamburger { display: flex !important; }
         }
-        @media (min-width: 769px) {
+        @media (min-width: 861px) {
           .nav-hamburger { display: none !important; }
         }
       `}</style>

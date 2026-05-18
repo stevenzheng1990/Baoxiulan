@@ -9,8 +9,15 @@ const STATS = [
   { value: '5', sup: '项', label: '国家级科技进步奖' },
 ]
 
+const CREDENTIALS = [
+  '中国妇幼保健协会 主任委员单位',
+  '中国优生优育协会婴幼儿发育专委会 主任委员单位',
+  '中国优生优育协会婴幼儿发育专委会 培训基地',
+]
+
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const auraRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const el = containerRef.current
@@ -19,6 +26,43 @@ export default function Hero() {
       el.classList.add('hero-revealed')
     })
     return () => cancelAnimationFrame(id)
+  }, [])
+
+  // Cursor-following light aura (desktop only)
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (window.matchMedia('(hover: none)').matches) return
+    const el = containerRef.current
+    const aura = auraRef.current
+    if (!el || !aura) return
+
+    let raf = 0
+    let targetX = 0
+    let targetY = 0
+    let currX = 0
+    let currY = 0
+
+    const onMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect()
+      targetX = e.clientX - rect.left
+      targetY = e.clientY - rect.top
+      if (!raf) raf = requestAnimationFrame(tick)
+    }
+    const tick = () => {
+      currX += (targetX - currX) * 0.08
+      currY += (targetY - currY) * 0.08
+      aura.style.transform = `translate(${currX}px, ${currY}px)`
+      if (Math.abs(targetX - currX) > 0.4 || Math.abs(targetY - currY) > 0.4) {
+        raf = requestAnimationFrame(tick)
+      } else {
+        raf = 0
+      }
+    }
+    el.addEventListener('mousemove', onMove)
+    return () => {
+      el.removeEventListener('mousemove', onMove)
+      if (raf) cancelAnimationFrame(raf)
+    }
   }, [])
 
   return (
@@ -34,7 +78,7 @@ export default function Hero() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          paddingTop: 64,
+          paddingTop: 68,
           isolation: 'isolate',
         }}
       >
@@ -52,7 +96,7 @@ export default function Hero() {
           <source src="/video/company.mp4" type="video/mp4" />
         </video>
 
-        {/* Color overlay — keeps brand blue dominant, lets video breathe */}
+        {/* Color overlay */}
         <div
           aria-hidden="true"
           style={{
@@ -64,6 +108,31 @@ export default function Hero() {
             pointerEvents: 'none',
           }}
         />
+
+        {/* Cursor aura — soft white glow that follows the mouse */}
+        <div
+          ref={auraRef}
+          aria-hidden="true"
+          className="hero-aura"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: 520,
+            height: 520,
+            marginLeft: -260,
+            marginTop: -260,
+            background:
+              'radial-gradient(circle, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.06) 35%, rgba(255,255,255,0) 65%)',
+            mixBlendMode: 'screen',
+            pointerEvents: 'none',
+            zIndex: 2,
+            opacity: 0,
+            transition: 'opacity 1.2s ease',
+            willChange: 'transform',
+          }}
+        />
+
         {/* Geometric SVG grid / concentric circles */}
         <svg
           aria-hidden="true"
@@ -74,8 +143,9 @@ export default function Hero() {
             transform: 'translateY(-50%)',
             width: 'min(680px, 58vw)',
             height: 'min(680px, 58vw)',
-            opacity: 0.07,
+            opacity: 0.08,
             pointerEvents: 'none',
+            zIndex: 2,
           }}
           viewBox="0 0 680 680"
           fill="none"
@@ -91,15 +161,7 @@ export default function Hero() {
             const x2 = 340 - 340 * Math.cos(rad)
             const y2 = 340 - 340 * Math.sin(rad)
             return (
-              <line
-                key={i}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="white"
-                strokeWidth={0.6}
-              />
+              <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="white" strokeWidth={0.6} />
             )
           })}
         </svg>
@@ -114,9 +176,10 @@ export default function Hero() {
             transform: 'translateY(-50%)',
             width: 'min(680px, 58vw)',
             height: 'min(680px, 58vw)',
-            opacity: 0.15,
+            opacity: 0.18,
             pointerEvents: 'none',
-            animation: 'heroRotate 40s linear infinite',
+            animation: 'heroRotate 50s linear infinite',
+            zIndex: 2,
           }}
         >
           <svg viewBox="0 0 680 680" fill="none" style={{ width: '100%', height: '100%' }}>
@@ -131,14 +194,35 @@ export default function Hero() {
           </svg>
         </div>
 
+        {/* Counter-rotating inner dashed ring */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            right: '-8vw',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: 'min(420px, 36vw)',
+            height: 'min(420px, 36vw)',
+            opacity: 0.16,
+            pointerEvents: 'none',
+            animation: 'heroRotateRev 70s linear infinite',
+            zIndex: 2,
+          }}
+        >
+          <svg viewBox="0 0 420 420" fill="none" style={{ width: '100%', height: '100%' }}>
+            <circle cx={210} cy={210} r={200} stroke="white" strokeWidth={0.8} strokeDasharray="4 14" />
+          </svg>
+        </div>
+
         {/* Main content */}
         <div
           style={{
             position: 'relative',
-            zIndex: 2,
+            zIndex: 3,
             maxWidth: 1280,
             margin: '0 auto',
-            padding: '5rem 2rem',
+            padding: 'clamp(3rem, 6vw, 5rem) clamp(1.25rem, 3vw, 2rem)',
             width: '100%',
           }}
         >
@@ -149,47 +233,118 @@ export default function Hero() {
               fontFamily: 'var(--sans)',
               fontSize: '0.7rem',
               letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.5)',
-              marginBottom: '2.5rem',
+              color: 'rgba(255,255,255,0.55)',
+              marginBottom: 'clamp(1.6rem, 3vw, 2.5rem)',
               animationDelay: '0s',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.7rem',
             }}
           >
+            <span
+              aria-hidden="true"
+              style={{
+                width: 22,
+                height: 1,
+                background: 'rgba(255,255,255,0.45)',
+                display: 'inline-block',
+              }}
+            />
             {SITE_CONFIG.tagline} · 北京·中国
           </p>
 
-          {/* H1 — three stagger-reveal lines */}
+          {/* H1 */}
           <h1
             style={{
               fontFamily: 'var(--serif-cn)',
               fontWeight: 300,
               lineHeight: 1.05,
               letterSpacing: '-0.01em',
-              fontSize: 'clamp(4rem, 10vw, 9rem)',
+              fontSize: 'clamp(3.4rem, 9.5vw, 8.6rem)',
               color: '#ffffff',
               overflow: 'hidden',
-              marginBottom: '3.5rem',
+              marginBottom: 'clamp(2rem, 4vw, 3rem)',
             }}
           >
-            <span className="hero-line" style={{ display: 'block', animationDelay: '0.1s' }}>
+            <span className="hero-line" style={{ display: 'block', animationDelay: '0.12s' }}>
               守护成长
             </span>
-            <span className="hero-line" style={{ display: 'block', animationDelay: '0.2s' }}>
+            <span className="hero-line" style={{ display: 'block', animationDelay: '0.22s' }}>
               的每一个
             </span>
-            <span className="hero-line" style={{ display: 'block', animationDelay: '0.3s' }}>
+            <span className="hero-line" style={{ display: 'block', animationDelay: '0.32s' }}>
               <em
                 style={{
                   fontFamily: 'var(--serif-en)',
                   fontStyle: 'italic',
                   fontWeight: 300,
-                  color: 'rgba(255,255,255,0.55)',
+                  color: 'rgba(255,255,255,0.58)',
                 }}
               >
                 关键时刻
               </em>
             </span>
           </h1>
+
+          {/* Credentials strip */}
+          <div
+            className="hero-creds"
+            aria-label="学会任职"
+            style={{
+              marginBottom: 'clamp(2rem, 4vw, 3rem)',
+              borderTop: '1px solid rgba(255,255,255,0.16)',
+              borderBottom: '1px solid rgba(255,255,255,0.16)',
+              paddingBlock: 'clamp(1rem, 2vw, 1.4rem)',
+            }}
+          >
+            <ul
+              style={{
+                listStyle: 'none',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: 'clamp(1rem, 2.5vw, 2rem)',
+                margin: 0,
+                padding: 0,
+              }}
+              className="hero-creds-list"
+            >
+              {CREDENTIALS.map((c, i) => (
+                <li
+                  key={c}
+                  className="hero-line hero-cred-item"
+                  style={{
+                    animationDelay: `${0.42 + i * 0.08}s`,
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '0.6rem',
+                    fontFamily: 'var(--sans)',
+                    fontSize: 'clamp(0.74rem, 0.95vw, 0.84rem)',
+                    lineHeight: 1.55,
+                    color: 'rgba(255,255,255,0.78)',
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="hero-cred-mark"
+                    style={{
+                      fontFamily: 'var(--serif-en)',
+                      fontStyle: 'italic',
+                      fontWeight: 300,
+                      fontSize: '0.82rem',
+                      color: 'rgba(255,255,255,0.5)',
+                      flexShrink: 0,
+                      marginTop: '0.05em',
+                      letterSpacing: '-0.02em',
+                    }}
+                  >
+                    0{i + 1}
+                  </span>
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {/* Bottom 2-column grid */}
           <div
@@ -201,22 +356,20 @@ export default function Hero() {
               alignItems: 'end',
             }}
           >
-            {/* Description */}
             <p
               className="hero-line"
               style={{
                 fontFamily: 'var(--sans)',
                 fontSize: 'clamp(0.85rem, 1.2vw, 1rem)',
                 lineHeight: 1.8,
-                color: 'rgba(255,255,255,0.65)',
-                maxWidth: 420,
-                animationDelay: '0.5s',
+                color: 'rgba(255,255,255,0.72)',
+                maxWidth: 440,
+                animationDelay: '0.7s',
               }}
             >
               {SITE_CONFIG.description}
             </p>
 
-            {/* Stats */}
             <div
               className="hero-stats"
               style={{ display: 'flex', gap: '2.5rem', justifyContent: 'flex-end' }}
@@ -225,7 +378,7 @@ export default function Hero() {
                 <div
                   key={stat.label}
                   className="hero-line"
-                  style={{ animationDelay: `${0.55 + i * 0.08}s` }}
+                  style={{ animationDelay: `${0.78 + i * 0.08}s` }}
                 >
                   <div
                     style={{
@@ -259,7 +412,7 @@ export default function Hero() {
                       fontFamily: 'var(--sans)',
                       fontSize: '0.72rem',
                       letterSpacing: '0.05em',
-                      color: 'rgba(255,255,255,0.45)',
+                      color: 'rgba(255,255,255,0.5)',
                       lineHeight: 1.4,
                     }}
                   >
@@ -271,7 +424,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Scroll indicator — desktop only */}
+        {/* Scroll indicator */}
         <div
           aria-hidden="true"
           className="scroll-indicator"
@@ -282,8 +435,8 @@ export default function Hero() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '0.5rem',
-            zIndex: 2,
+            gap: '0.6rem',
+            zIndex: 3,
           }}
         >
           <span
@@ -291,8 +444,8 @@ export default function Hero() {
               fontFamily: 'var(--sans)',
               fontSize: '0.6rem',
               letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.3)',
+              color: 'rgba(255,255,255,0.45)',
+              writingMode: 'vertical-rl',
             }}
           >
             向下滚动
@@ -301,7 +454,7 @@ export default function Hero() {
             style={{
               width: 1,
               height: 56,
-              background: 'rgba(255,255,255,0.15)',
+              background: 'rgba(255,255,255,0.18)',
               position: 'relative',
               overflow: 'hidden',
             }}
@@ -313,8 +466,8 @@ export default function Hero() {
                 left: 0,
                 right: 0,
                 height: '40%',
-                background: 'rgba(255,255,255,0.6)',
-                animation: 'scrollDrop 2s cubic-bezier(0.45,0,0.55,1) infinite',
+                background: 'rgba(255,255,255,0.7)',
+                animation: 'scrollDrop 2.4s cubic-bezier(0.45,0,0.55,1) infinite',
               }}
             />
           </div>
@@ -322,7 +475,6 @@ export default function Hero() {
       </section>
 
       <style>{`
-        /* Background video — covers section, fades in elegantly */
         .hero-video {
           position: absolute;
           inset: 0;
@@ -333,24 +485,27 @@ export default function Hero() {
           z-index: 0;
           pointer-events: none;
           opacity: 0;
-          animation: heroVideoIn 2.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+          animation: heroVideoIn 2.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
         }
         @keyframes heroVideoIn {
-          from { opacity: 0; transform: scale(1.04); }
+          from { opacity: 0; transform: scale(1.06); }
           to   { opacity: 1; transform: scale(1); }
         }
-        @media (prefers-reduced-motion: reduce) {
-          .hero-video { animation: none; opacity: 1; transform: none; }
-        }
+
+        #hero:hover .hero-aura { opacity: 1; }
 
         @keyframes heroRotate {
           from { transform: translateY(-50%) rotate(0deg); }
           to   { transform: translateY(-50%) rotate(360deg); }
         }
+        @keyframes heroRotateRev {
+          from { transform: translateY(-50%) rotate(0deg); }
+          to   { transform: translateY(-50%) rotate(-360deg); }
+        }
 
         @keyframes heroSlideUp {
-          from { opacity: 0; transform: translateY(28px); }
-          to   { opacity: 1; transform: translateY(0); }
+          from { opacity: 0; transform: translateY(28px); filter: blur(6px); }
+          to   { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
 
         @keyframes scrollDrop {
@@ -362,24 +517,28 @@ export default function Hero() {
         .hero-line {
           opacity: 0;
           transform: translateY(28px);
+          filter: blur(6px);
         }
-
         .hero-revealed .hero-line {
-          animation: heroSlideUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+          animation: heroSlideUp 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
+        .hero-cred-item { position: relative; transition: color 0.4s ease; }
+        .hero-cred-item:hover { color: #ffffff !important; }
+        .hero-cred-item:hover .hero-cred-mark { color: rgba(255,255,255,0.9) !important; }
+
+        @media (max-width: 900px) {
+          .hero-creds-list { grid-template-columns: 1fr !important; gap: 0.7rem !important; }
+        }
         @media (max-width: 768px) {
-          .hero-bottom {
-            grid-template-columns: 1fr !important;
-          }
-          .hero-stats {
-            justify-content: flex-start !important;
-            flex-wrap: wrap !important;
-            gap: 1.8rem !important;
-          }
-          .scroll-indicator {
-            display: none !important;
-          }
+          .hero-bottom { grid-template-columns: 1fr !important; }
+          .hero-stats { justify-content: flex-start !important; flex-wrap: wrap !important; gap: 1.8rem !important; }
+          .scroll-indicator { display: none !important; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .hero-video { animation: none; opacity: 1; transform: none; }
+          .hero-line { animation: none !important; opacity: 1; transform: none; filter: none; }
         }
       `}</style>
     </>
