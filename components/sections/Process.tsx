@@ -61,7 +61,7 @@ export default function Process() {
           {/* ── LEFT: Steps ── */}
           <div>
             <div className="r-blur" style={{ marginBottom: 'clamp(1.75rem, 3.5vw, 2.5rem)' }}>
-              <span className="eyebrow">我们的方法 · Approach</span>
+              <span className="eyebrow"><span className="eyebrow-mark" aria-hidden="true"/>我们的方法 · Approach</span>
               <h2
                 className="h-display"
                 style={{ marginTop: '0.85rem' }}

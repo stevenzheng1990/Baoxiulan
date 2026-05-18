@@ -79,7 +79,7 @@ export default function Articles({ articles }: ArticlesProps) {
           }}
         >
           <div>
-            <span className="eyebrow">专业文章 · Articles</span>
+            <span className="eyebrow"><span className="eyebrow-mark" aria-hidden="true"/>专业文章 · Articles</span>
             <h2 className="h-display" style={{ marginTop: '0.85rem' }}>专业知识，触手可及</h2>
           </div>
           <Link

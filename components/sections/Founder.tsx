@@ -84,7 +84,7 @@ export default function Founder({ expert }: FounderProps) {
           <div className="founder-right">
             {/* Eyebrow */}
             <div className="r" style={{ marginBottom: '0.9rem' }}>
-              <span className="eyebrow">创始人 · Founder</span>
+              <span className="eyebrow"><span className="eyebrow-mark" aria-hidden="true"/>创始人 · Founder</span>
             </div>
 
             {/* Name */}

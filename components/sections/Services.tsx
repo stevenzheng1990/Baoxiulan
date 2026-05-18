@@ -238,7 +238,7 @@ export default function Services({ services }: Props) {
               maxWidth: 640,
             }}
           >
-            <p className="eyebrow">诊疗领域 · Services</p>
+            <p className="eyebrow"><span className="eyebrow-mark" aria-hidden="true"/>诊疗领域 · Services</p>
             <h2
               className="h-display"
               style={{ marginTop: '0.85rem' }}

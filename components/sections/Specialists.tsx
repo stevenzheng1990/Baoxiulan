@@ -38,7 +38,7 @@ export default function Specialists() {
           className="r-blur specialists-header"
           style={{ marginBottom: 'clamp(2rem, 4vw, 3rem)' }}
         >
-          <span className="eyebrow">首席专家 · Specialists</span>
+          <span className="eyebrow"><span className="eyebrow-mark" aria-hidden="true"/>首席专家 · Specialists</span>
           <h2
             className="h-display"
             style={{ marginTop: '0.85rem', maxWidth: '20ch' }}
@@ -149,52 +149,66 @@ export default function Specialists() {
 
         {/* Panel */}
         <div
-          key={activeTab}
-          className="specialists-panel"
+          className="specialists-panel r-img"
           style={{
             background: 'var(--white)',
             borderBottom: '1px solid var(--border)',
             borderInline: '1px solid var(--border)',
             display: 'grid',
-            gridTemplateColumns: 'minmax(180px, 240px) 1fr',
-            gap: 'clamp(1.25rem, 2.5vw, 2rem)',
+            gridTemplateColumns: 'minmax(200px, 260px) 1fr',
+            gap: 'clamp(1.5rem, 3vw, 2.5rem)',
             padding: 'clamp(1.5rem, 2.5vw, 2.25rem)',
-            animation: 'specialistFade 0.45s cubic-bezier(0.22,1,0.36,1) both',
           }}
         >
-          {/* Portrait */}
+          {/* Portrait — only the photo swaps, panel stays mounted */}
           <figure style={{ margin: 0 }}>
             <div
-              key={`portrait-${activeTab}`}
               style={{
                 position: 'relative',
                 aspectRatio: '4 / 5',
                 overflow: 'hidden',
                 background: 'var(--off-white)',
                 border: '1px solid var(--border)',
-                animation: 'portraitFade 0.6s cubic-bezier(0.22,1,0.36,1) both',
               }}
             >
-              <Image
-                src={doctor.photoPath ?? '/doctors/zhoucongle.png'}
-                alt={doctor.name}
-                fill
-                style={{ objectFit: 'cover', objectPosition: 'center 18%' }}
-                sizes="(max-width: 900px) 70vw, 240px"
-              />
+              {DOCTORS.map((doc, i) => (
+                <div
+                  key={doc.slug}
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    opacity: i === activeTab ? 1 : 0,
+                    transform: `scale(${i === activeTab ? 1 : 1.04})`,
+                    transition:
+                      'opacity 1.05s cubic-bezier(0.16,1,0.3,1), transform 1.4s cubic-bezier(0.16,1,0.3,1)',
+                    pointerEvents: i === activeTab ? 'auto' : 'none',
+                  }}
+                  aria-hidden={i !== activeTab}
+                >
+                  <Image
+                    src={doc.photoPath ?? '/doctors/zhoucongle.png'}
+                    alt={doc.name}
+                    fill
+                    style={{ objectFit: 'cover', objectPosition: 'center 18%' }}
+                    sizes="(max-width: 900px) 70vw, 260px"
+                    priority={i === 0}
+                  />
+                </div>
+              ))}
               <span
                 style={{
                   position: 'absolute',
-                  top: '0.7rem',
-                  left: '0.7rem',
+                  top: '0.75rem',
+                  left: '0.75rem',
                   background: 'var(--blue)',
                   color: 'var(--white)',
                   fontFamily: 'var(--serif-en)',
                   fontStyle: 'italic',
                   fontWeight: 300,
                   fontSize: '0.78rem',
-                  padding: '0.18rem 0.5rem',
+                  padding: '0.2rem 0.55rem',
                   letterSpacing: '0.02em',
+                  zIndex: 2,
                 }}
               >
                 {tabNumbers[activeTab]}
@@ -202,8 +216,10 @@ export default function Specialists() {
             </div>
           </figure>
 
-          {/* Info */}
+          {/* Info — keyed so text smoothly cross-fades on tab change */}
           <div
+            key={`info-${activeTab}`}
+            className="specialist-info"
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -389,13 +405,12 @@ export default function Specialists() {
       </div>
 
       <style>{`
-        @keyframes specialistFade {
-          from { opacity: 0; transform: translateY(8px); }
-          to   { opacity: 1; transform: none; }
+        .specialist-info {
+          animation: infoFade 0.8s cubic-bezier(0.16,1,0.3,1) both;
         }
-        @keyframes portraitFade {
-          from { opacity: 0; transform: scale(1.03); }
-          to   { opacity: 1; transform: scale(1); }
+        @keyframes infoFade {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: none; }
         }
         @media (max-width: 720px) {
           .specialists-panel {
