@@ -39,17 +39,52 @@ export default function Footer() {
   return (
     <footer
       style={{
-        background: 'var(--ink)',
-        color: 'rgba(255,255,255,0.75)',
+        background:
+          'linear-gradient(180deg, #0A0E2E 0%, #070A24 55%, #05071C 100%)',
+        color: 'rgba(237,239,250,0.78)',
         fontFamily: 'var(--sans)',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
+      {/* Soft brand-blue glow */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          top: '-30%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '90%',
+          height: '60%',
+          background:
+            'radial-gradient(ellipse at center, rgba(0,3,163,0.35) 0%, rgba(0,3,163,0) 65%)',
+          pointerEvents: 'none',
+          filter: 'blur(40px)',
+        }}
+      />
+      {/* Hairline top accent */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 1,
+          background:
+            'linear-gradient(90deg, transparent 0%, rgba(120,140,220,0.35) 50%, transparent 100%)',
+          pointerEvents: 'none',
+        }}
+      />
       {/* Main grid */}
       <div
         style={{
           maxWidth: 1280,
           margin: '0 auto',
           padding: '5rem 2rem 3.5rem',
+          position: 'relative',
+          zIndex: 1,
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
           gap: '3rem',
@@ -98,7 +133,7 @@ export default function Footer() {
               marginBottom: '1.4rem',
             }}
           >
-            Baoxiulan Medical · est. 1991
+            宝秀兰医疗 · 创立于 1991
           </p>
 
           <p
@@ -119,7 +154,7 @@ export default function Footer() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.6rem',
-              border: '1px solid rgba(255,255,255,0.12)',
+              border: '1px solid rgba(170,190,255,0.18)',
               borderRadius: 2,
               padding: '0.45rem 0.9rem',
             }}
@@ -197,7 +232,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+      <div style={{ borderTop: '1px solid rgba(170,190,255,0.08)', position: 'relative', zIndex: 1 }}>
         <div
           style={{
             maxWidth: 1280,
