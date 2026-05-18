@@ -176,24 +176,28 @@ export default function Awards() {
            Deep blue ground · Gold accents · serif-cn typography
            ════════════════════════════════════════════════════════════ */
         .aw-section {
-          --gold: #C9A86A;
-          --gold-soft: rgba(201, 168, 106, 0.7);
-          --gold-line: rgba(201, 168, 106, 0.45);
+          --gold: #B08A4A;
+          --gold-soft: rgba(176, 138, 74, 0.75);
+          --gold-line: rgba(176, 138, 74, 0.4);
+          --ink-blue: #0003A3;
+          --ink-blue-soft: rgba(0, 3, 163, 0.7);
+          --ink-blue-mute: rgba(0, 3, 163, 0.55);
+          --line-blue: rgba(0, 3, 163, 0.14);
 
           position: relative;
-          background: var(--blue-deep);
+          background: var(--paper);
           padding-block: clamp(4.5rem, 8vw, 7rem);
           overflow: hidden;
           isolation: isolate;
-          color: #ffffff;
+          color: var(--ink-blue);
           font-family: var(--serif-cn);
         }
         .aw-bg {
           position: absolute; inset: 0; z-index: 0;
           pointer-events: none;
           background:
-            radial-gradient(ellipse 60% 50% at 20% 18%, rgba(201,168,106,0.10) 0%, rgba(201,168,106,0) 60%),
-            radial-gradient(ellipse 55% 45% at 85% 78%, rgba(0,3,163,0.4) 0%, rgba(0,3,163,0) 60%);
+            radial-gradient(ellipse 55% 45% at 18% 22%, rgba(176,138,74,0.07) 0%, rgba(176,138,74,0) 60%),
+            radial-gradient(ellipse 50% 40% at 86% 80%, rgba(0,3,163,0.05) 0%, rgba(0,3,163,0) 60%);
         }
 
         .aw-container {
@@ -259,11 +263,11 @@ export default function Awards() {
         }
         .aw-title {
           font-family: var(--serif-cn);
-          font-weight: 400;
+          font-weight: 500;
           font-size: clamp(1.6rem, 3vw, 2.4rem);
           letter-spacing: 0.08em;
           line-height: 1.35;
-          color: #ffffff;
+          color: var(--ink-blue);
           margin: 0 0 clamp(0.85rem, 1.6vw, 1.2rem);
           padding-left: 0.08em;
           opacity: 0;
@@ -278,7 +282,7 @@ export default function Awards() {
           font-size: clamp(0.86rem, 1vw, 0.96rem);
           line-height: 1.85;
           letter-spacing: 0.08em;
-          color: rgba(255,255,255,0.65);
+          color: var(--ink-blue-mute);
           margin: 0;
           opacity: 0;
           transform: translateY(10px);
@@ -300,7 +304,7 @@ export default function Awards() {
           left: 0; right: 0;
           top: var(--rail-y);
           height: 1px;
-          background: rgba(255,255,255,0.12);
+          background: var(--line-blue);
           z-index: 1;
         }
         .aw-rail-fill {
@@ -309,11 +313,11 @@ export default function Awards() {
           top: var(--rail-y);
           height: 1px;
           background: linear-gradient(90deg,
-            rgba(201,168,106,0) 0%,
-            var(--gold-line) 8%,
-            var(--gold) 50%,
-            var(--gold-line) 92%,
-            rgba(201,168,106,0) 100%);
+            rgba(0,3,163,0) 0%,
+            rgba(0,3,163,0.4) 8%,
+            var(--ink-blue) 50%,
+            rgba(0,3,163,0.4) 92%,
+            rgba(0,3,163,0) 100%);
           transform-origin: left center; transform: scaleX(0);
           z-index: 2;
         }
@@ -331,8 +335,8 @@ export default function Awards() {
           z-index: 3;
           transform: translateX(calc(var(--ptr) - 90px));
           background: radial-gradient(ellipse at center,
-            rgba(201,168,106,0.45) 0%,
-            rgba(201,168,106,0) 65%);
+            rgba(176,138,74,0.45) 0%,
+            rgba(176,138,74,0) 65%);
           opacity: 0;
           transition: transform 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease;
         }
@@ -416,10 +420,10 @@ export default function Awards() {
         .aw-dot-core {
           width: 9px; height: 9px;
           border-radius: 50%;
-          background: var(--gold);
+          background: var(--ink-blue);
           box-shadow:
-            0 0 0 3px var(--blue-deep),
-            0 0 0 4px rgba(201,168,106,0.35);
+            0 0 0 3px var(--paper),
+            0 0 0 4px rgba(176,138,74,0.55);
           transform: scale(0);
           will-change: transform;
           transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s ease;
@@ -436,7 +440,7 @@ export default function Awards() {
           position: absolute;
           inset: -3px;
           border-radius: 50%;
-          background: rgba(201,168,106,0.35);
+          background: rgba(176,138,74,0.45);
           opacity: 0;
           pointer-events: none;
         }
@@ -454,11 +458,7 @@ export default function Awards() {
           position: relative;
           width: 100%;
           padding: clamp(1.4rem, 2.4vw, 1.9rem) clamp(1rem, 1.8vw, 1.4rem) clamp(1.4rem, 2.4vw, 1.8rem);
-          background: linear-gradient(180deg,
-            rgba(255,255,255,0.03) 0%,
-            rgba(255,255,255,0.06) 100%);
-          backdrop-filter: blur(6px);
-          -webkit-backdrop-filter: blur(6px);
+          background: #ffffff;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -466,6 +466,7 @@ export default function Awards() {
           opacity: 0;
           clip-path: inset(0 0 100% 0);
           transition: transform 0.6s cubic-bezier(0.22,1,0.36,1),
+                      box-shadow 0.55s ease,
                       background 0.5s ease;
           min-width: 0;
         }
@@ -478,25 +479,23 @@ export default function Awards() {
         }
         .aw-card:hover {
           transform: translateY(-4px);
-          background: linear-gradient(180deg,
-            rgba(255,255,255,0.05) 0%,
-            rgba(255,255,255,0.09) 100%);
+          box-shadow: 0 24px 50px -30px rgba(0,3,163,0.28);
         }
         .aw-item:hover .aw-dot-core {
           transform: scale(1.4);
           box-shadow:
-            0 0 0 3px var(--blue-deep),
-            0 0 0 6px rgba(201,168,106,0.55);
+            0 0 0 3px var(--paper),
+            0 0 0 6px rgba(176,138,74,0.7);
         }
         .aw-items:hover .aw-item:not(:hover) .aw-card,
         .aw-items:hover .aw-item:not(:hover) .aw-year {
-          opacity: 0.4;
+          opacity: 0.5;
         }
 
         /* Animated 4-segment border (white) */
         .aw-card-bd {
           position: absolute;
-          background: rgba(255,255,255,0.22);
+          background: rgba(0,3,163,0.18);
           transform: scale(0);
         }
         .aw-bd-t { top: 0; left: 0; height: 1px; width: 100%; transform-origin: left center; }
@@ -551,11 +550,11 @@ export default function Awards() {
 
         .aw-card-title {
           font-family: var(--serif-cn);
-          font-weight: 400;
+          font-weight: 500;
           font-size: clamp(1.02rem, 1.4vw, 1.22rem);
           letter-spacing: 0.04em;
           line-height: 1.5;
-          color: #ffffff;
+          color: var(--ink-blue);
           margin: 0;
           /* allow proper Chinese wrap */
           word-break: break-word;
@@ -595,7 +594,7 @@ export default function Awards() {
           font-size: clamp(0.82rem, 1vw, 0.92rem);
           line-height: 1.7;
           letter-spacing: 0.04em;
-          color: rgba(255,255,255,0.78);
+          color: var(--ink-blue-soft);
           margin: 0;
           word-break: break-word;
           overflow-wrap: anywhere;
