@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import ProgramArt from './ProgramArt'
+import './programArt.css'
 
 interface Program {
   slug: string
@@ -90,170 +92,6 @@ const FEATURES = [
   { label: '协作医院', value: '全国 21 家' },
 ]
 
-/**
- * Custom SVG illustrations — line art, brand blue + gold accent.
- * Each path animates via stroke-dashoffset when card enters viewport.
- */
-function ProgramArt({ slug }: { slug: string }) {
-  const common = {
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.4,
-    strokeLinecap: 'round' as const,
-    strokeLinejoin: 'round' as const,
-  }
-  const gold = '#B08A4A'
-
-  switch (slug) {
-    case 'early':
-      return (
-        <svg viewBox="0 0 220 220" className="art-svg">
-          {/* concentric sensory arcs */}
-          <path d="M30 110 A 80 80 0 0 1 110 30" {...common} />
-          <path d="M50 110 A 60 60 0 0 1 110 50" {...common} />
-          <path d="M70 110 A 40 40 0 0 1 110 70" {...common} />
-          {/* baby head */}
-          <circle cx="110" cy="115" r="22" {...common} />
-          <circle cx="103" cy="111" r="1.6" fill="currentColor" stroke="none" />
-          <circle cx="117" cy="111" r="1.6" fill="currentColor" stroke="none" />
-          <path d="M102 122 Q110 130 118 122" {...common} />
-          {/* sensory accent dots */}
-          <circle cx="110" cy="32" r="3.2" fill={gold} stroke="none" />
-          <circle cx="32" cy="110" r="3.2" fill={gold} stroke="none" />
-          <circle cx="55" cy="55" r="2.4" fill={gold} stroke="none" />
-        </svg>
-      )
-    case 'inclusion':
-      return (
-        <svg viewBox="0 0 220 220" className="art-svg">
-          {/* orbital ring */}
-          <circle cx="110" cy="110" r="60" strokeDasharray="2 5" {...common} />
-          {/* center */}
-          <circle cx="110" cy="110" r="14" {...common} />
-          <circle cx="110" cy="110" r="4" fill={gold} stroke="none" />
-          {/* satellites */}
-          <circle cx="110" cy="50" r="11" {...common} />
-          <circle cx="170" cy="110" r="11" {...common} />
-          <circle cx="110" cy="170" r="11" {...common} />
-          <circle cx="50" cy="110" r="11" {...common} />
-          {/* connecting lines */}
-          <path d="M110 64 V96" {...common} />
-          <path d="M156 110 H124" {...common} />
-          <path d="M110 156 V124" {...common} />
-          <path d="M64 110 H96" {...common} />
-        </svg>
-      )
-    case 'speech':
-      return (
-        <svg viewBox="0 0 220 220" className="art-svg">
-          {/* speech bubble */}
-          <path d="M45 65 H175 Q185 65 185 75 V140 Q185 150 175 150 H125 L100 175 V150 H45 Q35 150 35 140 V75 Q35 65 45 65 Z" {...common} />
-          {/* waveform */}
-          <path d="M55 108 L72 92 L88 122 L104 82 L120 130 L136 95 L152 115 L168 100" {...common} />
-          {/* gold accent dot */}
-          <circle cx="168" cy="100" r="3.2" fill={gold} stroke="none" />
-          <circle cx="55" cy="108" r="3.2" fill={gold} stroke="none" />
-        </svg>
-      )
-    case 'motor':
-      return (
-        <svg viewBox="0 0 220 220" className="art-svg">
-          {/* head */}
-          <circle cx="135" cy="55" r="14" {...common} />
-          {/* torso */}
-          <path d="M135 69 L115 120" {...common} />
-          {/* arms (mid-stride) */}
-          <path d="M120 95 L90 70" {...common} />
-          <path d="M120 95 L160 110" {...common} />
-          {/* legs */}
-          <path d="M115 120 L150 165" {...common} />
-          <path d="M115 120 L95 170" {...common} />
-          {/* foot accents */}
-          <circle cx="150" cy="165" r="3" fill={gold} stroke="none" />
-          <circle cx="95" cy="170" r="3" fill={gold} stroke="none" />
-          {/* motion lines */}
-          <path d="M30 95 H62" strokeDasharray="3 4" {...common} />
-          <path d="M30 115 H52" strokeDasharray="3 4" {...common} />
-          <path d="M30 135 H72" strokeDasharray="3 4" {...common} />
-        </svg>
-      )
-    case 'behavior':
-      return (
-        <svg viewBox="0 0 220 220" className="art-svg">
-          {/* left scattered */}
-          <circle cx="40" cy="60" r="4" {...common} />
-          <circle cx="62" cy="105" r="4" {...common} />
-          <circle cx="38" cy="142" r="4" {...common} />
-          <circle cx="74" cy="76" r="4" {...common} />
-          <circle cx="55" cy="160" r="4" {...common} />
-          {/* arrow */}
-          <path d="M95 110 L130 110 M122 102 L130 110 L122 118" {...common} />
-          {/* right ordered grid */}
-          <circle cx="155" cy="70" r="4" fill={gold} stroke="none" />
-          <circle cx="180" cy="70" r="4" {...common} />
-          <circle cx="155" cy="110" r="4" {...common} />
-          <circle cx="180" cy="110" r="4" {...common} />
-          <circle cx="155" cy="150" r="4" {...common} />
-          <circle cx="180" cy="150" r="4" {...common} />
-          <path d="M150 70 L150 150" strokeDasharray="2 4" {...common} />
-          <path d="M185 70 L185 150" strokeDasharray="2 4" {...common} />
-        </svg>
-      )
-    case 'sensory':
-      return (
-        <svg viewBox="0 0 220 220" className="art-svg">
-          {/* 5 overlapping circles representing senses */}
-          <circle cx="110" cy="72" r="40" {...common} opacity="0.7" />
-          <circle cx="78" cy="100" r="40" {...common} opacity="0.7" />
-          <circle cx="142" cy="100" r="40" {...common} opacity="0.7" />
-          <circle cx="90" cy="138" r="40" {...common} opacity="0.7" />
-          <circle cx="130" cy="138" r="40" {...common} opacity="0.7" />
-          {/* center accent */}
-          <circle cx="110" cy="112" r="5" fill={gold} stroke="none" />
-        </svg>
-      )
-    case 'ot':
-      return (
-        <svg viewBox="0 0 220 220" className="art-svg">
-          {/* palm */}
-          <path d="M75 110 V165 Q75 175 85 175 H145 Q155 175 155 165 V110" {...common} />
-          {/* wrist accent */}
-          <path d="M75 170 H155" {...common} />
-          {/* fingers */}
-          <path d="M85 110 V62 Q85 56 91 56 Q97 56 97 62 V110" {...common} />
-          <path d="M104 110 V52 Q104 46 110 46 Q116 46 116 52 V110" {...common} />
-          <path d="M123 110 V58 Q123 52 129 52 Q135 52 135 58 V110" {...common} />
-          <path d="M142 110 V72 Q142 66 148 66 Q154 66 154 72 V110" {...common} />
-          {/* thumb */}
-          <path d="M75 125 Q55 122 58 102 Q63 88 75 96" {...common} />
-          {/* accent dot — pinch point */}
-          <circle cx="75" cy="100" r="3.2" fill={gold} stroke="none" />
-        </svg>
-      )
-    case 'tuina':
-      return (
-        <svg viewBox="0 0 220 220" className="art-svg">
-          {/* simplified body silhouette */}
-          <circle cx="110" cy="48" r="14" {...common} />
-          <path d="M110 62 L110 142" {...common} />
-          <path d="M110 78 L78 116" {...common} />
-          <path d="M110 78 L142 116" {...common} />
-          <path d="M110 142 L88 188" {...common} />
-          <path d="M110 142 L132 188" {...common} />
-          {/* acupoints in gold (along meridian) */}
-          <circle cx="110" cy="82" r="3.2" fill={gold} stroke="none" />
-          <circle cx="92" cy="100" r="3.2" fill={gold} stroke="none" />
-          <circle cx="128" cy="100" r="3.2" fill={gold} stroke="none" />
-          <circle cx="110" cy="115" r="3.2" fill={gold} stroke="none" />
-          <circle cx="110" cy="135" r="3.2" fill={gold} stroke="none" />
-          {/* connection lines */}
-          <path d="M92 100 L110 115 L128 100" strokeDasharray="2 3" {...common} />
-        </svg>
-      )
-    default:
-      return null
-  }
-}
 
 export default function FacilitiesPage() {
   const heroRef = useRef<HTMLElement>(null)
@@ -787,35 +625,6 @@ export default function FacilitiesPage() {
         }
         .art-svg {
           width: 100%; height: 100%;
-          color: var(--fac-blue);
-          overflow: visible;
-        }
-        .art-svg path, .art-svg circle {
-          stroke-dasharray: 600;
-          stroke-dashoffset: 600;
-        }
-        .fac-r.in .art-svg path,
-        .fac-r.in .art-svg circle {
-          animation: fac-draw 2.2s cubic-bezier(0.83,0,0.17,1) calc(0.55s + var(--d)) forwards;
-        }
-        @keyframes fac-draw {
-          to { stroke-dashoffset: 0; }
-        }
-        /* Filled circles use a different animation */
-        .art-svg circle[fill]:not([fill="none"]) {
-          opacity: 0;
-          transform-origin: center;
-          transform: scale(0);
-          stroke-dasharray: none;
-          stroke-dashoffset: 0;
-        }
-        .fac-r.in .art-svg circle[fill]:not([fill="none"]) {
-          animation: fac-pop 0.7s cubic-bezier(0.34,1.56,0.64,1) calc(1.8s + var(--d)) forwards;
-        }
-        @keyframes fac-pop {
-          0%   { opacity: 0; transform: scale(0); }
-          60%  { opacity: 1; transform: scale(1.3); }
-          100% { opacity: 1; transform: scale(1); }
         }
 
         /* Decorative meta on the art panel */
@@ -1101,16 +910,13 @@ export default function FacilitiesPage() {
           .fac-body-tags,
           .fac-body-summary,
           .fac-body-divider,
-          .fac-body-hl li,
-          .art-svg path,
-          .art-svg circle {
+          .fac-body-hl li {
             transition: none !important;
             animation: none !important;
             opacity: 1 !important;
             transform: none !important;
             filter: none !important;
             clip-path: none !important;
-            stroke-dashoffset: 0 !important;
           }
         }
       `}</style>
