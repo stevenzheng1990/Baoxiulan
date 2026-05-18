@@ -37,7 +37,7 @@ export default function Founder({ expert }: FounderProps) {
   const data = expert ?? EXPERTS_SEED[0]
 
   return (
-    <section className="section" style={{ background: 'var(--white)' }}>
+    <section id="founder" className="section" style={{ background: 'var(--white)' }}>
       <div className="container">
         <div className="founder-grid">
           {/* ── LEFT COL — Portrait + meta strip ── */}

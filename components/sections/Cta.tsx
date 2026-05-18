@@ -5,6 +5,7 @@ import { SITE_CONFIG } from '@/content/site'
 export default function Cta() {
   return (
     <section
+      id="contact"
       className="section"
       style={{
         background: 'var(--blue)',

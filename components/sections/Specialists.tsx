@@ -29,6 +29,7 @@ export default function Specialists() {
 
   return (
     <section
+      id="specialists"
       className="section"
       style={{ background: 'var(--paper)', borderTop: '1px solid var(--border)' }}
     >

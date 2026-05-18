@@ -5,11 +5,11 @@ import Link from 'next/link'
 import ContactModal from './ContactModal'
 
 const NAV_LINKS = [
-  { label: '机构介绍', href: '#about' },
+  { label: '机构创始人', href: '#founder' },
+  { label: '专家团队', href: '#specialists' },
+  { label: '康复团队', href: '#therapists' },
   { label: '诊疗服务', href: '#services' },
-  { label: '专家团队', href: '#experts' },
   { label: '学术荣誉', href: '#awards' },
-  { label: '育儿课堂', href: '#courses' },
 ]
 
 export default function Nav() {
@@ -186,49 +186,49 @@ export default function Nav() {
               </Link>
             ))}
 
-            {/* Contact (QR popup) */}
+            {/* Primary CTA — single button opens contact modal */}
             <button
               type="button"
               onClick={() => setContactOpen(true)}
-              className="nav-cta-ghost"
-              style={{
-                fontFamily: 'var(--sans)',
-                fontSize: '0.8rem',
-                letterSpacing: '0.06em',
-                padding: '0.55rem 1.1rem',
-                borderRadius: 2,
-                border: atTop ? '1px solid rgba(255,255,255,0.45)' : '1px solid var(--border)',
-                color: atTop ? '#ffffff' : 'var(--ink)',
-                background: 'transparent',
-                transition: 'background 0.35s ease, color 0.35s ease, border-color 0.5s ease',
-                whiteSpace: 'nowrap',
-                cursor: 'pointer',
-              }}
-            >
-              联系我们
-            </button>
-
-            {/* Primary CTA */}
-            <Link
-              href="#appointment"
               className="nav-cta-solid"
               style={{
                 fontFamily: 'var(--sans)',
                 fontSize: '0.8rem',
                 letterSpacing: '0.06em',
-                padding: '0.6rem 1.3rem',
+                padding: '0.6rem 1.4rem',
                 borderRadius: 2,
-                color: atTop ? '#ffffff' : '#ffffff',
+                color: '#ffffff',
                 background: atTop ? 'rgba(255,255,255,0.16)' : 'var(--blue)',
-                border: `1px solid ${atTop ? 'rgba(255,255,255,0.4)' : 'var(--blue)'}`,
-                transition: 'background 0.35s ease, color 0.35s ease, border-color 0.5s ease, transform 0.3s ease',
+                border: `1px solid ${atTop ? 'rgba(255,255,255,0.45)' : 'var(--blue)'}`,
+                transition:
+                  'background 0.35s ease, color 0.35s ease, border-color 0.5s ease, transform 0.3s ease',
                 whiteSpace: 'nowrap',
                 position: 'relative',
                 overflow: 'hidden',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
               }}
             >
-              预约就诊
-            </Link>
+              联系我们
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                aria-hidden="true"
+                style={{ flexShrink: 0 }}
+              >
+                <path
+                  d="M2 6h7m0 0L6 3m3 3L6 9"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
           </div>
 
           {/* Mobile hamburger */}
@@ -319,34 +319,18 @@ export default function Nav() {
               style={{
                 marginTop: '1rem',
                 textAlign: 'center',
-                padding: '0.75rem',
-                background: 'transparent',
-                border: '1px solid var(--border)',
-                color: 'var(--ink)',
-                fontFamily: 'var(--sans)',
-                fontSize: '0.9rem',
-                letterSpacing: '0.06em',
-                cursor: 'pointer',
-              }}
-            >
-              联系我们
-            </button>
-            <Link
-              href="#appointment"
-              onClick={() => setMenuOpen(false)}
-              style={{
-                marginTop: '0.5rem',
-                textAlign: 'center',
                 padding: '0.85rem',
                 background: 'var(--blue)',
                 color: '#ffffff',
                 fontFamily: 'var(--sans)',
                 fontSize: '0.9rem',
                 letterSpacing: '0.06em',
+                border: 'none',
+                cursor: 'pointer',
               }}
             >
-              预约就诊
-            </Link>
+              联系我们
+            </button>
           </div>
         )}
       </nav>
