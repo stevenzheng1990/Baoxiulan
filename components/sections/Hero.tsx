@@ -35,8 +35,35 @@ export default function Hero() {
           flexDirection: 'column',
           justifyContent: 'center',
           paddingTop: 64,
+          isolation: 'isolate',
         }}
       >
+        {/* Background video */}
+        <video
+          className="hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          tabIndex={-1}
+        >
+          <source src="/video/company.mp4" type="video/mp4" />
+        </video>
+
+        {/* Color overlay — keeps brand blue dominant, lets video breathe */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'linear-gradient(180deg, rgba(0,3,163,0.78) 0%, rgba(0,3,163,0.82) 60%, rgba(0,2,107,0.92) 100%)',
+            zIndex: 1,
+            pointerEvents: 'none',
+          }}
+        />
         {/* Geometric SVG grid / concentric circles */}
         <svg
           aria-hidden="true"
@@ -295,6 +322,27 @@ export default function Hero() {
       </section>
 
       <style>{`
+        /* Background video — covers section, fades in elegantly */
+        .hero-video {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+          z-index: 0;
+          pointer-events: none;
+          opacity: 0;
+          animation: heroVideoIn 2.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+        }
+        @keyframes heroVideoIn {
+          from { opacity: 0; transform: scale(1.04); }
+          to   { opacity: 1; transform: scale(1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-video { animation: none; opacity: 1; transform: none; }
+        }
+
         @keyframes heroRotate {
           from { transform: translateY(-50%) rotate(0deg); }
           to   { transform: translateY(-50%) rotate(360deg); }
