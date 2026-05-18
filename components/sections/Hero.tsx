@@ -2,117 +2,131 @@
 
 import { useEffect, useRef } from 'react'
 
-const STATS = [
-  { value: '34', sup: '+', label: '年临床积淀' },
-  { value: '5', sup: '项', label: '国家级科技进步奖' },
-  { value: '91.4', sup: '%', label: '脑瘫超早期诊断准确率' },
-]
-
 const CREDENTIALS = [
-  { org: '中国妇幼保健协会', role: '主任委员单位' },
-  { org: '中国优生优育协会 婴幼儿发育专委会', role: '主任委员单位' },
-  { org: '中国优生优育协会 婴幼儿发育专委会', role: '培训基地' },
+  { idx: 'I', org: '中国妇幼保健协会', role: '主任委员单位' },
+  { idx: 'II', org: '中国优生优育协会·婴幼儿发育专委会', role: '主任委员单位' },
+  { idx: 'III', org: '中国优生优育协会·婴幼儿发育专委会', role: '培训基地' },
 ]
 
-// Split a string into per-character spans for staggered reveal
-function SplitChars({
+/**
+ * MaskChars
+ * 每个字符放进 overflow:hidden 的容器，内部 span 从 translateY(110%) → 0
+ * 这是 awwwards/editorial 网站最经典的入场效果——"幕布式"逐字揭幕
+ */
+function MaskChars({
   text,
   baseDelay = 0,
-  step = 0.04,
+  step = 0.045,
   className,
-  italic = false,
 }: {
   text: string
   baseDelay?: number
   step?: number
   className?: string
-  italic?: boolean
 }) {
+  const chars = Array.from(text)
   return (
-    <span className={className} style={{ display: 'inline-block' }}>
-      {Array.from(text).map((ch, i) => (
+    <span className={className} style={{ display: 'inline-block', verticalAlign: 'top' }}>
+      {chars.map((ch, i) => (
         <span
           key={i}
-          className="hero-char"
-          style={{
-            display: 'inline-block',
-            animationDelay: `${baseDelay + i * step}s`,
-            fontStyle: italic ? 'italic' : undefined,
-          }}
+          aria-hidden="true"
+          className="mask"
+          style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'top' }}
         >
-          {ch === ' ' ? ' ' : ch}
+          <span
+            className="mask-inner"
+            style={{
+              display: 'inline-block',
+              transform: 'translateY(110%)',
+              animationDelay: `${baseDelay + i * step}s`,
+            }}
+          >
+            {ch === ' ' ? ' ' : ch}
+          </span>
         </span>
       ))}
+      <span style={{ position: 'absolute', left: -9999 }}>{text}</span>
     </span>
   )
 }
 
 export default function Hero() {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
   const auraRef = useRef<HTMLDivElement>(null)
 
+  // Trigger reveal class shortly after mount
   useEffect(() => {
-    const el = containerRef.current
+    const el = sectionRef.current
     if (!el) return
-    const id = requestAnimationFrame(() => {
-      el.classList.add('hero-revealed')
-    })
+    const id = requestAnimationFrame(() => el.classList.add('is-ready'))
     return () => cancelAnimationFrame(id)
   }, [])
 
-  // Cursor-following soft glow (desktop only)
+  // Mouse-driven parallax — gentle drift of title block & cursor aura
   useEffect(() => {
+    if (typeof window === 'undefined') return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     if (window.matchMedia('(hover: none)').matches) return
-    const el = containerRef.current
+
+    const section = sectionRef.current
+    const title = titleRef.current
     const aura = auraRef.current
-    if (!el || !aura) return
+    if (!section || !title || !aura) return
 
     let raf = 0
-    let tx = 0,
+    let mx = 0,
+      my = 0,
+      tx = 0,
       ty = 0,
-      cx = 0,
-      cy = 0
+      ax = 0,
+      ay = 0
+
     const onMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect()
-      tx = e.clientX - rect.left
-      ty = e.clientY - rect.top
+      const rect = section.getBoundingClientRect()
+      const cx = (e.clientX - rect.left) / rect.width - 0.5 // -0.5 ~ 0.5
+      const cy = (e.clientY - rect.top) / rect.height - 0.5
+      mx = cx
+      my = cy
+      ax = e.clientX - rect.left
+      ay = e.clientY - rect.top
       if (!raf) raf = requestAnimationFrame(tick)
     }
     const tick = () => {
-      cx += (tx - cx) * 0.09
-      cy += (ty - cy) * 0.09
-      aura.style.transform = `translate3d(${cx}px, ${cy}px, 0)`
-      if (Math.abs(tx - cx) > 0.5 || Math.abs(ty - cy) > 0.5) {
+      tx += (mx * 12 - tx) * 0.06
+      ty += (my * 8 - ty) * 0.06
+      title.style.transform = `translate3d(${tx}px, ${ty}px, 0)`
+
+      const cur = aura.style.transform
+      // smooth follow aura position
+      const m = cur.match(/translate3d\(([-\d.]+)px, ?([-\d.]+)px/)
+      const curX = m ? parseFloat(m[1]) : ax
+      const curY = m ? parseFloat(m[2]) : ay
+      const nx = curX + (ax - curX) * 0.1
+      const ny = curY + (ay - curY) * 0.1
+      aura.style.transform = `translate3d(${nx}px, ${ny}px, 0)`
+
+      if (
+        Math.abs(mx * 12 - tx) > 0.2 ||
+        Math.abs(my * 8 - ty) > 0.2 ||
+        Math.abs(ax - nx) > 0.5
+      ) {
         raf = requestAnimationFrame(tick)
       } else {
         raf = 0
       }
     }
-    el.addEventListener('mousemove', onMove)
+    section.addEventListener('mousemove', onMove)
     return () => {
-      el.removeEventListener('mousemove', onMove)
+      section.removeEventListener('mousemove', onMove)
       if (raf) cancelAnimationFrame(raf)
     }
   }, [])
 
   return (
     <>
-      <section
-        ref={containerRef}
-        id="hero"
-        style={{
-          position: 'relative',
-          minHeight: '100svh',
-          background: 'var(--blue)',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          paddingTop: 68,
-          isolation: 'isolate',
-        }}
-      >
+      <section ref={sectionRef} id="hero" className="hero">
         {/* Background video */}
         <video
           className="hero-video"
@@ -128,407 +142,476 @@ export default function Hero() {
         </video>
 
         {/* Color overlay */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(180deg, rgba(0,3,163,0.58) 0%, rgba(0,3,163,0.66) 55%, rgba(0,2,107,0.82) 100%)',
-            zIndex: 1,
-            pointerEvents: 'none',
-          }}
-        />
-
-        {/* Subtle vertical hairlines — pure typographic structure, no spinning */}
-        <div className="hero-rails" aria-hidden="true">
-          {[0.2, 0.4, 0.6, 0.8].map((pct) => (
-            <span key={pct} style={{ left: `${pct * 100}%` }} />
-          ))}
-        </div>
+        <div aria-hidden="true" className="hero-overlay" />
 
         {/* Cursor aura */}
-        <div
-          ref={auraRef}
-          aria-hidden="true"
-          className="hero-aura"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: 560,
-            height: 560,
-            marginLeft: -280,
-            marginTop: -280,
-            background:
-              'radial-gradient(circle, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 65%)',
-            mixBlendMode: 'screen',
-            pointerEvents: 'none',
-            zIndex: 2,
-            opacity: 0,
-            transition: 'opacity 1.2s ease',
-            willChange: 'transform',
-          }}
-        />
+        <div ref={auraRef} aria-hidden="true" className="hero-aura" />
 
-        {/* Main content */}
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 3,
-            maxWidth: 1280,
-            margin: '0 auto',
-            padding: 'clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 3vw, 2rem)',
-            width: '100%',
-          }}
-        >
-          {/* Top eyebrow */}
-          <div className="hero-eyebrow">
-            <span aria-hidden="true" className="hero-eyebrow-rule" />
-            <span className="hero-eyebrow-text">
-              <SplitChars text="国家级临床机构 · 北京" step={0.025} />
+        {/* ── Top frame markers ── */}
+        <div className="hero-frame">
+          {/* Top-left: clinical pioneer marker */}
+          <div className="hero-marker hero-marker-tl">
+            <span className="hero-marker-dot" aria-hidden="true" />
+            <span className="hero-marker-text">
+              临床先驱 &nbsp;·&nbsp; <i>Clinical Pioneer</i>
             </span>
           </div>
 
-          {/* H1 */}
-          <h1 className="hero-h1">
-            <span className="hero-h1-row">
-              <SplitChars text="守护生命" baseDelay={0.15} step={0.05} />
+          {/* Top-right: brand mark */}
+          <div className="hero-marker hero-marker-tr">
+            <span className="hero-marker-text">
+              <i>Est.</i> 1991
             </span>
-            <span className="hero-h1-row">
-              <SplitChars text="最初一千天" baseDelay={0.35} step={0.05} />
-            </span>
-          </h1>
+            <span className="hero-marker-rule" aria-hidden="true" />
+            <span className="hero-marker-text small">N°&nbsp;BAOXIULAN</span>
+          </div>
+        </div>
 
-          {/* Lede — professional positioning */}
-          <p className="hero-lede">
-            <span className="hero-line" style={{ animationDelay: '0.85s' }}>
-              中国新生儿行为评估与高危儿早期干预的临床先驱
-            </span>
-            <span className="hero-line hero-lede-sub" style={{ animationDelay: '0.98s' }}>
-              以三十余年循证研究与五项国家级科技奖为基石，护航儿童早期发展。
-            </span>
-          </p>
+        {/* ── Main composition ── */}
+        <div className="hero-stage">
+          {/* Section No. — left vertical anchor */}
+          <div className="hero-anchor" aria-hidden="true">
+            <span className="hero-anchor-no">01</span>
+            <span className="hero-anchor-rule" />
+            <span className="hero-anchor-label">Manifesto</span>
+          </div>
 
-          {/* Credentials — 三家学会任职，更精致的卡片式排版 */}
-          <div className="hero-creds" aria-label="学会任职">
+          <div className="hero-content">
+            <h1 ref={titleRef} className="hero-h1">
+              <span className="hero-h1-row">
+                <MaskChars text="最初的一千天，" baseDelay={0.45} step={0.045} />
+              </span>
+              <span className="hero-h1-row">
+                <MaskChars text="决定一生的可能。" baseDelay={0.78} step={0.045} />
+              </span>
+            </h1>
+
+            <div className="hero-sub">
+              <span className="hero-sub-en">
+                <MaskChars
+                  text="The first thousand days shape a lifetime."
+                  baseDelay={1.25}
+                  step={0.018}
+                />
+              </span>
+              <span className="hero-sub-attr">
+                <span className="hero-sub-attr-rule" aria-hidden="true" />
+                <span>创始人 ·&nbsp;</span>
+                <i>鲍秀兰&nbsp;教授</i>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Bottom credentials band ── */}
+        <div className="hero-band">
+          <div className="hero-band-rule" aria-hidden="true" />
+          <ol className="hero-affs">
             {CREDENTIALS.map((c, i) => (
-              <article
+              <li
                 key={i}
-                className="hero-cred"
-                style={{ animationDelay: `${1.18 + i * 0.11}s` }}
+                className="hero-aff"
+                style={{ ['--d' as string]: `${1.85 + i * 0.13}s` }}
               >
-                <span className="hero-cred-num">0{i + 1}</span>
-                <div className="hero-cred-body">
-                  <div className="hero-cred-org">{c.org}</div>
-                  <div className="hero-cred-role">{c.role}</div>
+                <span className="hero-aff-idx">{c.idx}</span>
+                <div className="hero-aff-body">
+                  <div className="hero-aff-org">{c.org}</div>
+                  <div className="hero-aff-role">
+                    <span className="hero-aff-role-mark" aria-hidden="true" />
+                    {c.role}
+                  </div>
                 </div>
-              </article>
+              </li>
             ))}
-          </div>
-
-          {/* Stats strip */}
-          <div className="hero-stats">
-            {STATS.map((s, i) => (
-              <div
-                key={s.label}
-                className="hero-line hero-stat"
-                style={{ animationDelay: `${1.55 + i * 0.09}s` }}
-              >
-                <div className="hero-stat-value">
-                  {s.value}
-                  {s.sup && <sup>{s.sup}</sup>}
-                </div>
-                <div className="hero-stat-label">{s.label}</div>
-              </div>
-            ))}
-          </div>
+          </ol>
         </div>
 
         {/* Scroll indicator */}
-        <div aria-hidden="true" className="scroll-indicator">
-          <span className="scroll-indicator-text">向下滚动</span>
-          <div className="scroll-indicator-track">
-            <div className="scroll-indicator-thumb" />
+        <div aria-hidden="true" className="scroll-ind">
+          <span className="scroll-ind-text">SCROLL · 向下滚动</span>
+          <div className="scroll-ind-track">
+            <div className="scroll-ind-thumb" />
           </div>
         </div>
       </section>
 
       <style>{`
-        /* ── Background video ── */
+        /* ╔════════════════════════════════════════════════════
+           ║  HERO  —  editorial layout, mask-reveal typography
+           ╚════════════════════════════════════════════════════ */
+        .hero {
+          position: relative;
+          min-height: 100svh;
+          background: var(--blue);
+          overflow: hidden;
+          padding-top: 68px;
+          isolation: isolate;
+          color: #ffffff;
+          font-family: var(--sans);
+          display: grid;
+          grid-template-rows: auto 1fr auto;
+        }
+
+        /* ── Video + overlay ── */
         .hero-video {
           position: absolute; inset: 0;
           width: 100%; height: 100%;
           object-fit: cover; object-position: center;
           z-index: 0; pointer-events: none;
           opacity: 0;
-          animation: heroVideoIn 2.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+          animation: heroVideoIn 2.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
         }
         @keyframes heroVideoIn {
-          from { opacity: 0; transform: scale(1.06); }
+          from { opacity: 0; transform: scale(1.08); }
           to   { opacity: 1; transform: scale(1); }
         }
+        .hero-overlay {
+          position: absolute; inset: 0; z-index: 1;
+          pointer-events: none;
+          background:
+            radial-gradient(ellipse 80% 60% at 20% 70%, rgba(0,2,107,0.45) 0%, rgba(0,2,107,0) 60%),
+            linear-gradient(180deg, rgba(0,3,163,0.55) 0%, rgba(0,3,163,0.62) 50%, rgba(0,2,107,0.82) 100%);
+        }
+        .hero-aura {
+          position: absolute; top: 0; left: 0;
+          width: 640px; height: 640px;
+          margin: -320px 0 0 -320px;
+          background: radial-gradient(circle,
+            rgba(255,255,255,0.16) 0%,
+            rgba(255,255,255,0.05) 38%,
+            rgba(255,255,255,0) 65%);
+          mix-blend-mode: screen;
+          pointer-events: none;
+          z-index: 2;
+          opacity: 0;
+          transition: opacity 1s ease;
+          will-change: transform;
+        }
+        .hero:hover .hero-aura { opacity: 1; }
 
-        /* ── Vertical hairlines (draw-down) ── */
-        .hero-rails { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
-        .hero-rails span {
-          position: absolute; top: 0; bottom: 0;
-          width: 1px;
+        /* ╔══════════ Top frame ══════════ */
+        .hero-frame {
+          position: relative;
+          z-index: 3;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          padding: clamp(1.4rem, 2.5vw, 2rem) clamp(1.5rem, 3.5vw, 2.5rem) 0;
+        }
+        .hero-marker {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.7rem;
+          font-size: 0.66rem;
+          letter-spacing: 0.22em;
+          color: rgba(255,255,255,0.65);
+          text-transform: uppercase;
+          opacity: 0;
+          animation: heroFade 1s cubic-bezier(0.16,1,0.3,1) 0.25s forwards;
+        }
+        .hero-marker-text { font-feature-settings: 'ss01'; }
+        .hero-marker-text i {
+          font-family: var(--serif-en);
+          font-style: italic;
+          letter-spacing: 0.02em;
+          font-size: 1.05em;
+          color: rgba(255,255,255,0.85);
+          text-transform: none;
+        }
+        .hero-marker-text.small { font-size: 0.6rem; opacity: 0.7; }
+        .hero-marker-dot {
+          width: 6px; height: 6px;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.9);
+          box-shadow: 0 0 0 0 rgba(255,255,255,0.5);
+          animation: heroPulse 2.6s cubic-bezier(0.4,0,0.2,1) 2s infinite;
+        }
+        @keyframes heroPulse {
+          0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.45); }
+          70%  { box-shadow: 0 0 0 9px rgba(255,255,255,0); }
+          100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+        }
+        .hero-marker-tr {
+          flex-direction: row;
+          gap: 0.85rem;
+        }
+        .hero-marker-rule {
+          width: 36px; height: 1px;
+          background: rgba(255,255,255,0.35);
+          transform-origin: left center;
+          transform: scaleX(0);
+          animation: heroLineX 1s cubic-bezier(0.16,1,0.3,1) 0.55s forwards;
+        }
+        @keyframes heroLineX { to { transform: scaleX(1); } }
+
+        /* ╔══════════ Stage ══════════ */
+        .hero-stage {
+          position: relative;
+          z-index: 3;
+          display: grid;
+          grid-template-columns: auto 1fr;
+          gap: clamp(1.5rem, 4vw, 3.5rem);
+          align-items: end;
+          padding: clamp(2rem, 6vw, 5rem) clamp(1.5rem, 3.5vw, 2.5rem) 0;
+          max-width: 1400px;
+          margin: 0 auto;
+          width: 100%;
+        }
+        .hero-anchor {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.85rem;
+          padding-bottom: 0.8rem;
+          opacity: 0;
+          animation: heroFade 1.1s cubic-bezier(0.16,1,0.3,1) 0.4s forwards;
+        }
+        .hero-anchor-no {
+          font-family: var(--serif-en);
+          font-style: italic;
+          font-weight: 300;
+          font-size: clamp(1.2rem, 1.6vw, 1.6rem);
+          color: rgba(255,255,255,0.85);
+          letter-spacing: -0.02em;
+        }
+        .hero-anchor-rule {
+          width: 1px; height: clamp(64px, 11vw, 110px);
           background: linear-gradient(180deg,
-            rgba(255,255,255,0) 0%,
-            rgba(255,255,255,0.16) 15%,
-            rgba(255,255,255,0.16) 85%,
+            rgba(255,255,255,0.5) 0%,
             rgba(255,255,255,0) 100%);
-          transform-origin: top center;
-          transform: scaleY(0);
-          animation: heroRail 2.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          transform-origin: top center; transform: scaleY(0);
+          animation: heroLineY 1.4s cubic-bezier(0.16,1,0.3,1) 0.55s forwards;
         }
-        .hero-rails span:nth-child(1) { animation-delay: 0.3s; }
-        .hero-rails span:nth-child(2) { animation-delay: 0.42s; }
-        .hero-rails span:nth-child(3) { animation-delay: 0.54s; }
-        .hero-rails span:nth-child(4) { animation-delay: 0.66s; }
-        @keyframes heroRail {
-          from { transform: scaleY(0); }
-          to   { transform: scaleY(1); }
-        }
-
-        #hero:hover .hero-aura { opacity: 1; }
-
-        /* ── Top eyebrow ── */
-        .hero-eyebrow {
-          display: inline-flex; align-items: center; gap: 0.85rem;
-          margin-bottom: clamp(1.4rem, 3vw, 2.2rem);
-          opacity: 0;
-          animation: heroFadeIn 1.1s cubic-bezier(0.16,1,0.3,1) 0.15s forwards;
-        }
-        .hero-eyebrow-rule {
-          display: inline-block; width: 32px; height: 1px;
-          background: rgba(255,255,255,0.55);
-          transform-origin: left center; transform: scaleX(0);
-          animation: heroLine 1.1s cubic-bezier(0.16,1,0.3,1) 0.3s forwards;
-        }
-        @keyframes heroLine {
-          from { transform: scaleX(0); }
-          to   { transform: scaleX(1); }
-        }
-        .hero-eyebrow-text {
-          font-family: var(--sans);
-          font-size: 0.7rem;
+        @keyframes heroLineY { to { transform: scaleY(1); } }
+        .hero-anchor-label {
+          font-family: var(--serif-en);
+          font-style: italic;
+          font-weight: 300;
+          font-size: 0.65rem;
           letter-spacing: 0.24em;
-          color: rgba(255,255,255,0.7);
+          color: rgba(255,255,255,0.55);
+          writing-mode: vertical-rl;
+          transform: rotate(180deg);
         }
 
-        /* ── Per-character reveal ── */
-        .hero-char {
-          opacity: 0;
-          transform: translateY(0.6em);
-          animation: heroCharIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-        @keyframes heroCharIn {
-          from { opacity: 0; transform: translateY(0.6em); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
+        .hero-content { width: 100%; min-width: 0; }
 
-        /* ── H1 ── */
+        /* ── Title ── */
         .hero-h1 {
           font-family: var(--serif-cn);
           font-weight: 300;
-          line-height: 1.02;
-          letter-spacing: -0.02em;
-          font-size: clamp(3.6rem, 10vw, 9rem);
+          line-height: 1.0;
+          letter-spacing: -0.015em;
+          font-size: clamp(3.2rem, 11vw, 10.5rem);
           color: #ffffff;
-          margin-bottom: clamp(1.6rem, 3vw, 2.4rem);
+          margin: 0 0 clamp(1.2rem, 2.8vw, 2rem) 0;
+          transform: translate3d(0,0,0);
+          will-change: transform;
+          transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        .hero-h1-row { display: block; overflow: hidden; }
+        .hero-h1-row {
+          display: block;
+          overflow: visible; /* per-char mask handles clipping */
+          line-height: 1.0;
+          padding-bottom: 0.05em; /* room for descenders during transform */
+        }
+        .hero-h1-row + .hero-h1-row { margin-top: 0.04em; }
 
-        /* ── Lede ── */
-        .hero-lede {
-          max-width: 720px;
-          margin-bottom: clamp(2.4rem, 4.5vw, 3.5rem);
+        /* Per-char mask reveal — the heart of the editorial feel */
+        .mask {
+          line-height: 1.05;
+          padding-bottom: 0.06em;
         }
-        .hero-lede .hero-line { display: block; }
-        .hero-lede > span:first-child {
+        .mask-inner {
+          will-change: transform;
+          animation: maskRise 1.4s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+        }
+        @keyframes maskRise {
+          from { transform: translateY(110%); }
+          to   { transform: translateY(0); }
+        }
+
+        /* ── Sub ── */
+        .hero-sub {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: baseline;
+          gap: clamp(1rem, 2.5vw, 2rem);
+          max-width: 820px;
+        }
+        .hero-sub-en {
+          font-family: var(--serif-en);
+          font-style: italic;
+          font-weight: 300;
+          font-size: clamp(1rem, 1.6vw, 1.4rem);
+          line-height: 1.4;
+          color: rgba(255,255,255,0.82);
+          letter-spacing: 0.005em;
+        }
+        .hero-sub-attr {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.7rem;
+          font-size: 0.75rem;
+          letter-spacing: 0.08em;
+          color: rgba(255,255,255,0.55);
+          opacity: 0;
+          animation: heroFade 1.1s cubic-bezier(0.16,1,0.3,1) 1.65s forwards;
+        }
+        .hero-sub-attr i {
           font-family: var(--serif-cn);
-          font-size: clamp(1.05rem, 1.55vw, 1.4rem);
-          line-height: 1.45;
-          color: #ffffff;
-          letter-spacing: 0.01em;
+          font-style: normal;
+          color: rgba(255,255,255,0.85);
+          font-size: 0.86rem;
+          letter-spacing: 0.04em;
         }
-        .hero-lede-sub {
-          margin-top: 0.7rem !important;
-          font-family: var(--sans) !important;
-          font-size: clamp(0.86rem, 1.05vw, 0.98rem) !important;
-          line-height: 1.7 !important;
-          color: rgba(255,255,255,0.7) !important;
-          letter-spacing: 0.02em !important;
+        .hero-sub-attr-rule {
+          display: inline-block;
+          width: 28px; height: 1px;
+          background: rgba(255,255,255,0.45);
         }
 
-        /* ── Credentials ── */
-        .hero-creds {
+        /* ╔══════════ Bottom credentials band ══════════ */
+        .hero-band {
+          position: relative;
+          z-index: 3;
+          padding: clamp(1.4rem, 3vw, 2.4rem) clamp(1.5rem, 3.5vw, 2.5rem) clamp(2rem, 4vw, 3rem);
+          max-width: 1400px;
+          margin: 0 auto;
+          width: 100%;
+        }
+        .hero-band-rule {
+          height: 1px;
+          background: rgba(255,255,255,0.16);
+          transform-origin: left center;
+          transform: scaleX(0);
+          animation: heroLineX 1.4s cubic-bezier(0.16,1,0.3,1) 1.7s forwards;
+          margin-bottom: clamp(1.2rem, 2.4vw, 1.8rem);
+        }
+        .hero-affs {
+          list-style: none;
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: clamp(0.6rem, 1.5vw, 1.5rem);
-          margin-bottom: clamp(2.4rem, 4.5vw, 3.5rem);
+          gap: clamp(1rem, 2.5vw, 2.5rem);
+          margin: 0; padding: 0;
         }
-        .hero-cred {
-          position: relative;
-          padding: clamp(1.1rem, 2vw, 1.5rem) clamp(1rem, 1.8vw, 1.4rem);
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.14);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
+        .hero-aff {
           display: flex;
-          gap: 0.9rem;
-          align-items: flex-start;
+          gap: clamp(0.75rem, 1.4vw, 1.1rem);
           opacity: 0;
-          transform: translateY(20px);
-          animation: heroFadeUp 1.1s cubic-bezier(0.16,1,0.3,1) forwards;
-          transition: background 0.4s ease, border-color 0.4s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
+          transform: translateY(16px);
+          animation: heroAffIn 1.1s cubic-bezier(0.16,1,0.3,1) var(--d) forwards;
+          transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
         }
-        .hero-cred::after {
-          content: '';
-          position: absolute;
-          left: 0; bottom: 0;
-          height: 1px; width: 0;
-          background: rgba(255,255,255,0.55);
-          transition: width 0.55s cubic-bezier(0.22,1,0.36,1);
-        }
-        .hero-cred:hover {
-          background: rgba(255,255,255,0.08);
-          border-color: rgba(255,255,255,0.28);
-          transform: translateY(-3px);
-        }
-        .hero-cred:hover::after { width: 100%; }
-
-        .hero-cred-num {
-          font-family: var(--serif-en);
-          font-style: italic;
-          font-weight: 300;
-          font-size: clamp(1rem, 1.4vw, 1.2rem);
-          color: rgba(255,255,255,0.55);
-          line-height: 1;
-          flex-shrink: 0;
-          padding-top: 0.15em;
-          letter-spacing: -0.02em;
-        }
-        .hero-cred-body { display: flex; flex-direction: column; gap: 0.45rem; }
-        .hero-cred-org {
-          font-family: var(--sans);
-          font-size: clamp(0.66rem, 0.85vw, 0.74rem);
-          letter-spacing: 0.16em;
-          color: rgba(255,255,255,0.6);
-          line-height: 1.4;
-        }
-        .hero-cred-role {
-          font-family: var(--serif-cn);
-          font-size: clamp(1rem, 1.3vw, 1.18rem);
-          font-weight: 400;
-          color: #ffffff;
-          line-height: 1.3;
-          letter-spacing: 0.02em;
-        }
-
-        /* ── Stats ── */
-        .hero-stats {
-          display: flex;
-          gap: clamp(1.5rem, 4vw, 3.5rem);
-          padding-top: clamp(1.4rem, 2.5vw, 1.9rem);
-          border-top: 1px solid rgba(255,255,255,0.18);
-        }
-        .hero-stat-value {
-          font-family: var(--serif-en);
-          font-size: clamp(1.8rem, 3.5vw, 3rem);
-          font-weight: 300;
-          font-style: italic;
-          color: #ffffff;
-          line-height: 1;
-          margin-bottom: 0.4rem;
-          letter-spacing: -0.02em;
-        }
-        .hero-stat-value sup {
-          font-family: var(--serif-cn);
-          font-size: 0.35em;
-          font-style: normal;
-          vertical-align: super;
-          margin-left: 0.1em;
-          color: rgba(255,255,255,0.65);
-        }
-        .hero-stat-label {
-          font-family: var(--sans);
-          font-size: 0.74rem;
-          letter-spacing: 0.05em;
-          color: rgba(255,255,255,0.55);
-          line-height: 1.4;
-        }
-
-        /* ── Generic hero-line ── */
-        .hero-line {
-          opacity: 0;
-          transform: translateY(22px);
-          animation: heroFadeUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes heroFadeUp {
-          from { opacity: 0; transform: translateY(22px); }
+        .hero-aff:hover { transform: translateY(-4px); }
+        @keyframes heroAffIn {
+          from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes heroFadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
+        .hero-aff-idx {
+          font-family: var(--serif-en);
+          font-style: italic;
+          font-weight: 300;
+          font-size: clamp(1.3rem, 1.8vw, 1.7rem);
+          line-height: 1;
+          color: rgba(255,255,255,0.55);
+          letter-spacing: -0.02em;
+          padding-top: 0.1em;
+          min-width: 1.5em;
+        }
+        .hero-aff-body { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+        .hero-aff-org {
+          font-family: var(--sans);
+          font-size: clamp(0.7rem, 0.92vw, 0.78rem);
+          letter-spacing: 0.12em;
+          line-height: 1.5;
+          color: rgba(255,255,255,0.62);
+        }
+        .hero-aff-role {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.55rem;
+          font-family: var(--serif-cn);
+          font-size: clamp(1rem, 1.35vw, 1.22rem);
+          font-weight: 400;
+          line-height: 1.25;
+          color: #ffffff;
+          letter-spacing: 0.02em;
+        }
+        .hero-aff-role-mark {
+          width: 6px; height: 6px;
+          background: #ffffff;
+          flex-shrink: 0;
+          transform: rotate(45deg);
+          opacity: 0.85;
         }
 
-        /* ── Scroll indicator ── */
-        .scroll-indicator {
+        /* ╔══════════ Scroll indicator ══════════ */
+        .scroll-ind {
           position: absolute;
-          right: 2.5rem; bottom: 2.5rem;
-          display: flex; flex-direction: column; align-items: center; gap: 0.7rem;
-          z-index: 3;
+          right: clamp(1.5rem, 3vw, 2.5rem);
+          bottom: clamp(1.5rem, 3vw, 2.5rem);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.7rem;
+          z-index: 4;
           opacity: 0;
-          animation: heroFadeIn 1s cubic-bezier(0.16,1,0.3,1) 2s forwards;
+          animation: heroFade 1s cubic-bezier(0.16,1,0.3,1) 2.5s forwards;
         }
-        .scroll-indicator-text {
+        .scroll-ind-text {
           font-family: var(--sans);
-          font-size: 0.6rem;
-          letter-spacing: 0.24em;
-          color: rgba(255,255,255,0.5);
+          font-size: 0.58rem;
+          letter-spacing: 0.28em;
+          color: rgba(255,255,255,0.45);
           writing-mode: vertical-rl;
         }
-        .scroll-indicator-track {
-          width: 1px; height: 60px;
+        .scroll-ind-track {
+          width: 1px; height: 64px;
           background: rgba(255,255,255,0.18);
           position: relative; overflow: hidden;
         }
-        .scroll-indicator-thumb {
+        .scroll-ind-thumb {
           position: absolute; top: 0; left: 0; right: 0;
-          height: 40%;
-          background: rgba(255,255,255,0.75);
+          height: 42%;
+          background: rgba(255,255,255,0.8);
           animation: scrollDrop 2.4s cubic-bezier(0.45,0,0.55,1) infinite;
         }
         @keyframes scrollDrop {
           0%   { transform: translateY(-100%); opacity: 1; }
-          80%  { transform: translateY(280%);  opacity: 0.4; }
-          100% { transform: translateY(280%);  opacity: 0; }
+          80%  { transform: translateY(260%);  opacity: 0.3; }
+          100% { transform: translateY(260%);  opacity: 0; }
         }
+        @keyframes heroFade { to { opacity: 1; } }
 
-        /* ── Responsive ── */
-        @media (max-width: 900px) {
-          .hero-creds { grid-template-columns: 1fr !important; gap: 0.6rem !important; }
+        /* ╔══════════ Responsive ══════════ */
+        @media (max-width: 980px) {
+          .hero-affs { grid-template-columns: 1fr; gap: 0.9rem; }
+          .hero-aff-body { gap: 0.3rem; }
+          .hero-marker-tr .hero-marker-text.small { display: none; }
         }
         @media (max-width: 768px) {
-          .hero-stats { flex-wrap: wrap; gap: 1.6rem !important; }
-          .scroll-indicator { display: none !important; }
-          .hero-rails span:nth-child(1),
-          .hero-rails span:nth-child(4) { display: none; }
+          .hero-stage { grid-template-columns: 1fr; }
+          .hero-anchor { display: none; }
+          .scroll-ind { display: none; }
+          .hero-h1 { font-size: clamp(2.9rem, 12vw, 5.5rem); }
+          .hero-marker-text i { font-size: 1em; }
+        }
+        @media (max-width: 540px) {
+          .hero-marker-tr .hero-marker-rule { display: none; }
         }
 
         @media (prefers-reduced-motion: reduce) {
           .hero-video { animation: none; opacity: 1; transform: none; }
-          .hero-char,
-          .hero-line,
-          .hero-cred,
-          .hero-eyebrow,
-          .hero-eyebrow-rule,
-          .hero-rails span,
-          .scroll-indicator {
+          .mask-inner,
+          .hero-marker,
+          .hero-anchor,
+          .hero-anchor-rule,
+          .hero-marker-rule,
+          .hero-band-rule,
+          .hero-aff,
+          .hero-sub-attr,
+          .scroll-ind {
             animation: none !important;
             opacity: 1 !important;
             transform: none !important;
