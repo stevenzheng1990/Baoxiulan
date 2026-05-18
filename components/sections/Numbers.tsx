@@ -14,7 +14,7 @@ const CELLS: StatCell[] = [
     raw: 34,
     display: (n) => String(Math.round(n)),
     sup: '+',
-    label: '年临床积淀 / since 1991',
+    label: '年临床积淀 / 创立于 1991',
   },
   {
     raw: 12,

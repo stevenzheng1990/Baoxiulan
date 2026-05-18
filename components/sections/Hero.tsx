@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import { SITE_CONFIG } from '@/content/site'
 
 const STATS = [
-  { value: '34', sup: '+', label: '年临床积淀 / since 1991' },
+  { value: '34', sup: '+', label: '年临床积淀 / 创立于 1991' },
   { value: '12个', sup: '', label: '核心诊疗领域' },
   { value: '5', sup: '项', label: '国家级科技进步奖' },
 ]
@@ -59,7 +59,7 @@ export default function Hero() {
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(180deg, rgba(0,3,163,0.78) 0%, rgba(0,3,163,0.82) 60%, rgba(0,2,107,0.92) 100%)',
+              'linear-gradient(180deg, rgba(0,3,163,0.55) 0%, rgba(0,3,163,0.62) 60%, rgba(0,2,107,0.78) 100%)',
             zIndex: 1,
             pointerEvents: 'none',
           }}
@@ -155,7 +155,7 @@ export default function Hero() {
               animationDelay: '0s',
             }}
           >
-            {SITE_CONFIG.tagline} · Beijing, China
+            {SITE_CONFIG.tagline} · 北京·中国
           </p>
 
           {/* H1 — three stagger-reveal lines */}
@@ -295,7 +295,7 @@ export default function Hero() {
               color: 'rgba(255,255,255,0.3)',
             }}
           >
-            Scroll
+            向下滚动
           </span>
           <div
             style={{

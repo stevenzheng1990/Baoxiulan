@@ -74,8 +74,8 @@ export default function Founder({ expert }: FounderProps) {
                   color: 'var(--muted)',
                 }}
               >
-                <span style={{ color: 'var(--blue)' }}>Founder · 创始人</span>
-                <span>Since 1983</span>
+                <span style={{ color: 'var(--blue)' }}>创始人</span>
+                <span>1983 年至今</span>
               </figcaption>
             </figure>
           </aside>
@@ -84,7 +84,7 @@ export default function Founder({ expert }: FounderProps) {
           <div className="founder-right">
             {/* Eyebrow */}
             <div className="r" style={{ marginBottom: '0.9rem' }}>
-              <span className="eyebrow"><span className="eyebrow-mark" aria-hidden="true"/>创始人 · Founder</span>
+              <span className="eyebrow"><span className="eyebrow-mark" aria-hidden="true"/>创始人</span>
             </div>
 
             {/* Name */}
