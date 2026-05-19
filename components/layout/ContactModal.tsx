@@ -2,32 +2,33 @@
 
 import { useEffect } from 'react'
 import Image from 'next/image'
+import { useSettings } from '@/components/SettingsProvider'
 
 interface ContactModalProps {
   open: boolean
   onClose: () => void
 }
 
-const QR_ITEMS = [
-  {
-    key: 'wechat',
-    label: '微信公众号',
-    sub: 'WeChat Official',
-    src: '/qr/wechat.png',
-    accent: '#07C160',
-    hint: '扫码关注，获取育儿科普与门诊信息',
-  },
-  {
-    key: 'weibo',
-    label: '官方微博',
-    sub: 'Sina Weibo',
-    src: '/qr/weibo.png',
-    accent: '#E6162D',
-    hint: '扫码关注，掌握专家动态与科研资讯',
-  },
-]
-
 export default function ContactModal({ open, onClose }: ContactModalProps) {
+  const settings = useSettings()
+  const QR_ITEMS = [
+    {
+      key: 'wechat',
+      label: '微信公众号',
+      sub: 'WeChat Official',
+      src: settings.wechatQr,
+      accent: '#07C160',
+      hint: '扫码关注，获取育儿科普与门诊信息',
+    },
+    {
+      key: 'weibo',
+      label: '官方微博',
+      sub: 'Sina Weibo',
+      src: settings.weiboQr,
+      accent: '#E6162D',
+      hint: '扫码关注，掌握专家动态与科研资讯',
+    },
+  ]
   // ESC to close + body scroll lock
   useEffect(() => {
     if (!open) return

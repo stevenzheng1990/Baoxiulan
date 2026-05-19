@@ -1,8 +1,9 @@
 'use client'
 
-import { SITE_CONFIG } from '@/content/site'
+import { useSettings } from '@/components/SettingsProvider'
 
 export default function Cta() {
+  const SITE_CONFIG = useSettings()
   return (
     <section
       id="contact"

@@ -1,40 +1,41 @@
 'use client'
 
 import Link from 'next/link'
-import { SITE_CONFIG } from '@/content/site'
-
-const FOOTER_LINKS = {
-  institution: {
-    label: '机构',
-    links: [
-      { label: '关于宝秀兰', href: '#about' },
-      { label: '专家团队', href: '#experts' },
-      { label: '荣誉资质', href: '#honors' },
-      { label: '媒体报道', href: '#media' },
-    ],
-  },
-  services: {
-    label: '服务',
-    links: [
-      { label: '高危儿干预', href: '#services' },
-      { label: '脑瘫康复', href: '#services' },
-      { label: 'ASD 评估', href: '#services' },
-      { label: '育儿课堂', href: '#courses' },
-    ],
-  },
-  contact: {
-    label: '联系',
-    links: [
-      { label: `电话：${SITE_CONFIG.phone}`, href: `tel:${SITE_CONFIG.phone}` },
-      { label: `邮箱：${SITE_CONFIG.email}`, href: `mailto:${SITE_CONFIG.email}` },
-      { label: SITE_CONFIG.hours, href: '#contact' },
-      { label: '在线预约', href: '#appointment' },
-    ],
-  },
-}
+import { useSettings } from '@/components/SettingsProvider'
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const settings = useSettings()
+
+  const FOOTER_LINKS = {
+    institution: {
+      label: '机构',
+      links: [
+        { label: '关于宝秀兰', href: '/#founder' },
+        { label: '专家团队', href: '/#specialists' },
+        { label: '学术荣誉', href: '/#awards' },
+        { label: '机构设施', href: '/facilities' },
+      ],
+    },
+    services: {
+      label: '服务',
+      links: [
+        { label: '诊疗服务', href: '/#services' },
+        { label: '康复团队', href: '/#therapists' },
+        { label: '育儿课堂', href: '/articles' },
+        { label: '在线预约', href: '/#contact' },
+      ],
+    },
+    contact: {
+      label: '联系',
+      links: [
+        { label: `电话：${settings.phone}`, href: `tel:${settings.phone}` },
+        { label: `邮箱：${settings.email}`, href: `mailto:${settings.email}` },
+        { label: settings.hours, href: '/#contact' },
+        { label: '在线预约', href: '/#contact' },
+      ],
+    },
+  }
 
   return (
     <footer
@@ -120,7 +121,7 @@ export default function Footer() {
                 color: '#ffffff',
               }}
             >
-              宝秀兰医疗
+              {settings.name}
             </span>
           </div>
 
@@ -133,7 +134,7 @@ export default function Footer() {
               marginBottom: '1.4rem',
             }}
           >
-            宝秀兰医疗 · 创立于 1991
+            {settings.name} · 创立于 {settings.established}
           </p>
 
           <p
@@ -145,7 +146,7 @@ export default function Footer() {
               maxWidth: 240,
             }}
           >
-            {SITE_CONFIG.description}
+            {settings.description}
           </p>
 
           {/* "守护成长" badge */}
@@ -262,7 +263,7 @@ export default function Footer() {
               letterSpacing: '0.02em',
             }}
           >
-            {SITE_CONFIG.address}
+            {settings.address}
           </p>
         </div>
       </div>

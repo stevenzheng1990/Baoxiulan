@@ -1,24 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
-import { cookies } from 'next/headers'
-
-async function checkAuth() {
-  const cookieStore = await cookies()
-  const session = cookieStore.get('admin_session')
-  return session?.value === 'authenticated'
-}
-
-const SETTING_KEYS = [
-  'phone',
-  'address',
-  'email',
-  'hours',
-  'baiduAnalyticsId',
-  'baiduVerification',
-] as const
+import { isAdmin } from '@/lib/adminAuth'
+import { SETTING_KEYS, type SettingKey } from '@/lib/siteSettings'
 
 export async function GET() {
-  if (!(await checkAuth())) {
+  if (!(await isAdmin())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -27,31 +13,25 @@ export async function GET() {
   })
 
   const settings: Record<string, string> = {}
-  for (const row of rows) {
-    settings[row.key] = row.value
-  }
-
+  for (const row of rows) settings[row.key] = row.value
   return NextResponse.json(settings)
 }
 
 export async function PUT(req: NextRequest) {
-  if (!(await checkAuth())) {
+  if (!(await isAdmin())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   try {
     const body = await req.json()
-
-    const updates = SETTING_KEYS.filter(k => k in body).map(key =>
+    const updates = SETTING_KEYS.filter((k) => k in body).map((key: SettingKey) =>
       prisma.siteSetting.upsert({
         where: { key },
         update: { value: String(body[key] ?? '') },
         create: { key, value: String(body[key] ?? '') },
       })
     )
-
     await Promise.all(updates)
-
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('PUT /api/admin/settings error:', err)
