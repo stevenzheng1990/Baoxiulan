@@ -7,10 +7,9 @@ import ContactModal from './ContactModal'
 const NAV_LINKS = [
   { label: '机构创始人', href: '/#founder' },
   { label: '专家团队', href: '/#specialists' },
-  { label: '康复团队', href: '/#therapists' },
   { label: '机构设施', href: '/facilities' },
-  { label: '诊疗服务', href: '/#services' },
   { label: '学术荣誉', href: '/#awards' },
+  { label: '育儿课堂', href: '/articles' },
 ]
 
 export default function Nav() {
