@@ -3,6 +3,8 @@
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import RichEditor from '@/components/admin/RichEditor'
+import ImageUploader from '@/components/admin/ImageUploader'
 
 const CATEGORIES = [
   '育儿课堂',
@@ -25,6 +27,7 @@ export default function NewArticlePage() {
     category: '育儿课堂',
     author: '宝秀兰医疗团队',
     content: '',
+    coverImage: '',
     published: false,
     metaTitle: '',
     metaDesc: '',
@@ -169,20 +172,13 @@ export default function NewArticlePage() {
               </div>
 
               <div>
-                <label style={labelStyle} htmlFor="content">
+                <label style={labelStyle}>
                   文章正文 <span style={{ color: '#EF4444' }}>*</span>
                 </label>
-                <textarea
-                  id="content"
-                  name="content"
-                  required
+                <RichEditor
                   value={form.content}
-                  onChange={handleChange}
-                  placeholder="请输入文章正文内容..."
-                  rows={20}
-                  style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.8 }}
-                  onFocus={e => { e.currentTarget.style.borderColor = '#0003A3' }}
-                  onBlur={e => { e.currentTarget.style.borderColor = 'rgba(0,3,163,0.15)' }}
+                  onChange={(html) => setForm(prev => ({ ...prev, content: html }))}
+                  placeholder="请输入文章正文…（支持粘贴 / 拖拽图片）"
                 />
               </div>
             </div>
@@ -236,6 +232,26 @@ export default function NewArticlePage() {
 
           {/* Sidebar */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            {/* Cover image card */}
+            <div
+              style={{
+                background: '#fff',
+                borderRadius: 12,
+                padding: '20px',
+                boxShadow: '0 1px 4px rgba(0,3,163,0.07)',
+              }}
+            >
+              <h2 style={{ fontSize: 15, fontWeight: 600, color: '#08090F', marginBottom: 14 }}>
+                封面图
+              </h2>
+              <ImageUploader
+                value={form.coverImage}
+                onChange={(url) => setForm(prev => ({ ...prev, coverImage: url }))}
+                hint="建议 1200×630 · JPG / PNG / WebP"
+                aspect="16 / 9"
+              />
+            </div>
+
             {/* Publish card */}
             <div
               style={{

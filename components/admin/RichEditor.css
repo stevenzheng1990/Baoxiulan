@@ -1,0 +1,267 @@
+/* ════════════════════════════════════════════════════════
+   RichEditor — WeChat-style content editor
+   ════════════════════════════════════════════════════════ */
+
+.re-wrap {
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid rgba(0, 3, 163, 0.15);
+  border-radius: 10px;
+  background: #ffffff;
+  overflow: hidden;
+}
+.re-wrap:focus-within {
+  border-color: #0003A3;
+}
+
+.re-loading {
+  padding: 40px;
+  text-align: center;
+  color: #9CA0B5;
+  font-size: 13px;
+}
+
+/* ── Toolbar ── */
+.re-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 8px 10px;
+  background: linear-gradient(180deg, #FAFAFC 0%, #F4F5F9 100%);
+  border-bottom: 1px solid rgba(0, 3, 163, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.re-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  background: transparent;
+  color: #374151;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
+}
+.re-btn:hover:not(:disabled) {
+  background: rgba(0, 3, 163, 0.06);
+  color: #0003A3;
+}
+.re-btn:active:not(:disabled) {
+  background: rgba(0, 3, 163, 0.12);
+}
+.re-btn.is-active {
+  background: rgba(0, 3, 163, 0.1);
+  color: #0003A3;
+  border-color: rgba(0, 3, 163, 0.18);
+}
+.re-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.re-divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(0, 3, 163, 0.14);
+  margin: 0 4px;
+}
+
+.re-select {
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid rgba(0, 3, 163, 0.15);
+  border-radius: 6px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.re-select:focus {
+  outline: none;
+  border-color: #0003A3;
+}
+
+.re-img-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px 2px 0;
+  background: rgba(176, 138, 74, 0.08);
+  border-radius: 6px;
+}
+.re-img-label {
+  font-size: 11px;
+  color: #B08A4A;
+  padding: 0 6px 0 8px;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+.re-size-label {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ── Canvas (the writing surface) ── */
+.re-canvas {
+  background: #ffffff;
+  padding: 24px 28px;
+  min-height: 480px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* ── Status bar ── */
+.re-statusbar {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: #FAFAFC;
+  border-top: 1px solid rgba(0, 3, 163, 0.08);
+  font-size: 12px;
+  color: #676B88;
+  font-family: inherit;
+}
+
+/* ════════════════════════════════════════════════════════
+   ProseMirror content styles
+   Keep these mirrored on the public-facing article page so
+   what you see here matches what readers see.
+   ════════════════════════════════════════════════════════ */
+
+.tiptap-content {
+  font-family: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  font-size: 16px;
+  line-height: 1.85;
+  color: #0B0D1A;
+  outline: none;
+  min-height: 420px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.tiptap-content :is(h1, h2, h3, h4) {
+  font-family: 'Noto Serif SC', 'Songti SC', serif;
+  font-weight: 500;
+  color: #0003A3;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+}
+.tiptap-content h1 { font-size: 1.7rem; margin: 1.6em 0 0.6em; }
+.tiptap-content h2 { font-size: 1.45rem; margin: 1.5em 0 0.55em; }
+.tiptap-content h3 { font-size: 1.2rem;  margin: 1.4em 0 0.5em; }
+
+.tiptap-content p {
+  margin: 0.85em 0;
+}
+
+.tiptap-content p.is-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #9CA0B5;
+  float: left;
+  pointer-events: none;
+  height: 0;
+}
+
+.tiptap-content strong { font-weight: 600; color: #08090F; }
+.tiptap-content em { font-style: italic; }
+.tiptap-content u { text-decoration-color: rgba(0,3,163,0.5); text-underline-offset: 3px; }
+.tiptap-content s { color: #9CA0B5; }
+
+.tiptap-content a {
+  color: #0003A3;
+  text-decoration: underline;
+  text-decoration-color: rgba(0,3,163,0.35);
+  text-underline-offset: 3px;
+}
+
+.tiptap-content blockquote {
+  margin: 1.2em 0;
+  padding: 0.4em 0 0.4em 1.2em;
+  border-left: 3px solid #B08A4A;
+  color: #2A2D3F;
+  background: rgba(176,138,74,0.05);
+  border-radius: 0 4px 4px 0;
+  font-style: normal;
+}
+
+.tiptap-content ul,
+.tiptap-content ol {
+  padding-left: 1.6em;
+  margin: 0.85em 0;
+}
+.tiptap-content li { margin: 0.4em 0; }
+.tiptap-content li > p { margin: 0; }
+
+.tiptap-content hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(176,138,74,0.5) 50%, transparent 100%);
+  margin: 2em auto;
+  max-width: 60%;
+}
+
+.tiptap-content code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.88em;
+  padding: 1px 6px;
+  background: rgba(0,3,163,0.06);
+  color: #0003A3;
+  border-radius: 3px;
+}
+.tiptap-content pre {
+  background: #0B0D1A;
+  color: #E5E7EB;
+  padding: 16px 20px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.tiptap-content pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* ── Images ── */
+.tiptap-content img {
+  display: block;
+  height: auto;
+  margin: 1.2em 0;
+  border-radius: 4px;
+  transition: outline 0.15s;
+}
+
+.tiptap-content img[data-size="small"]  { width: 40%; max-width: 40%; }
+.tiptap-content img[data-size="medium"] { width: 70%; max-width: 70%; }
+.tiptap-content img[data-size="full"]   { width: 100%; max-width: 100%; }
+
+.tiptap-content img[data-align="left"]   { margin-left: 0; margin-right: auto; }
+.tiptap-content img[data-align="center"] { margin-left: auto; margin-right: auto; }
+.tiptap-content img[data-align="right"]  { margin-left: auto; margin-right: 0; }
+
+/* Selected image highlight */
+.tiptap-content .ProseMirror-selectednode {
+  outline: 2px solid #0003A3;
+  outline-offset: 2px;
+}
+
+/* Mobile tweak */
+@media (max-width: 600px) {
+  .re-canvas { padding: 16px; }
+  .tiptap-content { font-size: 15px; }
+  .tiptap-content img[data-size="small"],
+  .tiptap-content img[data-size="medium"],
+  .tiptap-content img[data-size="full"] { width: 100%; max-width: 100%; }
+}

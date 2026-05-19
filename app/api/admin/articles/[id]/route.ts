@@ -49,7 +49,7 @@ export async function PUT(
 
   try {
     const body = await req.json()
-    const { title, excerpt, content, category, author, published, metaTitle, metaDesc } = body
+    const { title, excerpt, content, category, author, published, metaTitle, metaDesc, coverImage } = body
 
     if (!title || !excerpt || !content) {
       return NextResponse.json({ error: '标题、摘要和正文为必填项' }, { status: 400 })
@@ -64,6 +64,7 @@ export async function PUT(
         category: category?.trim() || '育儿课堂',
         author: author?.trim() || '宝秀兰医疗团队',
         published: published === true,
+        coverImage: coverImage?.trim() || null,
         metaTitle: metaTitle?.trim() || null,
         metaDesc: metaDesc?.trim() || null,
       },
