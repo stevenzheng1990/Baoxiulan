@@ -1,0 +1,3 @@
+# Image uploads from admin panel land in subdirectories by month (YYYYMM/).
+# Files committed here will ship with the repo; not recommended for production
+# but fine for self-hosted Node deploys.
